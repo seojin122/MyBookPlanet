@@ -8,6 +8,10 @@ const path = require('path');
 dotenv.config();
 const indexRouter = require('./routes');
 const userRouter = require('./routes/user');
+// 설문 라우터 추가 
+const booklumiRouter = require('./routes/booklumi');
+// 책 추천 라우터 추가  
+const bookRecommendationRouter = require('./routes/bookRecommendation');  
 
 const app = express();
 app.use('/api', indexRouter);  //FE에서 작성
@@ -31,6 +35,10 @@ app.use(session({
 
 app.use('/', indexRouter);
 app.use('/user', userRouter);
+// booklumi 라우터 등록 
+app.use('/api/booklumi', booklumiRouter); 
+// 책 추천 라우터 등록 
+app.use('/api/bookRecommendation', bookRecommendationRouter); 
 
 app.use((req, res, next) => {
   res.status(404).send('Not Found');
