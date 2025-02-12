@@ -24,6 +24,8 @@
           <input id="my-id" type="hidden" value="{{user.id}}">
           <a id="my-profile" href="/profile" class="btn">내 프로필</a>
           <a id="logout" href="/auth/logout" class="btn">로그아웃</a>
+          <a id="delete-account" href="#" class="btn">회원 탈퇴</a>
+
         {% else %}
           <form id="login-form" action="/auth/login" method="post">
             <div class="input-group">
@@ -85,6 +87,23 @@
   });
 
   
+  // 회원 탈퇴 버튼 이벤트 추가
+  document.getElementById('delete-account').addEventListener('click', (event) => {
+        event.preventDefault();
+        if (confirm("정말로 회원 탈퇴하시겠습니까? 이 작업은 되돌릴 수 없습니다.")) {
+          axios.post('/auth/delete')
+            .then(response => {
+              alert(response.data.message);
+              window.location.href = "/"; // 탈퇴 후 메인 페이지로 이동
+            })
+            .catch(error => {
+              console.error('탈퇴 처리 중 오류 발생:', error);
+              alert('회원 탈퇴에 실패했습니다.');
+            });
+        }
+      });
+
+
     </script>
     {% block script %}
     {% endblock %}

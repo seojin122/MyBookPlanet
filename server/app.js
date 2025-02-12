@@ -77,6 +77,44 @@ app.get('/:page', (req, res) => {
   });
 });
 
+
+// 로그인 페이지(GET 요청)
+// app.get('/join', (req, res) => {
+//   // 쿼리 파라미터에 error=true가 있을 때, 로그인 실패 메시지를 보여주기 위해 전달
+//   const error = req.query.error === 'true'; // error가 true일 때 실패 메시지 표시
+//   res.render('views/join', { error });
+// });
+
+// 로그인 처리(POST 요청)
+app.post('/join', (req, res) => {
+  const { username, password } = req.body;
+  
+  // 로그인 로직 예시
+  if (username !== 'user' || password !== 'password') {
+    return res.redirect('/join?error=true');  // 실패 시, error=true 쿼리 파라미터와 함께 리다이렉트
+  }
+
+  // 로그인 성공 시
+  res.redirect('/');
+});
+
+// 로그인 처리 (POST 요청)
+// app.post('/join', (req, res, next) => {
+//   passport.authenticate('local', (err, user, info) => {
+//     if (err || !user) {
+//       // 로그인 실패 시, 상태 코드 401로 응답을 보냄
+//       return res.status(401).json({ message: '로그인 실패: 잘못된 사용자명이나 비밀번호입니다.' });
+//     }
+//     req.logIn(user, (err) => {
+//       if (err) return next(err);
+//       return res.redirect('/'); // 로그인 성공 시 홈으로 리다이렉트
+//     });
+//   })(req, res, next);
+// });
+
+
+
+
 // 회원 목록 조회
 app.get('/users', (req, res) => {
   User.findAll()
