@@ -12,7 +12,17 @@
       <div class="profile-wrap">
         <div class="profile">
           {% if user and user.id %}
-            <div class="user-name">{{user.nick + '님,' + ' 반가워요!'}}</div>
+          <div class="user-name">
+            <span id="nickname-text">{{ user.nick }}님, 반가워요!</span>
+            <input id="nickname-input" type="text" value="{{ user.nick }}" style="display: none;">
+          </div>
+
+            <!-- 닉네임 변경 버튼 -->
+<button id="edit-nickname-btn" class="btn">닉네임 변경</button>
+<button id="save-nickname-btn" class="btn" style="display: none;">저장</button>
+<button id="cancel-nickname-btn" class="btn" style="display: none;">취소</button>
+
+
             <div class="half">
               <div>팔로잉</div>
               <div class="count following-count">{{followingCount}}</div>
@@ -103,6 +113,43 @@
         }
       });
 
+//닉네임 변경
+
+      document.getElementById('edit-nickname-btn').addEventListener('click', () => {
+  document.getElementById('nickname-text').style.display = 'none';
+  document.getElementById('nickname-input').style.display = 'inline-block';
+  document.getElementById('nickname-input').focus();
+  document.getElementById('save-nickname-btn').style.display = 'inline-block';
+  document.getElementById('cancel-nickname-btn').style.display = 'inline-block';
+  document.getElementById('edit-nickname-btn').style.display = 'none';
+});
+
+document.getElementById('cancel-nickname-btn').addEventListener('click', () => {
+  document.getElementById('nickname-text').style.display = 'inline-block';
+  document.getElementById('nickname-input').style.display = 'none';
+  document.getElementById('save-nickname-btn').style.display = 'none';
+  document.getElementById('cancel-nickname-btn').style.display = 'none';
+  document.getElementById('edit-nickname-btn').style.display = 'inline-block';
+});
+
+document.getElementById('save-nickname-btn').addEventListener('click', () => {
+  const newNick = document.getElementById('nickname-input').value.trim();
+
+  if (!newNick) {
+    alert('새 닉네임을 입력하세요.');
+    return;
+  }
+
+  axios.post('/user/nickname', { newNick })
+    .then(response => {
+      alert(response.data.message);
+      location.reload(); // 변경 후 새로고침
+    })
+    .catch(error => {
+      console.error(error);
+      alert(error.response.data.message || '닉네임 변경에 실패했습니다.');
+    });
+});
 
     </script>
     {% block script %}

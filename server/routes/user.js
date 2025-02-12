@@ -53,7 +53,30 @@ router.get('/list', isLoggedIn, async (req, res, next) => {
   }
 });
 
-module.exports = router;
+
+//닉네임 변경 api
+router.post('/nickname', isLoggedIn, async (req, res, next) => {
+  try {
+    const { newNick } = req.body;
+    
+    if (!newNick) {
+      return res.status(400).json({ message: '닉네임을 입력하세요.' });
+    }
+
+    const existingUser = await User.findOne({ where: { nick: newNick } });
+    if (existingUser) {
+      return res.status(400).json({ message: '이미 존재하는 닉네임입니다.' });
+    }
+
+    await User.update({ nick: newNick }, { where: { id: req.user.id } });
+
+    res.json({ message: '닉네임이 변경되었습니다!' });
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
 
 
 
