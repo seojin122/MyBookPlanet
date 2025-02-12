@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import { Routes, Route, Link } from "react-router-dom";
 
 import Main from "./pages/Main";
 import Login from "./pages/Login";
@@ -10,7 +10,8 @@ import Bestseller from "./pages/Bestseller";
 import Community from "./pages/Community";
 
 function App() {
-  return (<div className="App">
+  return (
+  <div className="App">
     <Routes>
       <Route path="/" element={<Main />} />
       <Route path="/login" element={<Login />} />

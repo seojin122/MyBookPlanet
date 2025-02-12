@@ -3,24 +3,61 @@ import { Link } from "react-router-dom";
 import "../styles/Login.css";
 import bookIcon from "../assets/bookicon.png";
 import lamp from "../assets/lamp.png";
+//import axios from "axios";
+
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  //const [error, setError] = useState("");
 
-  const handleEmailChange = (e) => {
-    setEmail(e.target.value);
-  };
+  const handleEmailChange = (e) => setEmail(e.target.value);
+  const handlePasswordChange = (e) => setPassword(e.target.value);
+  
+  /*백엔드 연동?
 
-  const handlePasswordChange = (e) => {
-    setPassword(e.target.value);
-  };
+  const handleSubmit = async (e) => {
+    e.preventDefault(); // 기본 폼 제출 방지
+    setError(""); // 기존 에러 초기화
 
-  // 임시 폼제출 핸들러
-  const handleSubmit = (e) => {
+    try {
+      const response = await axios.post("http://localhost:3002/api/login", {
+        email,
+        password,
+      });
+
+      console.log("로그인 성공:", response.data);
+
+      // 로그인 성공 시, JWT 토큰을 저장
+      localStorage.setItem("token", response.data.token);
+
+      // 로그인 후 메인 페이지로 이동
+      window.location.href = "/";
+    } catch (err) {
+      console.error("로그인 실패:", err.response?.data?.message || err.message);
+      setError(err.response?.data?.message || "로그인에 실패했습니다.");
+    }
+      */
+    const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("로그인 시도:", { email, password });
-  };
+    
+      try {
+        const MOCK_RESPONSE = {
+          token: "fake-jwt-token",
+          message: "로그인 성공!",
+        };
+    
+        console.log("로그인 성공:", MOCK_RESPONSE);
+        localStorage.setItem("token", MOCK_RESPONSE.token);
+  
+        alert("로그인 성공! 메인 페이지로 이동합니다."); // ✅ 성공 메시지 alert
+        window.location.href = "/"; // ✅ 메인 페이지로 이동
+      } catch (err) {
+        console.error("로그인 실패:", err.message);
+        alert("로그인 실패! 아이디나 비밀번호를 다시 확인하여 주세요."); // ✅ 실패 메시지 alert
+      }
+    };
+  
 
   return (
     <div className="main-container">
