@@ -3,10 +3,6 @@
 {% block content %}
   {% if user %}
     <!-- 로그인한 사용자만 글 작성 폼을 볼 수 있도록 조건 추가 -->
-    <!-- <form id="short-post-form" action="/save-intro" method="POST">
-      <textarea id="short-post" name="content" placeholder="한줄소개" required></textarea>
-      <button type="submit">저장</button>
-    </form> -->
 
     <input type="text" id="introContentInput" placeholder="짧은 글을 작성하세요" />
 <button id="saveIntroButton">저장</button>

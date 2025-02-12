@@ -99,23 +99,6 @@ app.post('/join', (req, res) => {
   res.redirect('/');
 });
 
-// 로그인 처리 (POST 요청)
-// app.post('/join', (req, res, next) => {
-//   passport.authenticate('local', (err, user, info) => {
-//     if (err || !user) {
-//       // 로그인 실패 시, 상태 코드 401로 응답을 보냄
-//       return res.status(401).json({ message: '로그인 실패: 잘못된 사용자명이나 비밀번호입니다.' });
-//     }
-//     req.logIn(user, (err) => {
-//       if (err) return next(err);
-//       return res.redirect('/'); // 로그인 성공 시 홈으로 리다이렉트
-//     });
-//   })(req, res, next);
-// });
-
-
-
-
 // 회원 목록 조회
 app.get('/users', (req, res) => {
   User.findAll()
@@ -134,26 +117,53 @@ app.get('/users', (req, res) => {
 });
 
 
+
 // 팔로우 처리
-app.post('/follow', (req, res) => {
-  const followerId = req.user.id;  // 현재 로그인한 사용자의 ID
-  const followingId = req.body.userId;  // 팔로우하려는 사용자의 ID
+// app.post('/follow', (req, res) => {
+//   const followerId = req.user.id;  // 현재 로그인한 사용자의 ID
+//   const followingId = req.body.userId;  // 팔로우하려는 사용자의 ID
   
-  // 이미 팔로우 중인지 확인
-  Follow.findOrCreate({
-    where: { followerId, followingId }
-  })
-    .then(([follow, created]) => {
-      if (created) {
-        res.send('팔로우 성공');
-      } else {
-        res.send('이미 팔로우한 사용자입니다');
-      }
-    })
-    .catch(err => {
-      console.error(err);
-      res.status(500).send("서버 오류");
-    });
+//   // 이미 팔로우 중인지 확인
+//   Follow.findOrCreate({
+//     where: { followerId, followingId }
+//   })
+//     .then(([follow, created]) => {
+//       if (created) {
+//         res.send('팔로우 성공');
+//       } else {
+//         res.send('이미 팔로우한 사용자입니다');
+//       }
+//     })
+//     .catch(err => {
+//       console.error(err);
+//       res.status(500).send("서버 오류");
+//     });
+// });
+
+
+app.post('/follow', async (req, res) => {
+  try {
+    console.log('req.user:', req.user); // ✅ 로그 추가
+    console.log('req.body:', req.body); // ✅ 로그 추가
+
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({ error: '로그인이 필요합니다.' });
+    }
+
+    const followerId = req.user.id;
+    const followingId = req.body.userId;
+
+    if (!followingId) {
+      return res.status(400).json({ error: '팔로우할 유저 ID가 필요합니다.' });
+    }
+
+    await Follow.create({ followerId, followingId });
+    res.status(200).json({ message: '팔로우 성공!' });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: '서버 오류' });
+  }
 });
 
 

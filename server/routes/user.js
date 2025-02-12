@@ -18,34 +18,59 @@ const { User } = require('../models');
 
 const router = express.Router();
 
-// POST /user/:id/follow
-router.post('/:id/follow', isLoggedIn, follow);
+// 모든 사용자 목록 조회 + 팔로우 기능(로그인한 경우에만 접근 가능)
 
-// 닉네임 목록 뜨게
-// router.get('/mypage', isLoggedIn, async (req, res, next) => {
+// router.post('/:id/follow', isLoggedIn, follow);
+
+// router.get('/list', isLoggedIn, async (req, res, next) => {
 //   try {
-//     const users = await User.findAll({ attributes: ['nick'] }); // 닉네임만 조회
-//     console.log(users); // 콘솔에 출력해서 데이터 확인
-//     res.render('mypage', { users, user: req.user }); // 템플릿에 전달
+//     const users = await User.findAll();  // User 테이블에서 모든 사용자 조회
+//     res.render('layout', {  // layout.html 템플릿에 users 배열 전달
+//       title: '회원 목록',  // 페이지 타이틀
+//       users: users,      // 조회한 사용자 목록
+//       user: req.user      // 로그인한 사용자 정보
+//     });
 //   } catch (error) {
 //     console.error(error);
 //     next(error);
 //   }
 // });
 
-// const express = require('express');
-// const { User } = require('../models');  // User 모델을 가져옵니다.
-// const router = express.Router();
+router.post('/:id/follow', isLoggedIn, async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const me = await User.findByPk(req.user.id);
+    const targetUser = await User.findByPk(id);
+
+    if (!targetUser) {
+      return res.status(404).json({ message: '해당 사용자를 찾을 수 없습니다.' });
+    }
+
+    if (me.id === targetUser.id) {
+      return res.status(400).json({ message: '자기 자신을 팔로우할 수 없습니다.' });
+    }
+
+    const isFollowing = await me.hasFollowing(targetUser);
+    if (isFollowing) {
+      return res.status(400).json({ message: '이미 팔로우한 북루미입니다!' });
+    }
+
+    await me.addFollowing(targetUser);
+    return res.json({ message: '팔로우 성공!' });
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
 
 // 모든 사용자 목록 조회 (로그인한 경우에만 접근 가능)
-
 router.get('/list', isLoggedIn, async (req, res, next) => {
   try {
-    const users = await User.findAll();  // User 테이블에서 모든 사용자 조회
-    res.render('layout', {  // layout.html 템플릿에 users 배열 전달
-      title: '회원 목록',  // 페이지 타이틀
-      users: users,      // 조회한 사용자 목록
-      user: req.user      // 로그인한 사용자 정보
+    const users = await User.findAll();
+    res.render('layout', {
+      title: '회원 목록',
+      users,
+      user: req.user
     });
   } catch (error) {
     console.error(error);
