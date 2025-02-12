@@ -16,6 +16,7 @@ const userRouter = require('./routes/user');
 
 const { User } = require('./models'); // User 모델을 임포트
 const { Follow } = require('./models');  // Follow 모델 임포트
+const { Intro } = require('./models');  // Intro 모델 임포트
 
 const app = express();
 app.set('port', process.env.PORT || 3002);
@@ -154,6 +155,74 @@ app.post('/follow', (req, res) => {
       res.status(500).send("서버 오류");
     });
 });
+
+
+
+// 로그인한 사용자만 한줄소개 폼 볼수있게 하기위함
+app.get('/', (req, res) => {
+  res.render('main', {
+    user: req.user,  // 로그인한 사용자 정보 (로그인 상태 확인용)
+  });
+});
+
+
+// 한줄소개 저장
+// app.post('/save-intro', (req, res) => {
+//   const { content } = req.body;
+//   const userId = req.user.id;  // 로그인된 사용자의 ID
+
+//   // 글이 비어있는지 확인
+//   if (!content) {
+//     return res.status(400).send('내용을 입력해주세요.');
+//   }
+
+//   // 한줄소개 저장
+//   Intro.create({
+//     content,
+//     userId,
+//   })
+//     .then(() => {
+//       res.redirect('/');  // 글 작성 후 홈으로 리다이렉트
+//     })
+//     .catch((err) => {
+//       console.error(err);
+//       res.status(500).send('서버 오류');
+//     });
+// });
+
+
+
+
+// 한줄소개 저장
+app.post('/save-intro', async (req, res) => {
+  const { content } = req.body;
+  const userId = req.user.id;  // 로그인된 사용자의 ID
+
+  // 글이 비어있는지 확인
+  if (!content) {
+    return res.status(400).send('내용을 입력해주세요.');
+  }
+
+  try {
+    // 짧은 글 저장
+    await Intro.create({
+      content,
+      userId,
+    });
+
+    // 저장된 데이터를 클라이언트로 반환
+    const intros = await Intro.findAll({
+      where: { userId },
+      order: [['createdAt', 'DESC']], // 최신 글 먼저 보여주기
+    });
+
+    res.status(200).json(intros);  // 저장된 모든 데이터를 클라이언트로 응답
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('서버 오류');
+  }
+});
+
 
 
 

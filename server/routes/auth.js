@@ -16,8 +16,8 @@ router.post('/login', isNotLoggedIn, passport.authenticate('local', {
   failureRedirect: '/auth/login',  // 로그인 실패 시 다시 로그인 페이지로 리다이렉트
   failureFlash: true,
 }), (req, res) => {
-  // 로그인 성공 시 /profile 페이지로 리다이렉트
-  res.redirect('/user/list');
+  // 로그인 성공 시 / 페이지로 리다이렉트
+  res.redirect('/');
 });
 
 // GET /auth/logout - 로그아웃 처리
