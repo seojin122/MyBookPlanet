@@ -1,10 +1,10 @@
-const express = require('express');
+// const express = require('express');
 
-const router = express.Router();
+// const router = express.Router();
 
-// GET / 라우터
-router.get('/', (req, res) => {
-  res.send('Hello, Express');
-});
+// // GET / 라우터
+// router.get('/', (req, res) => {
+//   res.send('Hello, Express');
+// });
 
-module.exports = router;
+// module.exports = router;
