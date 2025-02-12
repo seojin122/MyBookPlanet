@@ -1,5 +1,4 @@
-/* 전체 화면을 중앙 정렬 */
-.login-container {
+  .login-container {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -7,7 +6,6 @@
     background-color: #f5f3eb;
   }
   
-  /* 로그인 박스 스타일 */
   .login-box {
     background: white;
     padding: 30px;
@@ -16,7 +14,6 @@
     width: 350px;
   }
   
-  /* 로그인 헤더 */
   .login-header {
     display: flex;
     align-items: center;
