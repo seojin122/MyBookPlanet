@@ -16,6 +16,10 @@ const passportConfig = require('./passport');
 const userRouter = require('./routes/user');
 const bookRouter = require("./routes/book");
 const postsRouter = require("./routes/posts");
+// 설문 라우터 추가 
+const booklumiRouter = require('./routes/booklumi');
+// 책 추천 라우터 추가  
+const bookRecommendationRouter = require('./routes/bookRecommendation');  
 
 const { User } = require('./models'); // User 모델을 임포트
 const { Follow } = require('./models');  // Follow 모델 임포트
@@ -66,6 +70,10 @@ app.use('/auth', authRouter);
 app.use('/user', userRouter);
 app.use("/book", bookRouter);
 app.use("/posts", postsRouter);
+// booklumi 라우터 등록 
+app.use('/api/booklumi', booklumiRouter); 
+// 책 추천 라우터 등록 
+app.use('/api/bookRecommendation', bookRecommendationRouter); 
 
 // 동적 렌더링
 const fs = require('fs');
