@@ -23,6 +23,7 @@ const bookRecommendationRouter = require('./routes/bookRecommendation');
 
 const { User } = require('./models'); // User 모델을 임포트
 const { Follow } = require('./models');  // Follow 모델 임포트
+const { Intro } = require('./models');  // Intro 모델 임포트
 
 const app = express();
 app.use('/api', indexRouter);  //FE에서 작성
@@ -99,35 +100,18 @@ app.get('/:page', (req, res) => {
 //   res.render('views/join', { error });
 // });
 
-// 로그인 처리(POST 요청)
+// 회원가입 처리(POST 요청)
 app.post('/join', (req, res) => {
   const { username, password } = req.body;
   
-  // 로그인 로직 예시
+  // 회원가입 로직 예시
   if (username !== 'user' || password !== 'password') {
     return res.redirect('/join?error=true');  // 실패 시, error=true 쿼리 파라미터와 함께 리다이렉트
   }
 
-  // 로그인 성공 시
-  res.redirect('/');
+  // 회원가입 성공 시
+  res.redirect('/auth/login');
 });
-
-// 로그인 처리 (POST 요청)
-// app.post('/join', (req, res, next) => {
-//   passport.authenticate('local', (err, user, info) => {
-//     if (err || !user) {
-//       // 로그인 실패 시, 상태 코드 401로 응답을 보냄
-//       return res.status(401).json({ message: '로그인 실패: 잘못된 사용자명이나 비밀번호입니다.' });
-//     }
-//     req.logIn(user, (err) => {
-//       if (err) return next(err);
-//       return res.redirect('/'); // 로그인 성공 시 홈으로 리다이렉트
-//     });
-//   })(req, res, next);
-// });
-
-
-
 
 // 회원 목록 조회
 app.get('/users', (req, res) => {
@@ -147,27 +131,126 @@ app.get('/users', (req, res) => {
 });
 
 
+
 // 팔로우 처리
-app.post('/follow', (req, res) => {
-  const followerId = req.user.id;  // 현재 로그인한 사용자의 ID
-  const followingId = req.body.userId;  // 팔로우하려는 사용자의 ID
+// app.post('/follow', (req, res) => {
+//   const followerId = req.user.id;  // 현재 로그인한 사용자의 ID
+//   const followingId = req.body.userId;  // 팔로우하려는 사용자의 ID
   
-  // 이미 팔로우 중인지 확인
-  Follow.findOrCreate({
-    where: { followerId, followingId }
-  })
-    .then(([follow, created]) => {
-      if (created) {
-        res.send('팔로우 성공');
-      } else {
-        res.send('이미 팔로우한 사용자입니다');
-      }
-    })
-    .catch(err => {
-      console.error(err);
-      res.status(500).send("서버 오류");
-    });
+//   // 이미 팔로우 중인지 확인
+//   Follow.findOrCreate({
+//     where: { followerId, followingId }
+//   })
+//     .then(([follow, created]) => {
+//       if (created) {
+//         res.send('팔로우 성공');
+//       } else {
+//         res.send('이미 팔로우한 사용자입니다');
+//       }
+//     })
+//     .catch(err => {
+//       console.error(err);
+//       res.status(500).send("서버 오류");
+//     });
+// });
+
+
+app.post('/follow', async (req, res) => {
+  try {
+    console.log('req.user:', req.user); 
+    console.log('req.body:', req.body);
+
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({ error: '로그인이 필요합니다.' });
+    }
+
+    const followerId = req.user.id;
+    const followingId = req.body.userId;
+
+    if (!followingId) {
+      return res.status(400).json({ error: '팔로우할 유저 ID가 필요합니다.' });
+    }
+
+    await Follow.create({ followerId, followingId });
+    res.status(200).json({ message: '팔로우 성공!' });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: '서버 오류' });
+  }
 });
+
+
+// / 경로로 접속하면 /index로 리다이렉트
+app.get('/', (req, res) => {
+  res.redirect('/index');
+});
+
+// 로그인한 사용자만 한줄소개 폼 볼수있게 하기위함
+app.get('/', (req, res) => {
+  res.render('main', {
+    user: req.user,  // 로그인한 사용자 정보 (로그인 상태 확인용)
+  });
+});
+
+
+// 한줄소개 저장
+// app.post('/save-intro', (req, res) => {
+//   const { content } = req.body;
+//   const userId = req.user.id;  // 로그인된 사용자의 ID
+
+//   // 글이 비어있는지 확인
+//   if (!content) {
+//     return res.status(400).send('내용을 입력해주세요.');
+//   }
+
+//   // 한줄소개 저장
+//   Intro.create({
+//     content,
+//     userId,
+//   })
+//     .then(() => {
+//       res.redirect('/');  // 글 작성 후 홈으로 리다이렉트
+//     })
+//     .catch((err) => {
+//       console.error(err);
+//       res.status(500).send('서버 오류');
+//     });
+// });
+
+
+
+
+// 한줄소개 저장
+app.post('/save-intro', async (req, res) => {
+  const { content } = req.body;
+  const userId = req.user.id;  // 로그인된 사용자의 ID
+
+  // 글이 비어있는지 확인
+  if (!content) {
+    return res.status(400).send('내용을 입력해주세요.');
+  }
+
+  try {
+    // 짧은 글 저장
+    await Intro.create({
+      content,
+      userId,
+    });
+
+    // 저장된 데이터를 클라이언트로 반환
+    const intros = await Intro.findAll({
+      where: { userId },
+      order: [['createdAt', 'DESC']], // 최신 글 먼저 보여주기
+    });
+
+    res.status(200).json(intros);  // 저장된 모든 데이터를 클라이언트로 응답
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('서버 오류');
+  }
+});
+
 
 
 
