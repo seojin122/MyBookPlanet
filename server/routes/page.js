@@ -7,6 +7,7 @@ const router = express.Router();
 // 회원가입한 목록 가져올거야
 const User = require('../models/user');
 
+// 팔로잉, 팔로우
 router.use((req, res, next) => {
     res.locals.user = req.user;
     res.locals.followerCount = req.user?.Followers?.length || 0;

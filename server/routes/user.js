@@ -36,6 +36,9 @@ const router = express.Router();
 //   }
 // });
 
+
+
+// 주석처리해봄
 router.post('/:id/follow', isLoggedIn, async (req, res, next) => {
   try {
     const { id } = req.params;
@@ -80,25 +83,34 @@ router.get('/list', isLoggedIn, async (req, res, next) => {
 
 
 //닉네임 변경 api
-router.post('/nickname', isLoggedIn, async (req, res, next) => {
+//수정수정
+
+router.post('/update-nickname', isLoggedIn, async (req, res) => {
   try {
-    const { newNick } = req.body;
-    
-    if (!newNick) {
-      return res.status(400).json({ message: '닉네임을 입력하세요.' });
-    }
+      const { nickname } = req.body;
+      const userId = req.user.id;  // 로그인된 사용자 ID 사용
 
-    const existingUser = await User.findOne({ where: { nick: newNick } });
-    if (existingUser) {
-      return res.status(400).json({ message: '이미 존재하는 닉네임입니다.' });
-    }
+      if (!nickname) {
+          return res.status(400).json({ success: false, message: '닉네임을 입력하세요.' });
+      }
 
-    await User.update({ nick: newNick }, { where: { id: req.user.id } });
+      // 닉네임 중복 검사
+      const existingUser = await User.findOne({ where: { nick: nickname } });
+      if (existingUser) {
+          return res.status(400).json({ success: false, message: '이미 존재하는 닉네임입니다.' });
+      }
 
-    res.json({ message: '닉네임이 변경되었습니다!' });
+      const user = await User.findByPk(userId);
+      if (!user) {
+          return res.status(404).json({ success: false, message: '사용자를 찾을 수 없습니다.' });
+      }
+
+      await user.update({ nick: nickname });
+
+      return res.json({ success: true, nickname });
   } catch (error) {
-    console.error(error);
-    next(error);
+      console.error(error);
+      return res.status(500).json({ success: false, message: '서버 오류' });
   }
 });
 

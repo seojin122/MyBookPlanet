@@ -100,21 +100,21 @@ app.post('/join', (req, res) => {
 });
 
 // 회원 목록 조회
-app.get('/users', (req, res) => {
-  User.findAll()
-    .then(users => {
-      res.render('layout', { 
-        title: '회원 목록', 
-        users: users,
-        user: req.user,
-        myId: req.user ? req.user.id : null // 로그인한 사용자의 ID
-      });
-    })
-    .catch(err => {
-      console.error(err);
-      res.status(500).send("서버 오류");
-    });
-});
+// app.get('/users', (req, res) => {
+//   User.findAll()
+//     .then(users => {
+//       res.render('layout', { 
+//         title: '회원 목록', 
+//         users: users,
+//         user: req.user,
+//         myId: req.user ? req.user.id : null // 로그인한 사용자의 ID
+//       });
+//     })
+//     .catch(err => {
+//       console.error(err);
+//       res.status(500).send("서버 오류");
+//     });
+// });
 
 
 
@@ -140,30 +140,53 @@ app.get('/users', (req, res) => {
 //     });
 // });
 
+// 팔로우 처리
 
-app.post('/follow', async (req, res) => {
-  try {
-    console.log('req.user:', req.user); 
-    console.log('req.body:', req.body);
+// app.post('/follow', async (req, res) => {
+//   try {
+//     console.log('req.user:', req.user); 
+//     console.log('req.body:', req.body);
 
-    if (!req.user || !req.user.id) {
-      return res.status(401).json({ error: '로그인이 필요합니다.' });
-    }
+//     if (!req.user || !req.user.id) {
+//       return res.status(401).json({ error: '로그인이 필요합니다.' });
+//     }
 
-    const followerId = req.user.id;
-    const followingId = req.body.userId;
+//     const followerId = req.user.id;
+//     const followingId = req.body.userId;
 
-    if (!followingId) {
-      return res.status(400).json({ error: '팔로우할 유저 ID가 필요합니다.' });
-    }
+//     if (!followingId) {
+//       return res.status(400).json({ error: '팔로우할 유저 ID가 필요합니다.' });
+//     }
 
-    await Follow.create({ followerId, followingId });
-    res.status(200).json({ message: '팔로우 성공!' });
+//     await Follow.create({ followerId, followingId });
+//     res.status(200).json({ message: '팔로우 성공!' });
 
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: '서버 오류' });
-  }
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ error: '서버 오류' });
+//   }
+// });
+
+
+app.post('/follow', (req, res) => {
+  const followerId = req.user.id;  // 현재 로그인한 사용자의 ID
+  const followingId = req.body.userId;  // 팔로우하려는 사용자의 ID
+
+  // 이미 팔로우 중인지 확인
+  Follow.findOrCreate({
+    where: { followerId, followingId }
+  })
+    .then(([follow, created]) => {
+      if (created) {
+        res.send('팔로우 성공');
+      } else {
+        res.send('이미 팔로우한 사용자입니다');
+      }
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).send("서버 오류");
+    });
 });
 
 
