@@ -20,7 +20,9 @@
     <div class="container">
         <h1>{{ post.bookTitle }}</h1>
         <h3>감상평: {{ post.reviewTitle }}</h3>
-        <p class="star">⭐ {{ "⭐" * post.rating }}</p>
+        <p class="star">
+            {% for _ in range(post.rating) %}⭐{% endfor %}
+        </p>
         <p><strong>작성자:</strong> {{ post.user.nick }}</p>
         <hr>
         <p>{{ post.content }}</p> <!-- ✅ 게시글 내용 추가 -->
