@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>게시글 작성</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        form { display: inline-block; text-align: left; }
+        .input { margin-bottom: 10px; padding: 5px; width: 100%; }
+        .btn { padding: 10px; background: #222; color: white; border: none; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>게시글 작성</h1>
+    <p>작성자: <strong>{{ user.nick }}</strong></p> <!-- 로그인한 사용자 닉네임 표시 -->
+    <form action="/posts" method="POST">
+        <label>책 제목:</label>
+        <input type="text" name="bookTitle" class="input" required><br>
+
+        <label>감상평 제목:</label>
+        <input type="text" name="reviewTitle" class="input" required><br>
+
+        <label>별점 (1~5):</label>
+        <input type="number" name="rating" class="input" min="1" max="5" required><br>
+
+        <button type="submit" class="btn">게시글 저장</button>
+    </form>
+</body>
+</html>
