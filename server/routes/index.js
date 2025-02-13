@@ -1,9 +1,10 @@
-//test.js
 const express = require('express');
+
 const router = express.Router();
 
-router.get("/", (req, res) => {
-    res.send({test : "hi server"});
+// GET / 라우터
+router.get('/', (req, res) => {
+  res.send('main');
 });
 
 module.exports = router;

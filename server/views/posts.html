@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>게시글 목록</title>
+    <style>
+        .post { border-bottom: 1px solid #ddd; padding: 10px; }
+        .post a { text-decoration: none; color: black; }
+        .post a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <h1>게시글 목록</h1>
+    <button class="btn" onclick="location.href='/posts/new'">작성하기</button>
+    <div>
+        {% for post in posts %}
+            <div class="post">
+                <h3>
+                    <a href="/posts/{{ post.id }}">책 제목: {{ post.bookTitle }}</a>
+                </h3>
+                <h4>
+                    <a href="/posts/{{ post.id }}">감상평: {{ post.reviewTitle }}</a>
+                </h4>
+                <p class="star">
+                    {% for _ in range(post.rating) %}⭐{% endfor %}
+                </p>
+                
+                <p>작성자: {{ post.user.nick }}</p>
+            </div>
+        {% endfor %}
+    </div>
+</body>
+</html>
