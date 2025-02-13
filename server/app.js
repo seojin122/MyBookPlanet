@@ -86,17 +86,17 @@ app.get('/:page', (req, res) => {
 //   res.render('views/join', { error });
 // });
 
-// 로그인 처리(POST 요청)
+// 회원가입 처리(POST 요청)
 app.post('/join', (req, res) => {
   const { username, password } = req.body;
   
-  // 로그인 로직 예시
+  // 회원가입 로직 예시
   if (username !== 'user' || password !== 'password') {
     return res.redirect('/join?error=true');  // 실패 시, error=true 쿼리 파라미터와 함께 리다이렉트
   }
 
-  // 로그인 성공 시
-  res.redirect('/');
+  // 회원가입 성공 시
+  res.redirect('/auth/login');
 });
 
 // 회원 목록 조회
@@ -143,8 +143,8 @@ app.get('/users', (req, res) => {
 
 app.post('/follow', async (req, res) => {
   try {
-    console.log('req.user:', req.user); // ✅ 로그 추가
-    console.log('req.body:', req.body); // ✅ 로그 추가
+    console.log('req.user:', req.user); 
+    console.log('req.body:', req.body);
 
     if (!req.user || !req.user.id) {
       return res.status(401).json({ error: '로그인이 필요합니다.' });
@@ -167,6 +167,10 @@ app.post('/follow', async (req, res) => {
 });
 
 
+// / 경로로 접속하면 /index로 리다이렉트
+app.get('/', (req, res) => {
+  res.redirect('/index');
+});
 
 // 로그인한 사용자만 한줄소개 폼 볼수있게 하기위함
 app.get('/', (req, res) => {

@@ -9,15 +9,28 @@ const User = require('../models/user'); // 모델 경로에 맞게 수정
 const router = express.Router();
 
 // POST /auth/join - 회원가입 처리
+// router.post('/join', isNotLoggedIn, join);
+router.get('/join', isNotLoggedIn, (req, res) => {
+  res.render('join');  // 회원가입 페이지 렌더링
+});
+
+// POST /auth/join - 회원가입 처리
 router.post('/join', isNotLoggedIn, join);
 
+
 // POST /auth/login - 로그인 처리
+
+router.get('/login', isNotLoggedIn, (req, res) => {
+  res.render('login');  // 회원가입 페이지 렌더링
+});
+
+
 router.post('/login', isNotLoggedIn, passport.authenticate('local', {
   failureRedirect: '/auth/login',  // 로그인 실패 시 다시 로그인 페이지로 리다이렉트
   failureFlash: true,
 }), (req, res) => {
   // 로그인 성공 시 / 페이지로 리다이렉트
-  res.redirect('/');
+  res.redirect('/layout');
 });
 
 // GET /auth/logout - 로그아웃 처리
@@ -25,6 +38,25 @@ router.get('/logout', isLoggedIn, logout);
 
 
 // 회원 탈퇴
+
+// router.post("/delete", isLoggedIn, async (req, res, next) => {
+//   try {
+//     await User.destroy({
+//       where: { id: req.user.id }
+//     });
+
+//     req.logout((err) => {
+//       if (err) return next(err);
+//       req.session.destroy(() => {
+//         res.json({ message: "회원 탈퇴가 완료되었습니다." });
+//         res.redirect('/');
+//       });
+//     });
+//   } catch (error) {
+//     console.error(error);
+//     next(error);
+//   }
+// });
 
 router.post("/delete", isLoggedIn, async (req, res, next) => {
   try {
@@ -35,7 +67,7 @@ router.post("/delete", isLoggedIn, async (req, res, next) => {
     req.logout((err) => {
       if (err) return next(err);
       req.session.destroy(() => {
-        res.json({ message: "회원 탈퇴가 완료되었습니다." });
+        res.redirect('/');  // 회원 탈퇴 후 홈으로 리다이렉트
       });
     });
   } catch (error) {
@@ -43,6 +75,7 @@ router.post("/delete", isLoggedIn, async (req, res, next) => {
     next(error);
   }
 });
+
 
 
 module.exports = router;

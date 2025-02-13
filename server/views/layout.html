@@ -1,3 +1,5 @@
+<!-- layout.html -->
+
 <!DOCTYPE html>
 <html>
   <head>
@@ -12,17 +14,23 @@
       <div class="profile-wrap">
         <div class="profile">
           {% if user and user.id %}
-          <div class="user-name">
-            <span id="nickname-text">{{ user.nick }}님, 반가워요!</span>
-            <input id="nickname-input" type="text" value="{{ user.nick }}" style="display: none;">
-          </div>
+            <div class="user-name">
+              <span id="nickname-text">{{ user.nick }}님, 반가워요!</span>
+              <input id="nickname-input" type="text" value="{{ user.nick }}" style="display: none;">
+            </div>
 
-            <!-- 닉네임 변경 버튼 -->
-<button id="edit-nickname-btn" class="btn">닉네임 변경</button>
-<button id="save-nickname-btn" class="btn" style="display: none;">저장</button>
-<button id="cancel-nickname-btn" class="btn" style="display: none;">취소</button>
+            <!-- 짧은 글 작성 폼 추가 -->
+            <input type="text" id="introContentInput" placeholder="한줄소개를 작성하세요" />
+            <button id="saveIntroButton">저장</button>
 
+            <div id="introListContainer">
+              <!-- 저장된 글들이 이곳에 표시됩니다 -->
+            </div>
 
+            <button id="edit-nickname-btn" class="btn">닉네임 변경</button>
+            <button id="save-nickname-btn" class="btn" style="display: none;">저장</button>
+            <button id="cancel-nickname-btn" class="btn" style="display: none;">취소</button>
+            
             <div class="half">
               <div>팔로잉</div>
               <div class="count following-count">{{followingCount}}</div>
@@ -31,135 +39,75 @@
               <div>팔로워</div>
               <div class="count follower-count">{{followerCount}}</div>
             </div>
-          <input id="my-id" type="hidden" value="{{user.id}}">
-          <a id="my-profile" href="/profile" class="btn">내 프로필</a>
-          <a id="logout" href="/auth/logout" class="btn">로그아웃</a>
-          <a id="delete-account" href="#" class="btn">회원 탈퇴</a>
+            <input id="my-id" type="hidden" value="{{user.id}}">
+            <a id="my-profile" href="/profile" class="btn">내 프로필</a>
+            <a id="logout" href="/auth/logout" class="btn">로그아웃</a>
+            <a id="delete-account" href="#" class="btn">회원 탈퇴</a>
 
-        {% else %}
-          <form id="login-form" action="/auth/login" method="post">
-            <div class="input-group">
-              <label for="email">이메일</label>
-              <input id="email" type="email" name="email" required autofocus>
-            </div>
-            <div class="input-group">
-              <label for="password">비밀번호</label>
-              <input id="password" type="password" name="password" required>
-            </div>
-            <a id="join" href="/join" class="btn">회원가입</a>
-            <button id="login" type="submit" class="btn">로그인</button>
-          </form>
-        {% endif %}
+          {% else %}
+            <form id="login-form" action="/auth/login" method="post">
+              <div class="input-group">
+                <label for="email">이메일</label>
+                <input id="email" type="email" name="email" required autofocus>
+              </div>
+              <div class="input-group">
+                <label for="password">비밀번호</label>
+                <input id="password" type="password" name="password" required>
+              </div>
+              <a id="join" href="/auth/join" class="btn">회원가입</a>
+              <button id="login" type="submit" class="btn">로그인</button>
+            </form>
+          {% endif %}
         </div>
       </div>
       {% block content %}
       {% endblock %}
-
-      
     </div>
-    <div class="member">
-        <h1>회원 목록</h1>
-        <ul>
-            {% for user in users %}
-                <li>
-                    {{ user.nick }}
-                    {% if user.id != myId %} <!-- 본인을 제외하고 팔로우 버튼을 표시 -->
-                        <button class="follow-btn" data-user-id="{{ user.id }}">팔로우</button>
-                    {% endif %}
-                </li>
-            {% endfor %}
-        </ul>
-    </div>
-    
-
+  
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script>
-      window.onload = () => {
-        if (new URL(location.href).searchParams.get('error')) {
-          alert(new URL(location.href).searchParams.get('error'));
+      // 한줄소개 저장 기능
+      const saveIntroButton = document.getElementById('saveIntroButton');
+      const introContentInput = document.getElementById('introContentInput');
+      const introListContainer = document.getElementById('introListContainer');
+
+      saveIntroButton.addEventListener('click', async () => {
+        const content = introContentInput.value;
+
+        if (!content) {
+          alert('내용을 입력해주세요.');
+          return;
         }
-      };
 
+        try {
+          const response = await fetch('/save-intro', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ content }),
+          });
 
-      // 팔로우 처리
+          if (!response.ok) {
+            throw new Error('서버 오류');
+          }
 
-  document.querySelectorAll('.follow-btn').forEach(button => {
-  button.addEventListener('click', async (event) => {
-    const myId = document.getElementById('my-id').value; // 로그인한 내 ID
-    const userId = event.target.getAttribute('data-user-id');
+          const intros = await response.json();
 
-    if (myId === userId) {
-      alert("자기 자신을 팔로우할 수 없습니다.");
-      return;
-    }
+          // 새 글만 화면에 표시 (기존 목록 삭제 후 추가)
+          introListContainer.innerHTML = ''; // 기존 목록 초기화
+          intros.forEach(intro => {
+            const introElement = document.createElement('div');
+            introElement.textContent = intro.content;
+            introListContainer.appendChild(introElement);
+          });
 
-    try {
-      const response = await axios.post(`/user/${userId}/follow`);
-      alert(response.data.message || "팔로우 성공!");
-      location.reload();  // 새로고침하여 UI 업데이트
-    } catch (error) {
-      console.error(error);
-      alert(error.response?.data?.message || "팔로우 처리에 실패했습니다.");
-    }
-  });
-});
-
-
-  
-  // 회원 탈퇴 버튼 이벤트 추가
-  document.getElementById('delete-account').addEventListener('click', (event) => {
-        event.preventDefault();
-        if (confirm("정말로 회원 탈퇴하시겠습니까? 이 작업은 되돌릴 수 없습니다.")) {
-          axios.post('/auth/delete')
-            .then(response => {
-              alert(response.data.message);
-              window.location.href = "/"; // 탈퇴 후 메인 페이지로 이동
-            })
-            .catch(error => {
-              console.error('탈퇴 처리 중 오류 발생:', error);
-              alert('회원 탈퇴에 실패했습니다.');
-            });
+          // 입력 필드 비우기
+          introContentInput.value = '';
+        } catch (error) {
+          console.error('Error saving intro:', error);
         }
       });
-
-//닉네임 변경
-
-      document.getElementById('edit-nickname-btn').addEventListener('click', () => {
-  document.getElementById('nickname-text').style.display = 'none';
-  document.getElementById('nickname-input').style.display = 'inline-block';
-  document.getElementById('nickname-input').focus();
-  document.getElementById('save-nickname-btn').style.display = 'inline-block';
-  document.getElementById('cancel-nickname-btn').style.display = 'inline-block';
-  document.getElementById('edit-nickname-btn').style.display = 'none';
-});
-
-document.getElementById('cancel-nickname-btn').addEventListener('click', () => {
-  document.getElementById('nickname-text').style.display = 'inline-block';
-  document.getElementById('nickname-input').style.display = 'none';
-  document.getElementById('save-nickname-btn').style.display = 'none';
-  document.getElementById('cancel-nickname-btn').style.display = 'none';
-  document.getElementById('edit-nickname-btn').style.display = 'inline-block';
-});
-
-document.getElementById('save-nickname-btn').addEventListener('click', () => {
-  const newNick = document.getElementById('nickname-input').value.trim();
-
-  if (!newNick) {
-    alert('새 닉네임을 입력하세요.');
-    return;
-  }
-
-  axios.post('/user/nickname', { newNick })
-    .then(response => {
-      alert(response.data.message);
-      location.reload(); // 변경 후 새로고침
-    })
-    .catch(error => {
-      console.error(error);
-      alert(error.response.data.message || '닉네임 변경에 실패했습니다.');
-    });
-});
-
     </script>
     {% block script %}
     {% endblock %}
