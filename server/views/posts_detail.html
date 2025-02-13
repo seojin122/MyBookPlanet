@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>게시글 상세</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        .container { max-width: 600px; margin: auto; text-align: left; }
+        .star { font-size: 20px; color: gold; }
+        .back { display: inline-block; margin-top: 20px; text-decoration: none; color: blue; }
+        .btn-container { margin-top: 20px; }
+        .btn { padding: 10px 15px; margin-right: 10px; cursor: pointer; border: none; }
+        .edit-btn { background-color: #4CAF50; color: white; } /* 수정 버튼 */
+        .delete-btn { background-color: #f44336; color: white; } /* 삭제 버튼 */
+        .like-btn { background-color: #ffcc00; color: black; } /* 좋아요 버튼 */
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>{{ post.bookTitle }}</h1>
+        <h3>감상평: {{ post.reviewTitle }}</h3>
+        <p class="star">⭐ {{ "⭐" * post.rating }}</p>
+        <p><strong>작성자:</strong> {{ post.user.nick }}</p>
+        <hr>
+        <p>{{ post.content }}</p> <!-- ✅ 게시글 내용 추가 -->
+
+        <!-- ✅ 좋아요 버튼 -->
+        {% if user %}
+        <div class="btn-container">
+            <button id="like-btn" class="btn like-btn" onclick="toggleLike()">
+                {% if userLiked %}
+                    💔 좋아요 취소
+                {% else %}
+                    ❤️ 좋아요
+                {% endif %}
+            </button>
+            <span id="like-count">{{ likeCount }}</span>명이 좋아합니다.
+        </div>
+        {% endif %}
+
+        <!-- ✅ 작성자만 수정 & 삭제 가능 -->
+        {% if user and user.id == post.user.id %}
+        <div class="btn-container">
+            <a href="/posts/{{ post.id }}/edit"><button class="btn edit-btn">수정</button></a>
+            <form action="/posts/{{ post.id }}/delete" method="POST" style="display:inline;">
+                <button type="submit" class="btn delete-btn">삭제</button>
+            </form>
+        </div>
+        {% endif %}
+
+        <a href="/posts" class="back">← 게시글 목록으로</a>
+    </div>
+
+    <script>
+        async function toggleLike() {
+            const response = await fetch("/posts/{{ post.id }}/like", { method: "POST" });
+            const data = await response.json();
+            if (data.liked) {
+                document.getElementById("like-btn").innerHTML = "💔 좋아요 취소";
+            } else {
+                document.getElementById("like-btn").innerHTML = "❤️ 좋아요";
+            }
+            document.getElementById("like-count").textContent = parseInt(document.getElementById("like-count").textContent) + (data.liked ? 1 : -1);
+        }
+    </script>
+</body>
+</html>

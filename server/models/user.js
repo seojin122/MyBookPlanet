@@ -49,6 +49,8 @@ class User extends Model {
       as: 'Followings',
       through: 'Follow',
     });
+    db.User.hasMany(db.Like, { foreignKey: "userId", as: "likes" });
+
   }
 }
 
