@@ -13,6 +13,8 @@ const { sequelize } = require('./models');
 const authRouter = require('./routes/auth');
 const passportConfig = require('./passport');
 const userRouter = require('./routes/user');
+const imageRouter = require('./routes/image');  // image 라우터 추가
+
 
 const { User } = require('./models'); // User 모델을 임포트
 const { Follow } = require('./models');  // Follow 모델 임포트
@@ -61,6 +63,9 @@ app.use(passport.session());
 app.use('/', pageRouter);
 app.use('/auth', authRouter);
 app.use('/user', userRouter);
+app.use('/image', imageRouter);  // /image 경로에서 이미지 업로드 라우터 처리
+
+
 
 // 동적 렌더링
 const fs = require('fs');
@@ -164,9 +169,6 @@ app.post('/save-intro', async (req, res) => {
     res.status(500).send('서버 오류');
   }
 });
-
-
-
 
 app.use((req, res, next) => {
   res.status(404).send('Not Found');

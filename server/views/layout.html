@@ -93,9 +93,19 @@
           {% endfor %}
         </ul>
         
-
-        
       </div>
+
+
+
+<!-- 파일 업로드 폼 -->
+<form action="/image/upload" method="POST" enctype="multipart/form-data">
+  <input type="file" name="image" />
+  <button type="submit">이미지 업로드</button>
+</form>
+
+
+
+
     </div>
 
 
@@ -253,7 +263,52 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       });
     
+
+  //     const uploadButton = document.getElementById('uploadButton');
+  // const fileInput = document.getElementById('fileInput');
+  // const previewImage = document.getElementById('previewImage');
+  // const uploadForm = document.getElementById('upload-form');
+  
+  // // 업로드 버튼 클릭 시 파일 선택 창 열기
+  // uploadButton.addEventListener('click', () => {
+  //   fileInput.click();
+  // });
+
+  // // 파일 선택 시 미리보기 이미지 표시
+  // fileInput.addEventListener('change', (event) => {
+  //   const file = event.target.files[0];
+
+  //   if (file) {
+  //     const reader = new FileReader();
       
+  //     // 이미지 파일을 읽어서 미리보기 이미지로 설정
+  //     reader.onload = function(e) {
+  //       previewImage.src = e.target.result;
+  //       previewImage.classList.remove('hidden'); // 미리보기 이미지를 표시
+  //     };
+      
+  //     reader.readAsDataURL(file);
+  //   }
+  // });
+
+  // // 폼 제출 시 이미지 업로드
+  // uploadForm.addEventListener('submit', async (event) => {
+  //   event.preventDefault();  // 기본 폼 제출 동작 방지
+
+  //   const formData = new FormData(uploadForm);  // 폼 데이터 수집
+  //   try {
+  //     const response = await axios.post('/upload', formData, {
+  //       headers: {
+  //         'Content-Type': 'multipart/form-data',  // multipart/form-data로 전송
+  //       },
+  //     });
+  //     alert('파일 업로드 성공!');
+  //   } catch (error) {
+  //     alert('파일 업로드 실패');
+  //   }
+  // });
+
+
     </script>
     {% block script %}
     {% endblock %}
