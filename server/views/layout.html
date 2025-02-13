@@ -1,0 +1,115 @@
+<!-- layout.html -->
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>{{title}}</title>
+    <meta name="viewport" content="width=device-width, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="stylesheet" href="/main.css">
+  </head>
+  <body>
+    <div class="container">
+      <div class="profile-wrap">
+        <div class="profile">
+          {% if user and user.id %}
+            <div class="user-name">
+              <span id="nickname-text">{{ user.nick }}님, 반가워요!</span>
+              <input id="nickname-input" type="text" value="{{ user.nick }}" style="display: none;">
+            </div>
+
+            <!-- 짧은 글 작성 폼 추가 -->
+            <input type="text" id="introContentInput" placeholder="한줄소개를 작성하세요" />
+            <button id="saveIntroButton">저장</button>
+
+            <div id="introListContainer">
+              <!-- 저장된 글들이 이곳에 표시됩니다 -->
+            </div>
+
+            <button id="edit-nickname-btn" class="btn">닉네임 변경</button>
+            <button id="save-nickname-btn" class="btn" style="display: none;">저장</button>
+            <button id="cancel-nickname-btn" class="btn" style="display: none;">취소</button>
+            
+            <div class="half">
+              <div>팔로잉</div>
+              <div class="count following-count">{{followingCount}}</div>
+            </div>
+            <div class="half">
+              <div>팔로워</div>
+              <div class="count follower-count">{{followerCount}}</div>
+            </div>
+            <input id="my-id" type="hidden" value="{{user.id}}">
+            <a id="my-profile" href="/profile" class="btn">내 프로필</a>
+            <a id="logout" href="/auth/logout" class="btn">로그아웃</a>
+            <a id="delete-account" href="#" class="btn">회원 탈퇴</a>
+
+          {% else %}
+            <form id="login-form" action="/auth/login" method="post">
+              <div class="input-group">
+                <label for="email">이메일</label>
+                <input id="email" type="email" name="email" required autofocus>
+              </div>
+              <div class="input-group">
+                <label for="password">비밀번호</label>
+                <input id="password" type="password" name="password" required>
+              </div>
+              <a id="join" href="/auth/join" class="btn">회원가입</a>
+              <button id="login" type="submit" class="btn">로그인</button>
+            </form>
+          {% endif %}
+        </div>
+      </div>
+      {% block content %}
+      {% endblock %}
+    </div>
+  
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+      // 한줄소개 저장 기능
+      const saveIntroButton = document.getElementById('saveIntroButton');
+      const introContentInput = document.getElementById('introContentInput');
+      const introListContainer = document.getElementById('introListContainer');
+
+      saveIntroButton.addEventListener('click', async () => {
+        const content = introContentInput.value;
+
+        if (!content) {
+          alert('내용을 입력해주세요.');
+          return;
+        }
+
+        try {
+          const response = await fetch('/save-intro', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ content }),
+          });
+
+          if (!response.ok) {
+            throw new Error('서버 오류');
+          }
+
+          const intros = await response.json();
+
+          // 새 글만 화면에 표시 (기존 목록 삭제 후 추가)
+          introListContainer.innerHTML = ''; // 기존 목록 초기화
+          intros.forEach(intro => {
+            const introElement = document.createElement('div');
+            introElement.textContent = intro.content;
+            introListContainer.appendChild(introElement);
+          });
+
+          // 입력 필드 비우기
+          introContentInput.value = '';
+        } catch (error) {
+          console.error('Error saving intro:', error);
+        }
+      });
+    </script>
+    {% block script %}
+    {% endblock %}
+  </body>
+</html>

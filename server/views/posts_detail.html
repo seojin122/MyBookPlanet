@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>게시글 상세</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        .container { max-width: 600px; margin: auto; text-align: left; }
+        .star { font-size: 20px; color: gold; }
+        .back { display: inline-block; margin-top: 20px; text-decoration: none; color: blue; }
+        .btn-container { margin-top: 20px; }
+        .btn { padding: 10px 15px; margin-right: 10px; cursor: pointer; border: none; }
+        .edit-btn { color: black; } /* 수정 버튼 */
+        .delete-btn {  color: black; } /* 삭제 버튼 */
+        .like-btn {color: black; } /* 좋아요 버튼 */
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>{{ post.bookTitle }}</h1>
+        <h3>감상평: {{ post.reviewTitle }}</h3>
+        <p class="star">
+            {% for _ in range(post.rating) %}⭐{% endfor %}
+        </p>
+        <p><strong>작성자:</strong> {{ post.user.nick }}</p>
+        <hr>
+        <p>{{ post.content }}</p>
+
+        <!-- ✅ 좋아요 버튼 -->
+        {% if user %}
+        <div class="btn-container">
+            <button id="like-btn" class="btn like-btn" onclick="toggleLike()">
+                {% if userLiked %}
+                    💔 좋아요 취소
+                {% else %}
+                    ❤️ 좋아요
+                {% endif %}
+            </button>
+            <span id="like-count">{{ likeCount }}</span>명이 좋아합니다.
+        </div>
+        {% endif %}
+
+        <!-- ✅ 작성자만 수정 & 삭제 가능 -->
+        {% if user and user.id == post.user.id %}
+        <div class="btn-container">
+            <a href="/posts/{{ post.id }}/edit"><button class="btn edit-btn">수정</button></a>
+            <form action="/posts/{{ post.id }}/delete" method="POST" style="display:inline;">
+                <button type="submit" class="btn delete-btn">삭제</button>
+            </form>
+        </div>
+        {% endif %}
+
+        <a href="/posts" class="back">← 게시글 목록으로</a>
+    </div>
+
+    <!-- 댓글 영역 -->
+    <h2>댓글</h2>
+    <div id="comments-container"></div>
+
+    {% if user %}
+        <textarea id="comment-content" placeholder="댓글을 입력하세요"></textarea>
+        <button onclick="addComment()">댓글 작성</button>
+    {% endif %}
+
+    <script>
+        async function loadComments() {
+        try {
+            const response = await fetch("/comments/{{ post.id }}");
+            if (!response.ok) throw new Error("댓글 데이터를 불러올 수 없습니다.");
+
+            const comments = await response.json();
+            let commentsHTML = "";
+
+            comments.forEach(comment => {
+                commentsHTML += `
+                    <div>
+                        <strong>작성자: ${comment.user.nick}</strong>
+                        <p id="comment-content-${comment.id}">${comment.content}</p>
+                        
+                        <!-- 게시글 작성자만 댓글 수정/삭제 가능 -->
+                        {% if user and user.id == post.user.id %}
+                            <button onclick="editComment(${comment.id})">수정</button>
+                            <button onclick="deleteComment(${comment.id})">삭제</button>
+                        {% endif %}
+
+                        <button onclick="showReplyForm(${comment.id})">답글</button>
+
+                        <div id="reply-form-${comment.id}" style="display:none;">
+                            <textarea id="reply-content-${comment.id}" placeholder="답글을 입력하세요"></textarea>
+                            <button onclick="addReply(${comment.id})">답글 작성</button>
+                        </div>
+
+                        <div id="replies-${comment.id}">
+                            ${comment.replies.map(reply => `
+                                <div style="margin-left: 20px;">
+                                    <strong>작성자: ${reply.user.nick}</strong>
+                                    <p id="reply-content-${reply.id}">${reply.content}</p>
+                                    
+                                    <!-- 게시글 작성자만 대댓글 수정/삭제 가능 -->
+                                    {% if user and user.id == post.user.id %}
+                                        <button onclick="editComment(${reply.id})">수정</button>
+                                        <button onclick="deleteComment(${reply.id})">삭제</button>
+                                    {% endif %}
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            });
+
+            document.getElementById("comments-container").innerHTML = commentsHTML;
+        } catch (error) {
+            console.error("댓글 로딩 오류:", error);
+        }
+    }
+
+    async function editComment(commentId) {
+        const commentElement = document.getElementById(`comment-content-${commentId}`);
+        const newContent = prompt("댓글을 수정하세요:", commentElement.textContent);
+
+        if (newContent === null || newContent.trim() === "") {
+            alert("댓글 내용을 입력하세요.");
+            return;
+        }
+
+        try {
+            const response = await fetch(`/comments/${commentId}/edit`, {  // ✅ URL 수정
+                method: "POST",  // ✅ POST 요청으로 변경
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ content: newContent })
+            });
+
+            if (!response.ok) throw new Error("댓글 수정 실패");
+
+            commentElement.textContent = newContent; // UI 업데이트
+        } catch (error) {
+            console.error("댓글 수정 오류:", error);
+        }
+    }
+
+    async function deleteComment(commentId) {
+        try {
+            const response = await fetch(`/comments/${commentId}/delete`, { method: "POST" });
+            if (!response.ok) throw new Error("댓글 삭제 실패");
+
+            loadComments();
+        } catch (error) {
+            console.error("댓글 삭제 오류:", error);
+        }
+    }
+
+    function showReplyForm(commentId) {
+        const replyForm = document.getElementById(`reply-form-${commentId}`);
+        replyForm.style.display = replyForm.style.display === "none" ? "block" : "none";
+    }
+
+    loadComments();
+
+        async function addComment() {
+            const content = document.getElementById("comment-content").value;
+            if (!content.trim()) {
+                alert("댓글 내용을 입력하세요.");
+                return;
+            }
+
+            try {
+                const response = await fetch("/comments", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ postId: {{ post.id }}, content })
+                });
+
+                if (!response.ok) throw new Error("댓글 작성에 실패했습니다.");
+
+                document.getElementById("comment-content").value = "";
+                loadComments();
+            } catch (error) {
+                console.error("댓글 작성 오류:", error);
+            }
+        }
+
+        async function addReply(commentId) {
+            const content = document.getElementById(`reply-content-${commentId}`).value;
+            if (!content.trim()) {
+                alert("답글 내용을 입력하세요.");
+                return;
+            }
+
+            try {
+                const response = await fetch("/comments", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ postId: {{ post.id }}, content, parentId: commentId })
+                });
+
+                if (!response.ok) throw new Error("답글 작성에 실패했습니다.");
+
+                document.getElementById(`reply-content-${commentId}`).value = "";
+                loadComments();
+            } catch (error) {
+                console.error("답글 작성 오류:", error);
+            }
+        }
+
+        async function deleteComment(commentId) {
+            try {
+                const response = await fetch(`/comments/${commentId}/delete`, { method: "POST" });
+                if (!response.ok) throw new Error("댓글 삭제 실패");
+
+                loadComments();
+            } catch (error) {
+                console.error("댓글 삭제 오류:", error);
+            }
+        }
+
+        function showReplyForm(commentId) {
+            const replyForm = document.getElementById(`reply-form-${commentId}`);
+            replyForm.style.display = replyForm.style.display === "none" ? "block" : "none";
+        }
+
+        async function toggleLike() {
+            const response = await fetch("/posts/{{ post.id }}/like", { method: "POST" });
+            const data = await response.json();
+            document.getElementById("like-btn").innerHTML = data.liked ? "💔 좋아요 취소" : "❤️ 좋아요";
+            document.getElementById("like-count").textContent = parseInt(document.getElementById("like-count").textContent) + (data.liked ? 1 : -1);
+        }
+
+        loadComments();
+    </script>
+</body>
+</html>
