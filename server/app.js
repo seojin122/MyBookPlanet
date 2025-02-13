@@ -16,6 +16,7 @@ const passportConfig = require('./passport');
 const userRouter = require('./routes/user');
 const bookRouter = require("./routes/book");
 const postsRouter = require("./routes/posts");
+const commentsRouter = require("./routes/comments");
 // 설문 라우터 추가 
 const booklumiRouter = require('./routes/booklumi');
 // 책 추천 라우터 추가  
@@ -71,6 +72,7 @@ app.use('/auth', authRouter);
 app.use('/user', userRouter);
 app.use("/book", bookRouter);
 app.use("/posts", postsRouter);
+app.use("/comments", commentsRouter);
 // booklumi 라우터 등록 
 app.use('/api/booklumi', booklumiRouter); 
 // 책 추천 라우터 등록 
