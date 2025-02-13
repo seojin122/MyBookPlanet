@@ -38,6 +38,7 @@
             <div class="half">
               <div>팔로워</div>
               <div class="count follower-count">{{followerCount}}</div>
+
             </div>
             <input id="my-id" type="hidden" value="{{user.id}}">
             <a id="my-profile" href="/profile" class="btn">내 프로필</a>
@@ -61,23 +62,11 @@
         </div>
       </div>
       {% block content %}
-      {% endblock %}
-
-
-      <!-- <div id="user-list">
-        <h2>회원 목록</h2>
-        <ul>
-          {% for user in users %}
-            <li>{{ user.nick }}</li>
-          {% endfor %}
-        </ul>
-      </div> -->
-
-      
+      {% endblock %}      
 
       <div class="member">
         <h1>회원 목록</h1>
-        <ul>
+        <!-- <ul>
           {% for member in users %}
             <li>
               {{ member.nick }}
@@ -86,7 +75,26 @@
               {% endif %}
             </li>
           {% endfor %}
+        </ul> -->
+
+
+        <ul>
+          {% for member in users %}
+            <li>
+              {{ member.nick }}
+              {% if user and user.id != member.id %}
+                {% if member.id in followingIdList %}
+                  <button class="follow-btn" data-user-id="{{ member.id }}">팔로우 취소</button>
+                {% else %}
+                  <button class="follow-btn" data-user-id="{{ member.id }}">팔로우</button>
+                {% endif %}
+              {% endif %}
+            </li>
+          {% endfor %}
         </ul>
+        
+
+        
       </div>
     </div>
 
@@ -209,23 +217,6 @@ saveNicknameBtn.addEventListener('click', async () => {
 
         // 팔로우
 
-// document.querySelectorAll('.follow-btn').forEach(button => {
-//         button.addEventListener('click', async (event) => {
-//           const userId = event.target.getAttribute('data-user-id');
-
-//           try {
-//             const response = await axios.post(`/user/${userId}/follow`);
-//             alert(response.data.message || "팔로우 성공!");
-//             location.reload();  // 새로고침하여 UI 업데이트
-//           } catch (error) {
-//             console.error(error);
-//             alert(error.response?.data?.message || "팔로우 처리에 실패했습니다.");
-//           }
-//         });
-        
-//       });
-        
-
 
 document.addEventListener('DOMContentLoaded', () => {
     // 팔로우 버튼 클릭 이벤트 추가
@@ -245,25 +236,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-
-// document.addEventListener('DOMContentLoaded', () => {
-//   document.querySelectorAll('.follow-btn').forEach(button => {
-//     button.addEventListener('click', async (event) => {
-//       const userId = event.target.getAttribute('data-user-id');
-//       const buttonText = event.target.textContent; // 버튼의 현재 텍스트 (팔로우 또는 언팔로우)
-
-//       try {
-//         const response = await axios.post(`/user/${userId}/follow`);
-        
-//         if (response.data.message === '팔로우 성공!') {
-//           event.target.textContent = buttonText === '팔로우' ? '언팔로우' : '팔로우';
-//         }
-//       } catch (error) {
-//         alert(error.response?.data?.message || '팔로우 처리에 실패했습니다.');
-//       }
-//     });
-//   });
-// });
 
   // 회원 탈퇴 버튼 이벤트 추가
   document.getElementById('delete-account').addEventListener('click', (event) => {
@@ -287,3 +259,4 @@ document.addEventListener('DOMContentLoaded', () => {
     {% endblock %}
   </body>
 </html>
+
