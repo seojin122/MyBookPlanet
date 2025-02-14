@@ -1,0 +1,316 @@
+<!-- layout.html -->
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>{{title}}</title>
+    <meta name="viewport" content="width=device-width, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="stylesheet" href="/main.css">
+  </head>
+  <body>
+    <div class="container">
+      <div class="profile-wrap">
+        <div class="profile">
+          {% if user and user.id %}
+            <div class="user-name">
+              <span id="nickname-text">{{ user.nick }}님, 반가워요!</span>
+              <input id="nickname-input" type="text" value="{{ user.nick }}" style="display: none;">
+            </div>
+
+            <!-- 짧은 글 작성 폼 추가 -->
+            <input type="text" id="introContentInput" placeholder="한줄소개를 작성하세요" />
+            <button id="saveIntroButton">저장</button>
+
+            <div id="introListContainer">
+              <!-- 저장된 글들이 이곳에 표시됩니다 -->
+            </div>
+
+            <button id="edit-nickname-btn" class="btn">닉네임 변경</button>
+            <button id="save-nickname-btn" class="btn" style="display: none;">저장</button>
+            <button id="cancel-nickname-btn" class="btn" style="display: none;">취소</button>
+            
+            <div class="half">
+              <div>팔로잉</div>
+              <div class="count following-count">{{followingCount}}</div>
+            </div>
+            <div class="half">
+              <div>팔로워</div>
+              <div class="count follower-count">{{followerCount}}</div>
+
+            </div>
+            <input id="my-id" type="hidden" value="{{user.id}}">
+            <a id="my-profile" href="/profile" class="btn">내 프로필</a>
+            <a id="logout" href="/auth/logout" class="btn">로그아웃</a>
+            <a id="delete-account" href="#" class="btn">회원 탈퇴</a>
+
+          {% else %}
+            <form id="login-form" action="/auth/login" method="post">
+              <div class="input-group">
+                <label for="email">이메일</label>
+                <input id="email" type="email" name="email" required autofocus>
+              </div>
+              <div class="input-group">
+                <label for="password">비밀번호</label>
+                <input id="password" type="password" name="password" required>
+              </div>
+              <a id="join" href="/auth/join" class="btn">회원가입</a>
+              <button id="login" type="submit" class="btn">로그인</button>
+            </form>
+          {% endif %}
+        </div>
+      </div>
+      {% block content %}
+      {% endblock %}      
+
+      <div class="member">
+        <h1>회원 목록</h1>
+        <!-- <ul>
+          {% for member in users %}
+            <li>
+              {{ member.nick }}
+              {% if user and user.id != member.id %}
+                <button class="follow-btn" data-user-id="{{ member.id }}">팔로우</button>
+              {% endif %}
+            </li>
+          {% endfor %}
+        </ul> -->
+
+
+        <ul>
+          {% for member in users %}
+            <li>
+              {{ member.nick }}
+              {% if user and user.id != member.id %}
+                {% if member.id in followingIdList %}
+                  <button class="follow-btn" data-user-id="{{ member.id }}">팔로우 취소</button>
+                {% else %}
+                  <button class="follow-btn" data-user-id="{{ member.id }}">팔로우</button>
+                {% endif %}
+              {% endif %}
+            </li>
+          {% endfor %}
+        </ul>
+        
+      </div>
+
+
+
+<!-- 파일 업로드 폼 -->
+<form action="/image/upload" method="POST" enctype="multipart/form-data">
+  <input type="file" name="image" />
+  <button type="submit">이미지 업로드</button>
+</form>
+<div id="uploadedImages"></div> <!-- 업로드된 이미지 표시 영역 -->
+
+
+
+    </div>
+
+
+    </div>
+  
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+
+// 닉네임 변경 기능
+document.addEventListener('DOMContentLoaded', () => {
+    const editNicknameBtn = document.getElementById('edit-nickname-btn');
+    const saveNicknameBtn = document.getElementById('save-nickname-btn');
+    const cancelNicknameBtn = document.getElementById('cancel-nickname-btn');
+    const nicknameText = document.getElementById('nickname-text');
+    const nicknameInput = document.getElementById('nickname-input');
+
+    // 닉네임 변경 버튼 클릭
+    editNicknameBtn.addEventListener('click', () => {
+        nicknameText.style.display = 'none'; // 기존 닉네임 숨기기
+        nicknameInput.style.display = 'inline-block'; // 입력 필드 보이기
+        nicknameInput.focus(); // 입력 필드 포커스
+        editNicknameBtn.style.display = 'none'; // 수정 버튼 숨기기
+        saveNicknameBtn.style.display = 'inline-block'; // 저장 버튼 보이기
+        cancelNicknameBtn.style.display = 'inline-block'; // 취소 버튼 보이기
+    });
+
+    // 닉네임 변경 취소 버튼 클릭
+    cancelNicknameBtn.addEventListener('click', () => {
+        nicknameText.style.display = 'inline-block'; // 기존 닉네임 보이기
+        nicknameInput.style.display = 'none'; // 입력 필드 숨기기
+        editNicknameBtn.style.display = 'inline-block'; // 수정 버튼 다시 보이기
+        saveNicknameBtn.style.display = 'none'; // 저장 버튼 숨기기
+        cancelNicknameBtn.style.display = 'none'; // 취소 버튼 숨기기
+        nicknameInput.value = nicknameText.textContent.replace('님, 반가워요!', '').trim(); // 원래 값 복원
+    });
+
+    // 닉네임 저장 버튼 클릭 (서버 요청)
+saveNicknameBtn.addEventListener('click', async () => {
+    const newNickname = nicknameInput.value.trim();
+    const userId = document.getElementById('my-id').value;  // 사용자 ID 가져오기
+
+    if (!newNickname) {
+        alert('닉네임을 입력해주세요.');
+        return;
+    }
+
+    try {
+        const response = await fetch('/user/update-nickname', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ nickname: newNickname }), // userId 제거 (서버에서 req.user.id 사용)
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            nicknameText.textContent = `${result.nickname}님, 반가워요!`;
+            nicknameInput.style.display = 'none';
+            nicknameText.style.display = 'inline-block';
+            editNicknameBtn.style.display = 'inline-block';
+            saveNicknameBtn.style.display = 'none';
+            cancelNicknameBtn.style.display = 'none';
+        } else {
+            alert(result.message);
+        }
+    } catch (error) {
+        alert('닉네임 변경 중 오류가 발생했습니다.');
+    }
+});
+
+
+});
+
+      // 한줄소개 저장 기능
+      const saveIntroButton = document.getElementById('saveIntroButton');
+      const introContentInput = document.getElementById('introContentInput');
+      const introListContainer = document.getElementById('introListContainer');
+
+      saveIntroButton.addEventListener('click', async () => {
+        const content = introContentInput.value;
+
+        if (!content) {
+          alert('내용을 입력해주세요.');
+          return;
+        }
+
+        try {
+          const response = await fetch('/save-intro', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ content }),
+          });
+
+          if (!response.ok) {
+            throw new Error('서버 오류');
+          }
+
+          const intros = await response.json();
+
+          // 새 글만 화면에 표시 (기존 목록 삭제 후 추가)
+          introListContainer.innerHTML = ''; // 기존 목록 초기화
+          intros.forEach(intro => {
+            const introElement = document.createElement('div');
+            introElement.textContent = intro.content;
+            introListContainer.appendChild(introElement);
+          });
+
+          // 입력 필드 비우기
+          introContentInput.value = '';
+        } catch (error) {
+          console.error('Error saving intro:', error);
+        }
+
+      });
+
+        // 팔로우
+
+
+document.addEventListener('DOMContentLoaded', () => {
+    // 팔로우 버튼 클릭 이벤트 추가
+    document.querySelectorAll('.follow-btn').forEach(button => {
+      button.addEventListener('click', async (event) => {
+        const userId = event.target.getAttribute('data-user-id');
+
+        try {
+          const response = await axios.post(`/user/${userId}/follow`);
+          alert(response.data.message || "팔로우 성공!");
+          location.reload();  // 새로고침하여 UI 업데이트
+        } catch (error) {
+          console.error(error);
+          alert(error.response?.data?.message || "팔로우 처리에 실패했습니다.");
+        }
+      });
+    });
+  });
+
+
+  // 회원 탈퇴 버튼 이벤트 추가
+  document.getElementById('delete-account').addEventListener('click', (event) => {
+        event.preventDefault();
+        if (confirm("정말로 회원 탈퇴하시겠습니까? 이 작업은 되돌릴 수 없습니다.")) {
+          axios.post('/auth/delete')
+            .then(response => {
+              alert(response.data.message);
+              window.location.href = "/"; // 탈퇴 후 메인 페이지로 이동
+            })
+            .catch(error => {
+              console.error('탈퇴 처리 중 오류 발생:', error);
+              alert('회원 탈퇴에 실패했습니다.');
+            });
+        }
+      });
+    
+
+  //     const uploadButton = document.getElementById('uploadButton');
+  // const fileInput = document.getElementById('fileInput');
+  // const previewImage = document.getElementById('previewImage');
+  // const uploadForm = document.getElementById('upload-form');
+  
+  // // 업로드 버튼 클릭 시 파일 선택 창 열기
+  // uploadButton.addEventListener('click', () => {
+  //   fileInput.click();
+  // });
+
+  // // 파일 선택 시 미리보기 이미지 표시
+  // fileInput.addEventListener('change', (event) => {
+  //   const file = event.target.files[0];
+
+  //   if (file) {
+  //     const reader = new FileReader();
+      
+  //     // 이미지 파일을 읽어서 미리보기 이미지로 설정
+  //     reader.onload = function(e) {
+  //       previewImage.src = e.target.result;
+  //       previewImage.classList.remove('hidden'); // 미리보기 이미지를 표시
+  //     };
+      
+  //     reader.readAsDataURL(file);
+  //   }
+  // });
+
+  // // 폼 제출 시 이미지 업로드
+  // uploadForm.addEventListener('submit', async (event) => {
+  //   event.preventDefault();  // 기본 폼 제출 동작 방지
+
+  //   const formData = new FormData(uploadForm);  // 폼 데이터 수집
+  //   try {
+  //     const response = await axios.post('/upload', formData, {
+  //       headers: {
+  //         'Content-Type': 'multipart/form-data',  // multipart/form-data로 전송
+  //       },
+  //     });
+  //     alert('파일 업로드 성공!');
+  //   } catch (error) {
+  //     alert('파일 업로드 실패');
+  //   }
+  // });
+
+    </script>
+    {% block script %}
+    {% endblock %}
+  </body>
+</html>
+
