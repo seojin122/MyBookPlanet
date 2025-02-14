@@ -8,6 +8,7 @@ import MyDrawer from "./pages/MyDrawer";
 import Test from "./pages/Test";
 import Bestseller from "./pages/Bestseller";
 import Community from "./pages/Community";
+import BookDetail from "./pages/BookDetail";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
       <Route path="/myDrawer" element={<MyDrawer />} />
       <Route path="/test" element={<Test />} />
       <Route path="/bestseller" element={<Bestseller />} />
+      <Route path="/book/:title" element={<BookDetail />} />
       <Route path="/community" element={<Community />} />
     </Routes>
     </div>
