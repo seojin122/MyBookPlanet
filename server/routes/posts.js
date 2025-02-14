@@ -1,11 +1,25 @@
 const express = require("express");
 const router = express.Router();
 const { Post, User, Like } = require("../models"); // ✅ Like 모델 추가
+const { Op } = require("sequelize");
 
-// 📌 [1] 게시글 목록 조회 (GET /posts)
+// 📌 [1] 게시글 목록 조회 + 검색 기능 (GET /posts)
 router.get("/", async (req, res) => {
     try {
+        const { search } = req.query;
+        let whereCondition = {};
+
+        if (search) {
+            whereCondition = {
+                [Op.or]: [
+                    { bookTitle: { [Op.like]: `%${search}%` } },  // 책 제목 검색
+                    { reviewTitle: { [Op.like]: `%${search}%` } } // 감상평 제목 검색
+                ]
+            };
+        }
+
         const posts = await Post.findAll({
+            where: whereCondition,
             include: [{
                 model: User,
                 as: "user",
@@ -14,12 +28,13 @@ router.get("/", async (req, res) => {
             order: [["createdAt", "DESC"]],
         });
 
-        res.render("posts", { posts });
+        res.render("posts", { posts, search });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: "서버 오류" });
     }
 });
+
 
 // 📌 [2] 게시글 작성 기능 (POST /posts)
 router.post("/", async (req, res) => {  
@@ -107,7 +122,7 @@ router.post("/:id/like", async (req, res) => {
         const existingLike = await Like.findOne({ where: { postId: post.id, userId: req.user.id } });
 
         if (existingLike) {
-            await existingLike.destroy(); // ✅ 좋아요 취소
+            await existingLike.destroy(); // 좋아요 취소
             return res.json({ message: "좋아요 취소", liked: false });
         } else {
             await Like.create({ postId: post.id, userId: req.user.id }); // ✅ 좋아요 추가
@@ -178,13 +193,16 @@ router.post("/:id/delete", async (req, res) => {
             return res.status(404).json({ message: "게시글을 찾을 수 없습니다." });
         }
 
-        // ✅ 작성자 본인만 삭제 가능
+        // 작성자 본인만 삭제 가능
         if (req.user.id !== post.userId) {
             return res.status(403).json({ message: "삭제 권한이 없습니다." });
         }
 
+        // ✅ 관련된 likes 데이터 삭제
+        await Like.destroy({ where: { postId: post.id } });
+
         // ✅ 게시글 삭제
-        await Post.destroy({ where: { id: req.params.id } });
+        await Post.destroy({ where: { id: post.id } });
 
         res.redirect("/posts"); // 🚀 삭제 후 게시글 목록으로 이동
     } catch (error) {
