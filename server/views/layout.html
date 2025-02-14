@@ -228,23 +228,58 @@ saveNicknameBtn.addEventListener('click', async () => {
         // 팔로우
 
 
-document.addEventListener('DOMContentLoaded', () => {
-    // 팔로우 버튼 클릭 이벤트 추가
-    document.querySelectorAll('.follow-btn').forEach(button => {
-      button.addEventListener('click', async (event) => {
-        const userId = event.target.getAttribute('data-user-id');
+// document.addEventListener('DOMContentLoaded', () => {
+//     // 팔로우 버튼 클릭 이벤트 추가
+//     document.querySelectorAll('.follow-btn').forEach(button => {
+//       button.addEventListener('click', async (event) => {
+//         const userId = event.target.getAttribute('data-user-id');
 
-        try {
-          const response = await axios.post(`/user/${userId}/follow`);
-          alert(response.data.message || "팔로우 성공!");
-          location.reload();  // 새로고침하여 UI 업데이트
-        } catch (error) {
-          console.error(error);
-          alert(error.response?.data?.message || "팔로우 처리에 실패했습니다.");
+//         try {
+//           const response = await axios.post(`/user/${userId}/follow`);
+//           alert(response.data.message || "팔로우 성공!");
+//           location.reload();  // 새로고침하여 UI 업데이트
+//         } catch (error) {
+//           console.error(error);
+//           alert(error.response?.data?.message || "팔로우 처리에 실패했습니다.");
+//         }
+//       });
+//     });
+//   });
+
+document.addEventListener('DOMContentLoaded', () => {
+  // 팔로우 버튼 클릭 이벤트 추가
+  document.querySelectorAll('.follow-btn').forEach(button => {
+    button.addEventListener('click', async (event) => {
+      const button = event.target;
+      const userId = button.getAttribute('data-user-id');
+      const action = button.innerText === '팔로우 취소' ? 'unfollow' : 'follow'; // 팔로우 또는 팔로우 취소 결정
+
+      try {
+        const response = await axios.post(`/user/${userId}/${action}`);  // 팔로우 또는 팔로우 취소 API 호출
+        alert(response.data.message || `${action === 'follow' ? '팔로우' : '팔로우 취소'} 성공!`);
+
+        // UI 업데이트: 팔로우 상태에 맞게 버튼 텍스트 변경
+        if (action === 'follow') {
+          button.innerText = '팔로우 취소';
+        } else {
+          button.innerText = '팔로우';
         }
-      });
+
+        location.reload();
+        
+      } catch (error) {
+        console.error(error);
+        alert(error.response?.data?.message || `${action === 'follow' ? '팔로우' : '팔로우 취소'} 처리에 실패했습니다.`);
+      }
     });
   });
+});
+
+
+
+
+
+
 
 
   // 회원 탈퇴 버튼 이벤트 추가

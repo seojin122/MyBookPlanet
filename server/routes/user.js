@@ -58,8 +58,6 @@ router.post('/:id/unfollow', isLoggedIn, async (req, res, next) => {
   }
 });
 
-
-
 // 모든 사용자 목록 조회 (로그인한 경우에만 접근 가능)
 router.get('/list', isLoggedIn, async (req, res, next) => {
   try {
@@ -129,5 +127,73 @@ router.post('/update-nickname', isLoggedIn, async (req, res) => {
       return res.status(500).json({ success: false, message: '서버 오류' });
   }
 });
+
+
+
+
+// 사용자 프로필 조회
+router.get('/user_profile/:username', async (req, res, next) => {
+  try {
+    const { username } = req.params.username;
+    // username으로 사용자 조회
+    // const user = await User.findOne({ where: { username } });
+
+    // const user = await User.findOne({ where: { username }, include: [{ model: User, as: 'Followings' }, { model: User, as: 'Followers' }] });
+
+    const user = await User.findOne({
+      where: { nick: username },
+      include: [
+        { model: User, as: 'Followings' },
+        { model: User, as: 'Followers' }
+      ]
+    });
+
+    if (!user) {
+      return res.status(404).json({ message: '해당 사용자를 찾을 수 없습니다.' });
+    }
+
+    // 사용자 프로필 렌더링
+    res.render('user_profile', { user });
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
+
+
+// app.get('/user_profile/:username', async (req, res) => {
+//   const username = req.params.username; // URL에서 username을 받아옴
+  
+//   try {
+//     // 클릭한 사용자 정보를 가져옴
+//     const userProfile = await User.findOne({
+//       where: { nick: username }, // username으로 사용자 찾기
+//       include: [{
+//         model: User,
+//         as: 'Followers' // 팔로워 정보
+//       }, {
+//         model: User,
+//         as: 'Followings' // 팔로잉 정보
+//       }]
+//     });
+
+//     // 해당 사용자가 없으면 404 처리
+//     if (!userProfile) {
+//       return res.status(404).send('User not found');
+//     }
+
+//     // 로그인된 사용자 정보를 같이 전달 (가정: req.user는 로그인된 사용자 정보)
+//     res.render('user_profile', { 
+//       user: userProfile,
+//       loggedInUser: req.user  // 로그인된 사용자 정보
+//     });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).send('Server error');
+//   }
+// });
+
+
 
 module.exports = router;

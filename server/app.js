@@ -64,6 +64,24 @@ app.use('/', pageRouter);
 app.use('/auth', authRouter);
 app.use('/user', userRouter);
 app.use('/image', imageRouter);  // /image 경로에서 이미지 업로드 라우터 처리
+app.use('/user_profile', userRouter);
+
+
+// user_profile.html을 사용자 프로필 경로에서 렌더링하도록 설정
+// app.get('/user_profile/:username', (req, res) => {
+//   res.render('/user_profile/:username');
+// });
+
+// 예시: user_profile 템플릿을 렌더링
+app.get('/user_profile/:username', (req, res) => {
+  const username = req.params.username;
+  
+  // 사용자 데이터 가져오기 (예시, 데이터베이스에서 사용자 정보를 가져오는 코드)
+  // 예를 들어, `User` 모델을 사용하여 데이터를 가져오는 과정이 필요합니다.
+  
+  res.render('user_profile', { username }); // 템플릿 파일 이름을 'user_profile'로 전달
+});
+
 
 
 
