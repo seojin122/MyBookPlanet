@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom"; 
 import "../styles/Account.css";
 import bookIcon from "../assets/bookicon.png";
 import lamp from "../assets/lamp.png";
@@ -14,6 +14,8 @@ const Account = () => {
   const [nicknameError, setNicknameError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [confirmError, setConfirmError] = useState("");
+
+  const navigate = useNavigate(); 
 
   const validateEmail = (value) => {
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -65,10 +67,37 @@ const Account = () => {
     setConfirmError(validateConfirmPassword(value));
   };
 
-  const handleSubmit = (e) => { //여기서 api 요청
+  //회원가입 API 연동
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!emailError && !nicknameError && !passwordError && !confirmError) {
-      alert("회원가입이 완료되었습니다!");
+      try {
+        // 프록시 사용 fetch 코드 수정
+        const response = await fetch("/auth/join", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            email,
+            nick: nickname,
+            password
+          }),
+          credentials: "include" // 쿠키 포함
+        });
+        
+
+        if (response.ok) {
+          alert("회원가입이 완료되었습니다!");
+          navigate("/login"); // 로그인 페이지로 이동 기능 추가가
+        } else {
+          const errorData = await response.json();
+          alert(errorData.message || "회원가입 실패");
+        }
+      } catch (error) {
+        console.error("회원가입 오류:", error);
+        alert("서버 오류가 발생했습니다.");
+      }
     }
   };
 
