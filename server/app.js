@@ -78,22 +78,44 @@ app.use("/comments", commentsRouter);
 app.use('/api/booklist', booklist);
 app.use('/api/booklumi', booklumi);  
 app.use('/image', imageRouter);  // /image 경로에서 이미지 업로드 라우터 처리
-app.use('/user_profile', userRouter);
 
 
-// user_profile.html을 사용자 프로필 경로에서 렌더링하도록 설정
-// app.get('/user_profile/:username', (req, res) => {
-//   res.render('/user_profile/:username');
-// });
-
-// 예시: user_profile 템플릿을 렌더링
-app.get('/user_profile/:username', (req, res) => {
-  const username = req.params.username;
+app.get('/user_profile/:username', async (req, res) => {
+  const username = req.params.username;  // URL에서 'username'을 받아옴
   
-  // 사용자 데이터 가져오기 (예시, 데이터베이스에서 사용자 정보를 가져오는 코드)
-  // 예를 들어, `User` 모델을 사용하여 데이터를 가져오는 과정이 필요합니다.
-  
-  res.render('user_profile', { username }); // 템플릿 파일 이름을 'user_profile'로 전달
+  // 'nick'을 기준으로 사용자 정보 조회
+  const user = await User.findOne({
+    where: { nick: username },  // 닉네임으로 사용자 조회
+    include: [
+      {
+        model: User,
+        as: 'Followers',  // 팔로워 목록을 가져옴
+        attributes: ['nick'],  // 팔로워의 닉네임만 가져옴
+      },
+      {
+        model: User,
+        as: 'Followings',  // 팔로잉 목록을 가져옴
+        attributes: ['nick'],  // 팔로잉의 닉네임만 가져옴
+      }
+    ],
+  });
+
+  if (!user) {
+    return res.status(404).send('사용자를 찾을 수 없습니다.');
+  }
+
+  // 유저의 정보를 'user_profile' 템플릿에 전달하여 렌더링
+  res.render('user_profile', {
+    user,
+    followers: user.Followers,  // 팔로워 목록
+    followings: user.Followings,  // 팔로잉 목록
+  });
+});
+
+// 서버 실행
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
 
 
