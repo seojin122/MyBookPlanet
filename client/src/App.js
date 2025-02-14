@@ -9,12 +9,16 @@ import Test from "./pages/Test";
 import Bestseller from "./pages/Bestseller";
 import Community from "./pages/Community";
 
+
+
 function App() {
-  return (<div className="App">
+  return (
+  <div className="App">
     <Routes>
       <Route path="/" element={<Main />} />
       <Route path="/login" element={<Login />} />
       <Route path="/account" element={<Account />} />
+      <Route path="/" element={<h1>홈 페이지</h1>} />
       <Route path="/myDrawer" element={<MyDrawer />} />
       <Route path="/test" element={<Test />} />
       <Route path="/bestseller" element={<Bestseller />} />
