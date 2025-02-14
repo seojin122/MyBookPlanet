@@ -5,15 +5,11 @@ import bookIcon from "../assets/bookicon.png";
 import lamp from "../assets/lamp.png";
 import logo from "../assets/logo.png";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
-
 
 const Bestseller = () => {
-  const [books, setBooks] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [allBooks, setAllBooks] = useState([]);
-
-  const navigate = useNavigate();
+  const [books, setBooks] = useState([]); // 화면에 보여줄 책 목록
+  const [searchTerm, setSearchTerm] = useState(""); // 검색어 입력값
+  const [allBooks, setAllBooks] = useState([]); // 전체 책 데이터 저장용
 
   // 📌 API 호출하여 베스트셀러 목록 가져오기
   const fetchBestseller = async () => {
@@ -138,12 +134,8 @@ const Bestseller = () => {
             books.map((book, index) => (
               <div key={index} className="book-item">
                 <span className="rank">{index + 1}</span>
-                <img src={book.cover} alt={book.title} className="book-cover" 
-                  onClick={() => navigate(`/book/${encodeURIComponent(book.title)}`)}
-                  style={{ cursor: "pointer" }}/>
-                <p className="book-title"
-              onClick={() => navigate(`/book/${encodeURIComponent(book.title)}`)}
-              style={{ cursor: "pointer" }}>{book.title}</p>
+                <img src={book.cover} alt={book.title} className="book-cover" />
+                <p className="book-title">{book.title}</p>
                 <p className="book-author">{book.author}</p>
                 <a href={book.link} target="_blank" rel="noopener noreferrer">
                   자세히 보기
@@ -161,3 +153,20 @@ const Bestseller = () => {
 
 export default Bestseller;
 
+/*BookView
+endpoint : /book/bestseller
+service : get_bestseller()
+
+응답 예시 (JSON) : [
+    {
+    "title": "황현필의 진보를 위한 역사",
+    "author": "황현필",
+    "publisher": "역바연",
+    "pubDate": "2025-02-07",
+    "cover": "https://image.aladin.co.kr/product/35711/76/cover200/k612036127_1.jpg",
+    "link": "http://www.aladin.co.kr/shop/wproduct.aspx?ItemId=357117660",
+    "price": 19800,
+    "category": "국내도서>역사>한국사 일반"
+    }
+    ]
+ */

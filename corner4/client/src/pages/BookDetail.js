@@ -2,8 +2,8 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import lamp from "../assets/lamp.png"; // 예제 이미지 경로
-import bookIcon from "../assets/bookicon.png"; // 예제 아이콘 경로
+import lamp from "../assets/lamp.png";
+import bookIcon from "../assets/bookicon.png";
 import "../styles/BookDetail.css";
 
 const BookDetail = () => {
@@ -11,7 +11,7 @@ const BookDetail = () => {
   const [book, setBook] = useState(null);
 
   useEffect(() => {
-    // API 요청 (백엔드 연동 시)
+    // API 요청
     const fetchBookDetails = async () => {
       try {
         const response = await axios.get(`/book/detail?title=${title}`);
@@ -23,7 +23,7 @@ const BookDetail = () => {
 
     fetchBookDetails();
 
-    // 백엔드가 없을 경우 더미 데이터 사용
+    // 더미 데이터 사용
     // setBook({
     //   title: decodeURIComponent(title),
     //   author: "저자 이름",
