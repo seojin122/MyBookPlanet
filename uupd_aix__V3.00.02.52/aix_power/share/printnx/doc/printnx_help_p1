@@ -1,0 +1,60 @@
+<b>-----General-----</b>
+
+
+<b>Paper Size</b>
+Select the size of the page as required. For example, if you want to print the document on A4 page, click A4 size in the Paper Size list box. There are also some other page sizes which are A5, LT, and A3...
+
+<b>Paper Type</b>
+Specifies the type of the paper which you want to print. For example, if you want to print the document in plain paper, select the plain paper from the list box.
+
+<b>Paper Source</b>
+Select the source of the paper from the Paper source list box like Tray1, Tray2 and Tray3.
+
+
+<b>Orientation</b>
+<b>-------------------------</b>
+
+<b>Portrait</b>
+Prints the document in portrait
+
+<b>Landscape</b>
+Prints the document in landscape
+
+
+
+<b>Two-sided</b>
+<b>-------------------------</b>
+Enables you to print a document on both sides of the paper.
+
+<b>Long Edge</b>
+Prints the copies in the long side of the paper (Like books)
+
+<b>Short Edge</b>
+Prints the copies in the short side of the paper (Like calendar)
+
+
+<b>Multiple Pages</b>
+<b>-------------------------</b>
+
+<b>Pages Per Sheet</b>
+Specifies the number of pages in the document that you want to print on each of the paper.
+
+<b>Page Layout</b>
+<b>-------------------------</b>
+
+<b>Top to Bottom</b>
+Prints the copies of the document from the page top to bottom.
+
+<b>Bottom to Top</b> 
+Prints the copies of the document from the page bottom to top.
+
+<b>Left to Right</b> 
+Prints the copies of the document from the page left to right position.
+
+<b>Right to Left</b>
+Prints the copies of the document from the page right to left position.
+
+
+<b>Page Border</b>
+<b>-------------------------</b>
+Choose the border style of the page listed as single hairline, double hairline... For example, if you want to print the page with single line border, click Single Hairline in the list.

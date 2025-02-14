@@ -1,0 +1,49 @@
+<b>-----Print Job Main Window-----</b>
+
+You can specify how you want to print a document by selecting options in the Print Job Manager wizard.
+
+<b>Printer  </b>
+<b>---------------------------------------</b>
+
+<b>Choose Printer  </b>   
+Select a printer from the list. The information that appears in the fields below this list applies to the selected printer.
+
+<b>Type  </b> 
+Type Specifies the type of the spooling system used. It can be System V, BSD, Cups or  AIX.
+
+<b>Location  </b> 
+Gives the location where the selected printer is located. For example it can be located in First floor, Left corner.
+
+<b>Description  </b>
+Gives the  description of the printer.
+
+<b>Properties   </b>
+Click to open the Properties dialog box. Use this dialog box to change the settings for the printer (like Text format, Image settings, margin settings and others). The settings you specify apply to the active document.
+
+
+<b>Page Selection   </b> 
+<b>---------------------------------------</b>
+
+<b>All Pages  </b> 
+Prints the entire document. 
+
+<b>Even Pages   </b>
+Prints only the even pages. For example, if you want to print only the even pages of the document (ie: 2, 4, 6).
+
+<b>Odd Pages  </b>
+Prints only the odd pages. For example, if you want to print only the odd pages of the document (ie: 1, 3, 5) click Odd Pages box.
+
+<b>Copies  </b>
+<b>---------------------------------------</b>
+
+<b>Number of copies  </b>  
+Enter the number of copies you want to print. For example, if you want more than two copies enter 2 here.
+
+<b>Collate</b> 
+Selecting this option will organize numbered pages when you print multiple copies of a document in proper order for binding. For example a 3 page document with 2 copies would be in the order 1,2,3 and 1,2,3. Unchecking this will print copies in groups, i.e., in the order 1,1 and 2,2 and 3,3
+
+<b>Reverse Order</b>
+Prints the copies of the document in reverse order. For example, a 3 page document will print in the order 3,2,1.
+
+<b>Page Range</b> 
+Prints the only the pages you type in the Page Range box. It accepts only the valid range. Valid entries are like 1,2,3,4 and 1-3, 5,7-9. It does not accept the invalid entries like 1_2_3.

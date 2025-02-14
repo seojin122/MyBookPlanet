@@ -1,0 +1,736 @@
+#!/bin/sh
+
+# This is installation script for "Unix Printer Driver".
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+# Note: "UPD_LOG_FILE" environment variable activates logging if present
+
+# Note: script execution starts right here.
+
+# remove old log file if exists
+if [ -n "$UPD_LOG_FILE" -a -f "$UPD_LOG_FILE" ] ; then
+	rm -f "$UPD_LOG_FILE"
+fi
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+# outputs args into log file specified by UPD_LOG_FILE variable
+log_line() {
+	#>&2 echo "log_line:" "\$#=$#:" "$@"
+	if [ -n "$UPD_LOG_FILE" ] ; then echo "$@" >>"$UPD_LOG_FILE" ; fi
+}
+
+# outputs variable name $1 and it's value into log file
+log_variable() {
+	log_line "${1}='`eval echo \\$$1`'"
+}
+
+output_blank_line() {
+	echo ""
+}
+
+show_msg() {
+	log_line "$@"
+	echo "$@"
+}
+
+show_cut_line() {
+	echo "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
+}
+
+timestamp() {
+	date -u '+%Y.%m.%d %H:%M:%S UTC'
+}
+
+log_timestamp() {
+	log_line "`timestamp`"
+}
+log_timestamp
+
+abort_execution() {
+	if [ $# -ne 1 ] ; then
+		show_msg "Internal error: Usage: abort_execution \"message\""
+	else
+		show_msg "$1"
+	fi
+	show_msg "execution aborted"
+	show_cut_line
+	exit 1
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+# Converts possibly relative directory path into absolute form
+absolute_dir_path() {
+	(cd "$1" && pwd)
+}
+
+# The same as "dirname" but path is always absolute
+absolute_dirname() {
+	(cd `dirname $1` && pwd)
+}
+
+# Converts possibly relative path into absolute form
+absolute_path() {
+	echo "`absolute_dirname $1`/`basename $1 $2`"
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+_which() {
+	_which_found=""
+	_which_IFS=${IFS}
+	IFS=:
+	for _which_dir in ${PATH} ; do
+		if [ -x "${_which_dir}/$1" ] ; then
+		    _which_found="${_which_dir}/$1"
+		    break
+		fi
+	done
+	IFS=${_which_IFS}
+	if [ -z "${_which_found}" ] ; then
+		echo >&2 "'$1' not found in PATH"
+	else
+		echo "${_which_found}"
+	fi
+}
+
+# WARNING: Different "tr" implementations expect "range" specifications in
+# different formats. That is why explicit specification is preferable.
+_tolower() {
+	_tolower_tr=`_which tr`
+	if [ -n "${_tolower_tr}" ] ; then
+		echo "$@" | "${_tolower_tr}" "ABCDEFGHIJKLMNOPQRSTUVWXYZ" "abcdefghijklmnopqrstuvwxyz"
+	else
+		echo "$@"
+	fi
+}
+
+# creates symbolic link $1 at $2
+create_symlink() {
+	LINK_TARGET="$1"
+	LINK_NAME="$2"
+
+	# sometimes "ln -sf" fails if target already exists
+	log_line "removing ${LINK_NAME}"
+	log_line rm -rf "${LINK_NAME}"
+	if [ -n "$UPD_LOG_FILE" ] ; then
+		rm -rf "${LINK_NAME}" 2>>"$UPD_LOG_FILE"
+	else 
+		rm -rf "${LINK_NAME}"
+	fi
+
+	log_line "creating symbolic link ${LINK_TARGET} at ${LINK_NAME}"
+	log_line ln -sf "${LINK_TARGET}" "${LINK_NAME}"
+	if [ -n "$UPD_LOG_FILE" ] ; then
+		ln -sf "${LINK_TARGET}" "${LINK_NAME}" 2>>"$UPD_LOG_FILE"
+	else 
+		ln -sf "${LINK_TARGET}" "${LINK_NAME}"
+	fi
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+# Distribution layout:
+#
+# ./install -- this script
+#
+# BUILD_TAG -- package build info (such as "source code version", "target
+# platform", "build timestamp")
+#
+# ./binz/ -- user visible binaries
+# ./cms/ -- CMS data
+# ./locale/ -- NLS data (translations)
+# ./share/printnx/interface/pnxjmodel -- backend for AIX
+# ./share/printnx/ -- helper files
+# ./*.tar -- helper distribution files (ghostscript, cups-filters, ...)
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+SCRIPT="${0}"
+log_variable SCRIPT
+
+# helper functions expect distribution source directory in PKG_DIR variable
+# path must be absolute
+PKG_DIR=`absolute_dirname ${SCRIPT}`
+log_variable PKG_DIR
+
+# helper functions expect Operating System name in "OS" variable
+OS="`LC_ALL='C' uname -s`"
+log_variable OS
+
+# helper functions expect Operating System Release identifier in "OS_RELEASE"
+# variable
+OS_RELEASE="`LC_ALL='C' uname -r`"
+log_variable OS_RELEASE
+
+# helper functions expect list of binaries in BINARIES variable
+BINARIES=""
+BINARIES="${BINARIES} installprinter"
+BINARIES="${BINARIES} printui"
+BINARIES="${BINARIES} uninstallprinter"
+if [ "$OS" = "AIX" ] ; then
+	BINARIES="${BINARIES} pnxrawprt"
+elif [ "$OS" = "HP-UX" ] ; then
+	BINARIES="${BINARIES} pnxrawprt"
+fi
+
+# helper functions expect list of filters in FILTERS variable
+FILTERS="${FILTERS} booklet"
+#FILTERS="${FILTERS} pscms"
+FILTERS="${FILTERS} pstopclxl"
+#FILTERS="${FILTERS} pstospl"
+#FILTERS="${FILTERS} pstosplc"
+#FILTERS="${FILTERS} pstospjlps"
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+# Target layout:
+#
+# /etc/printnx/ -- storage for run time configuration files
+#
+# /etc/printnx/BUILD_TAG -- package build info
+# /etc/printnx/BUILD_INFO" -- package build info
+# /usr/bin/ -- user visible binaries
+# /usr/lib/lpd/pnxjmodel -- backend for AIX
+# /usr/share/printnx/ -- printnx helper files
+# /opt/smfp-common/ -- common helper files (old driver versions)
+# /opt/printnx/ -- common helper files (ghostscript, cups-filters)
+# /opt/printnx/cms/ -- CMS data
+
+OLD_INSTALL_DIR="/opt/smfp-common"
+INSTALL_DIR="/opt/printnx"
+CONFIG_DIR="/etc/printnx"
+LOCALE_DIR="${INSTALL_DIR}/locale"
+
+# helper functions expect list of links in LINKS variable
+# format: "LINK_NAME=LINK_TARGET"
+# "SCO OpenServer 6" and "Oracle Solaris 11" have "CUPS"
+if [ "$OS" = "SCO_SV" -o \( "$OS" = "SunOS" -a "$OS_RELEASE" = "5.11" \) ] ; then
+	# make our filters visible to CUPS
+	LINKS="${LINKS} /usr/lib/cups/filter/pstosecps=${INSTALL_DIR}/bin/booklet"
+	OLDLINKS="${OLDLINKS} /usr/lib/cups/filter/pstospjlps=${INSTALL_DIR}/bin/pstospjlps"
+	LINKS="${LINKS} /usr/lib/cups/filter/rastertosamsungpclxl=${INSTALL_DIR}/bin/pstopclxl"
+	OLDLINKS="${OLDLINKS} /usr/lib/cups/filter/rastertosamsungspl=${INSTALL_DIR}/bin/pstospl"
+	OLDLINKS="${OLDLINKS} /usr/lib/cups/filter/rastertosamsungsplc=${INSTALL_DIR}/bin/pstosplc"
+
+	# make our PPD files visible to CUPS
+	LINKS="${LINKS} /usr/share/cups/model/printnx=/usr/share/printnx/model"
+fi
+#
+# map upper case locales to lower case
+LINKS="${LINKS} ${LOCALE_DIR}/FR=fr"
+LINKS="${LINKS} ${LOCALE_DIR}/RU=ru"
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+# NLS needs "TEXTDOMAIN" and "TEXTDOMAINDIR"
+
+TEXTDOMAIN="install"
+log_variable TEXTDOMAIN
+export TEXTDOMAIN
+
+TEXTDOMAINDIR="${PKG_DIR}/locale"
+log_variable TEXTDOMAINDIR
+export TEXTDOMAINDIR
+
+# Make sure upper to lower case locales are mapped in installation package.
+# It can be necessary for translation of installation script messages.
+create_symlink fr ${TEXTDOMAINDIR}/FR
+create_symlink ru ${TEXTDOMAINDIR}/RU
+
+log_variable LC_ALL
+log_variable LC_MESSAGES
+log_variable LANG
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+#
+# "eval_gettext" needs "gettext" and "envsubst"
+#
+
+log_variable PATH
+
+# "gettext" in our "build" directory can be used during development
+PRINTNX_NLS_BIN_DIR="/opt/printnx/gettext-0.18.1.1/bin"
+log_variable PRINTNX_NLS_BIN_DIR
+PATH=${PRINTNX_NLS_BIN_DIR}${PATH:+:${PATH}}
+
+if [ "$OS" = "SCO_SV" ] ; then
+
+# SCO OpenServer shall have "gettext"
+SCO_NLS_BIN_DIR="/usr/gnu/bin"
+log_variable SCO_NLS_BIN_DIR
+PATH=${PATH:+${PATH}:}${SCO_NLS_BIN_DIR}
+
+else
+
+# copy of "gettext" shall be present in installation package
+SCRIPT_NLS_BIN_DIR="${PKG_DIR}/binz"
+log_variable SCRIPT_NLS_BIN_DIR
+PATH=${SCRIPT_NLS_BIN_DIR}${PATH:+:${PATH}}
+
+fi
+
+log_variable PATH
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+NLS_TEST_MSG="This is NLS test message"
+
+GETTEXT_BINARY=`2>/dev/null _which gettext`
+log_variable GETTEXT_BINARY
+
+if [ -n "${GETTEXT_BINARY}" ] ; then
+	GETTEXT_RESULT=`LC_ALL="C" gettext "${NLS_TEST_MSG}"`
+	log_variable GETTEXT_RESULT
+	if [ "${NLS_TEST_MSG}" != "${GETTEXT_RESULT}" ] ; then
+		log_line "'gettext' is inoperable"
+		unset GETTEXT_BINARY
+	fi
+fi
+
+ENVSUBST_BINARY=`2>/dev/null _which envsubst`
+log_variable ENVSUBST_BINARY
+
+if [ -n "${ENVSUBST_BINARY}" ] ; then
+	ENVSUBST_RESULT=`echo "${NLS_TEST_MSG}" | LC_ALL="C" envsubst`
+	log_variable ENVSUBST_RESULT
+	if [ "${NLS_TEST_MSG}" != "${ENVSUBST_RESULT}" ] ; then
+		log_line "'envsubst' is inoperable"
+		unset ENVSUBST_BINARY
+	fi
+fi
+
+if [ -n "${GETTEXT_BINARY}" -a -n "${ENVSUBST_BINARY}" ] ; then
+	log_line "all necessary 'gettext' tools are available"
+	# Note: Implementation of "eval_gettext" was borrowed from "gettext.sh"
+	eval_gettext() {
+		gettext "$1" | (export PATH `envsubst --variables "$1"`; envsubst "$1")
+	}
+else
+	log_line "not all necessary 'gettext' tools are available"
+	eval_gettext() {
+		eval "echo" "\"$1\""
+	}
+fi
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+# Note: Functions supporting translation (NLS) expect the whole message as
+# single argument.
+
+translate() {
+	if [ $# -ne 1 ] ; then
+		abort_execution "Internal error: Usage: translate \"message\""
+	fi
+	log_line "translate: '$1'"
+	TRANSLATED=`eval_gettext "${1}"`
+	log_line "translate: translated: '${TRANSLATED}'"
+	echo "${TRANSLATED}"
+}
+
+show_nls_msg() {
+	if [ $# -ne 1 ] ; then
+		abort_execution "Internal error: Usage: show_nls_msg \"message\""
+	fi
+	log_line "show_nls_msg: $1"
+	TRANSLATED=`translate "$1"`
+	log_line "show_nls_msg: translated: '${TRANSLATED}'"
+	echo "${TRANSLATED}"
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+show_help() {
+	show_nls_msg "  Usage:"
+	output_blank_line
+	show_nls_msg "  ./install -h : Print this help and exit"
+	show_nls_msg "  ./install -i : Install driver package (root privileges required)"
+	show_nls_msg "  ./install -c : Check installed files"
+	show_nls_msg "  ./install -d : Uninstall driver package (root privileges required)"
+	show_nls_msg "  ./install -u : the same as -d"
+	output_blank_line
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+READ_ONLY_LOCK_FILE="${INSTALL_DIR}/.READ_ONLY"
+
+# This check is to protect "build" directory
+exit_if_read_only() {
+	if [ -f "${READ_ONLY_LOCK_FILE}" ] ; then
+		show_nls_msg "ERROR: Installation directory has read only lock."
+		show_nls_msg "ERROR: Please remove lock file '\${READ_ONLY_LOCK_FILE}'."
+		exit 1
+	fi
+}
+
+exit_if_not_root() {
+	if [ "`id | sed -e 's/uid=\([0-9]*\)\(.*\)/\1/'`" != "0" ]; then
+		show_nls_msg "ERROR: You must have root privileges for this operation."
+		exit 1
+	fi
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+# creates directory $1 (including all necessary parent directories)
+create_dir() {
+	log_line "creating directory $1"
+	log_line mkdir -p "$1"
+	mkdir -p "$1"
+}
+
+# copies source file $1 into destination directory $2
+copy_file() {
+	SRC="$1"
+	DST="$2"
+	log_line "copying file ${SRC} into ${DST}"
+	log_line cp "${SRC}" "${DST}"
+	if [ -n "$UPD_LOG_FILE" ] ; then
+		cp "${SRC}" "${DST}" 2>>"$UPD_LOG_FILE"
+	else 
+		cp "${SRC}" "${DST}"
+	fi
+}
+
+# copies source directory $1 into destination directory $2
+copy_dir() {
+	SRC="$1"
+	DST="$2"
+	log_line "copying directory ${SRC} into ${DST}"
+	log_line cp -r "${SRC}" "${DST}"
+	if [ -n "$UPD_LOG_FILE" ] ; then
+		cp -r "${SRC}" "${DST}" 2>>"$UPD_LOG_FILE"
+	else 
+		cp -r "${SRC}" "${DST}"
+	fi
+}
+
+# removes file $1
+remove_file() {
+	NAME="$1"
+	log_line "removing file ${NAME}"
+	log_line rm -f "${NAME}"
+	if [ -n "$UPD_LOG_FILE" ] ; then
+		rm -f "${NAME}" 2>>"$UPD_LOG_FILE"
+	else 
+		rm -f "${NAME}"
+	fi
+}
+
+# removes directory $1
+remove_dir() {
+	NAME="$1"
+	log_line "removing directory ${NAME}"
+	log_line rm -rf "${NAME}"
+	if [ -n "$UPD_LOG_FILE" ] ; then
+		rm -rf "${NAME}" 2>>"$UPD_LOG_FILE"
+	else 
+		rm -rf "${NAME}"
+	fi
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+# Prints contents of "BUILD_TAG" file from directory $1 if the file exists.
+show_build_tag_if_exist() {
+	DIRECTORY="$1"
+
+	if [ -f "$DIRECTORY/BUILD_TAG" ] ; then
+		BUILD_TAG=`cat "$DIRECTORY/BUILD_TAG"`
+		show_msg "    BUILD_TAG='$BUILD_TAG'"
+		output_blank_line
+	fi
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+find_eula_file() {
+	EULA_DIR="${PKG_DIR}/share/printnx/eula"
+
+	EULA_LOCALE="${LC_ALL:-${LC_MESSAGES:-${LANG}}}"
+	log_variable EULA_LOCALE
+
+	# Sometime (for example on IBM AIX) some locale names are in upper case
+	EULA_LOCALE=`_tolower "${EULA_LOCALE}"`
+	log_variable EULA_LOCALE
+
+	while [ -n "${EULA_LOCALE}" ] ; do
+		EULA_FILE="${EULA_DIR}/eula-${EULA_LOCALE}.txt"
+		#log_variable EULA_FILE
+		if [ -r "${EULA_FILE}" ] ; then break ; fi
+		EULA_LOCALE=`echo "${EULA_LOCALE}" | sed 's/.$//'` # drop last symbol
+	done
+	log_variable EULA_LOCALE
+	if [ -z "${EULA_LOCALE}" ] ; then
+		EULA_FILE="${EULA_DIR}/eula.txt"
+		if [ ! -r "${EULA_FILE}" ] ; then
+			EULA_FILE=""
+		fi
+	fi
+
+	log_variable EULA_FILE
+	echo "${EULA_FILE}"
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+# expects distribution source directory in PKG_DIR variable
+# expects Operating System name in "OS" variable
+# expects list of binaries in BINARIES variable
+# expects list of filters in FILTERS variable
+# expects list of links in LINKS variable
+do_install() {
+	exit_if_read_only
+	exit_if_not_root
+
+	# show EULA and ask for agreement
+	EULA_FILE=`find_eula_file`
+
+	EULA_PAGER="${PAGER:-`_which more`}"
+	log_variable EULA_PAGER
+	if [ -n "${EULA_FILE}" -a -n "${EULA_PAGER}" ] ; then
+		ICONV_BINARY="$PKG_DIR/binz/iconv"
+		log_variable  ICONV_BINARY
+
+		# show EULA:
+		show_cut_line
+		cat "${EULA_FILE}" | "${ICONV_BINARY}" -c -f "UTF-8" | ${EULA_PAGER}
+		show_cut_line
+
+		# ask for agreement:
+		output_blank_line
+		show_nls_msg "Do you agree ? [y/n]"
+		read EULA_ANSWER
+		log_variable EULA_ANSWER
+
+		if [ "${EULA_ANSWER}" != "y" ] ; then
+			# abort execution
+			exit 1
+		fi
+
+		output_blank_line
+	fi
+
+	show_build_tag_if_exist "$PKG_DIR"
+
+	show_nls_msg "installing ..."
+
+	create_dir ${CONFIG_DIR}
+
+	copy_file "$PKG_DIR/BUILD_TAG" ${CONFIG_DIR}/
+	copy_file "$PKG_DIR/BUILD_INFO" ${CONFIG_DIR}/
+
+	for f in $BINARIES ; do
+		bf="`basename $f`"
+		copy_file "$PKG_DIR/binz/$bf" /usr/bin/
+		chown root:bin "/usr/bin/$bf" 2>/dev/null
+		chmod 555 "/usr/bin/$bf" 2>/dev/null
+	done
+
+	create_dir ${INSTALL_DIR}/bin
+
+	for f in $FILTERS ; do
+		bf="`basename $f`"
+		copy_file "$PKG_DIR/binz/$bf" ${INSTALL_DIR}/bin/
+		chown root:bin "${INSTALL_DIR}/bin/$bf" 2>/dev/null
+		chmod 555 "${INSTALL_DIR}/bin/$bf" 2>/dev/null
+	done
+
+	if [ "$OS" = "AIX" ] ; then
+		copy_file "$PKG_DIR/share/printnx/interface/pnxjmodel" /usr/lib/lpd/
+		chown root /usr/lib/lpd/pnxjmodel 2>/dev/null
+		chmod 555 /usr/lib/lpd/pnxjmodel 2>/dev/null
+		chmod +s /usr/lib/lpd/pnxjmodel 2>/dev/null
+	fi
+
+	#copy_dir "$PKG_DIR/cms" ${INSTALL_DIR}/
+	copy_dir "$PKG_DIR/locale" ${INSTALL_DIR}/
+	copy_dir "$PKG_DIR/share/printnx" /usr/share/
+
+	( cd / && tar -xf "$PKG_DIR/gs.tar" )
+	( cd / && tar -xf "$PKG_DIR/cups-filters.tar" )
+
+	if [ "$OS" != "SCO_SV" ] ; then
+		( cd / && tar -xf "$PKG_DIR/fontconfig.tar" )
+		( cd / && tar -xf "$PKG_DIR/gtk+-locale.tar" )
+		( cd / && tar -xf "$PKG_DIR/unifont.tar" )
+		( cd / && tar -xf "$PKG_DIR/unifont-fontconfig.tar" )
+	fi
+
+	# create links
+	# format: "LINK_NAME=LINK_TARGET"
+	for LINK in $LINKS ; do
+		echo ${LINK} | while IFS="=" read LINK_NAME LINK_TARGET ; do
+			create_symlink "${LINK_TARGET}" "${LINK_NAME}"
+		done
+	done
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+# expects Operating System name in "OS" variable
+# expects list of binaries in BINARIES variable
+# expects list of filters in FILTERS variable
+# expects list of links in LINKS variable
+do_check() {
+	show_nls_msg "  installed files:"
+	output_blank_line
+
+	show_build_tag_if_exist ${CONFIG_DIR}
+
+	FILES=""
+
+	FILES="${FILES} ${CONFIG_DIR}/"
+	FILES="${FILES} ${CONFIG_DIR}/BUILD_TAG"
+	FILES="${FILES} ${CONFIG_DIR}/BUILD_INFO"
+	FILES="${FILES} ${CONFIG_DIR}/printnx.conf"
+
+	for f in $BINARIES ; do
+		FILES="${FILES} /usr/bin/$f"
+	done
+
+	for f in $FILTERS ; do
+		FILES="${FILES} ${OLD_INSTALL_DIR}/bin/$f"
+	done
+
+	for f in $FILTERS ; do
+		FILES="${FILES} ${INSTALL_DIR}/bin/$f"
+	done
+
+	if [ -d ${OLD_INSTALL_DIR}/cms ] ; then
+		FILES="${FILES} `find ${OLD_INSTALL_DIR}/cms -type f`"
+	fi
+
+	if [ -d ${INSTALL_DIR}/cms ] ; then
+		FILES="${FILES} `find ${INSTALL_DIR}/cms -type f`"
+	fi
+
+	if [ -d ${LOCALE_DIR} ] ; then
+		FILES="${FILES} `find ${LOCALE_DIR} -type f`"
+	fi
+
+	if [ "$OS" = "AIX" ] ; then
+		FILES="${FILES} /usr/lib/lpd/pnxjmodel"
+	fi
+
+	if [ -d /usr/share/printnx ] ; then
+		FILES="${FILES} /usr/share/printnx"
+		FILES="${FILES} `find /usr/share/printnx -type f`"
+	fi
+
+	FILES="${FILES} ${OLD_INSTALL_DIR}/*"
+	FILES="${FILES} ${INSTALL_DIR}/*"
+
+	# links
+	# format: "LINK_NAME=LINK_TARGET"
+	for LINK in ${LINKS} ${OLDLINKS} ; do
+		LINK_NAME=`echo ${LINK} | while IFS="=" read LINK_NAME LINK_TARGET ; do echo "${LINK_NAME}" ; done`
+		FILES="${FILES} ${LINK_NAME}"
+	done
+
+	ls -ld ${FILES} 2>/dev/null
+	if [ -n "$UPD_LOG_FILE" ] ; then
+		ls -ld ${FILES} 2>/dev/null 1>>"$UPD_LOG_FILE"
+	fi
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+# expects Operating System name in "OS" variable
+# expects list of binaries in BINARIES variable
+# expects list of links in LINKS variable
+do_remove() {
+	exit_if_read_only
+	exit_if_not_root
+
+	if [ -f ${CONFIG_DIR}/printnx.conf ]; then
+		show_nls_msg "removing printers added by the driver package"
+		PRINTERS=`cat ${CONFIG_DIR}/printnx.conf | grep "printer \"" | cut -d"\"" -f2`
+		for PRINTER in ${PRINTERS} ; do
+			show_nls_msg "Do you want to remove printer '\${PRINTER}' [y/n] default=y :"
+			read answer
+			if [ "$answer" = "n" ] || [ "$answer" = "N" ]; then
+				output_blank_line
+			else
+				if [ "$OS" = "AIX" ] ; then
+					QUEDEV=`lsallqdev -q${PRINTER}`
+					rmquedev -q${PRINTER} -d${QUEDEV} 2>/dev/null
+					rmque -q${PRINTER} 2>/dev/null
+				elif [ "$OS" = "SCO_SV" ] ; then
+					/usr/lib/lpadmin --CUPS -x${PRINTER}
+				else
+					/usr/sbin/lpadmin -x${PRINTER}
+				fi
+			fi
+		done
+	fi
+
+	show_nls_msg "removing ..."
+
+	for f in $BINARIES ; do
+		remove_file /usr/bin/$f
+	done
+
+	if [ "$OS" = "AIX" ] ; then
+		remove_file /usr/lib/lpd/pnxjmodel
+	fi
+
+	# remove links
+	# format: "LINK_NAME=LINK_TARGET"
+	for LINK in ${LINKS} ${OLDLINKS} ; do
+		echo ${LINK} | while IFS="=" read LINK_NAME LINK_TARGET ; do
+			remove_file "${LINK_NAME}"
+		done
+	done
+
+	remove_dir ${CONFIG_DIR}
+	remove_dir /usr/share/printnx
+
+	remove_dir ${OLD_INSTALL_DIR}
+	remove_dir ${INSTALL_DIR}
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+# Note: user visible execution starts here
+
+show_cut_line
+output_blank_line
+show_nls_msg "  Unix Printer Driver"
+output_blank_line
+
+OPTION="$1"
+case "${OPTION}" in
+	"-d"|"-u")
+		# "(de|un)-install"
+		do_remove
+		;;
+	"-c")
+		# "check install"
+		do_check
+		;;
+	"-i")
+		# "install"
+		do_install
+		show_cut_line
+		do_check
+		;;
+	"-h"|"")
+		# "help"
+		show_build_tag_if_exist "$PKG_DIR"
+		show_help
+		;;
+	*)
+		show_build_tag_if_exist "$PKG_DIR"
+		#output_blank_line
+		show_nls_msg "  Warning: unknown option '\${OPTION}'"
+		#output_blank_line
+		show_help
+		;;
+esac
+show_cut_line
+
+# script execution ends here

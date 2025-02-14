@@ -1,0 +1,38 @@
+<b>-----Image Settings-----</b>
+
+
+<b>Color </b>
+<b>-----------------------------</b>
+
+<b>Brightness</b>
+You change the brightness of the image by moving the slider left or right to increase or decrease respectively.
+Default is 100.
+
+<b>Hue</b>
+You change the hue by moving the slider left or right to increase or decrease respectively.
+Default is 0.
+
+<b>Saturation</b>
+You change the saturation by moving the slider left or right to increase or decrease respectively.
+Default is 100.
+
+<b>Gamma</b>
+You change the gamma by moving the slider left or right to increase or decrease respectively.
+Default is 1000
+
+<b>Image Size</b> 
+<b>-----------------------------</b>
+
+<b>Resoltion</b> 
+You change the resolution by moving the slider left or right to increase or decrease respectively.
+Keep the resolution 0 to print in the default resolution.
+
+<b>Zoom / % of Page</b> 
+You can zoom in or zoom out the image by moving the slider respectively.
+Default is 100.
+
+<b>Image Position  </b> 
+You can choose where the image to get printed. The picture shows the current position in gray color. Move the top slider left or right to change the position towards left, middle or center accordingly. Move the left slider up or down to change the position towards top middle or bottom accordingly.
+
+<b>Fit To Page  </b>
+Prints the entire graphics in a single page.

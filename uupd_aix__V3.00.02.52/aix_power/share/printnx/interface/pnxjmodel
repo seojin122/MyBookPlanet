@@ -1,0 +1,14 @@
+#!/usr/bin/ksh
+HOSTNAME=$1
+TCPPORT=$2
+DELAY=$3
+DEBUGFILE=$4
+trap "trap 15;kill -15 0;exit 0" 15
+
+cat $9 | \
+/usr/bin/pnxrawprt -p $TCPPORT $HOSTNAME 
+if [ "$?" -ne 0 ]
+then 
+	exit 64
+fi
+exit 0

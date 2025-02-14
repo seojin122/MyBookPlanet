@@ -1,0 +1,39 @@
+<b>-----Installer l'imprimante-----</b>
+
+<b>Nom </b>
+Taper le nom de l'imprimante à installer sur le système.
+
+<b>Modèle d'imprimante  </b> 
+Affiche une liste des modèles d'imprimante disponibles. Sélectionnez le modèle d'imprimante approprié.
+
+<b>Type  </b> 
+Spécifie le type de système de spooling utilisé. Supporte SVR4, BSD, Cups et AIX.
+
+<b>Emplacement   </b>
+Identifie l'emplacement de l'imprimante sélectionnée.
+
+<b>Description  </b> 
+Tapez n'importe quel nom valide.
+
+
+<b>Périphérique  </b> 
+<b>-------------------------</b>
+Pour les imprimantes réseau, tapez l'adresse IP ou le nom DNS de l'imprimante. Sous IBM AIX, le nom DNS doit être utilisé, et aucune adresse IP numérique n'est autorisée.
+
+Sur Sun Solaris, les imprimantes USB sont également prises en charge. Pour les imprimantes USB, tapez le nom du fichier de périphérique.
+
+<b>Type de file d'attente  </b> 
+<b>-------------------------</b>
+Spécifie le type de file d'attente listé comme jetdirect et usb pour la connexion réseau.
+
+<b>Copies  </b>
+Tapez le nombre de copies à imprimer. Par exemple, pour imprimer plus de deux copies, sélectionnez la valeur souhaitée dans la case « Copies ».
+
+<b>Assembler  </b> 
+Imprime les copies du document dans l'ordre de reliure. Par exemple, si vous voulez que les copies soient triées, cochez la case « Assembler » .Cette case est active uniquement si le nombre de copies est supérieur à un.
+
+<b>Inverser l'ordre  </b> 
+Imprime les copies du document dans l'ordre inverse. Par exemple, si vous voulez inverser l'ordre d'impression, cochez la case « Inverser l'ordre ».
+
+<b>Définir par défaut  </b> 
+Définit n'importe quelle imprimante comme imprimante par défaut.

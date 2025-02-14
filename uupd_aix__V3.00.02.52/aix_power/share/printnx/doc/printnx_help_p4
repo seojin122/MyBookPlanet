@@ -1,0 +1,8 @@
+<b>-----Margin Settings-----</b>
+
+
+<b>Use Margin  </b>
+Prints the document with margin by adjusting the values of top, bottom, left and right. Select this option on/off to print with/without the margins. The maximum and minimum value is set according to the paper size selected in the General settings.
+
+<b>Units  </b> 
+Specifies the units to change the margin alignments listed as points, inches and centimeters. For example, if you want to print the document 2 inches per inch from the top, 3 inches from the bottom, 3 inches from the left and 3 inches from the right, click Units list box.  

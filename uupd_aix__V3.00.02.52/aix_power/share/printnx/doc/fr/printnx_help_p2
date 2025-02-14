@@ -1,0 +1,32 @@
+<b>-----Paramètres d'image-----</b>
+
+
+<b>Couleur </b>
+<b>-----------------------------</b>
+
+<b>Luminosité</b>
+La luminosité de l'image peut être réglée en déplaçant le curseur vers la gauche ou vers la droite, afin de l'augmenter ou de la réduire, respectivement. La valeur par défaut est 100.
+
+<b>Teinte</b>
+La teinte peut être réglée en déplaçant le curseur vers la gauche ou vers la droite, afin de l'augmenter ou de la réduire, respectivement. La valeur par défaut est 0.
+
+<b>Saturation</b>
+La saturation peut être réglée en déplaçant le curseur vers la gauche ou vers la droite, afin de l'augmenter ou de la réduire, respectivement. La valeur par défaut est 100.
+
+<b>Gamma</b>
+Le niveau gamma peut être réglé en déplaçant le curseur vers la gauche ou vers la droite, afin de l'augmenter ou de le réduire, respectivement. La valeur par défaut est 1000.
+
+<b>Taille de l'image</b> 
+<b>-----------------------------</b>
+
+<b>Résolution</b> 
+La résolution peut être réglée en déplaçant le curseur vers la gauche ou vers la droite, afin de l'augmenter ou de la réduire, respectivement. Maintenez la résolution à 0 pour imprimer avec la résolution par défaut.
+
+<b>Zoom/% de page</b> 
+L'image peut être agrandie ou réduite en déplaçant le curseur, respectivement. La valeur par défaut est 100.
+
+<b>Position de l'image  </b> 
+La zone d'impression de l'image peut être sélectionnée. L'image indique la zone actuelle en gris. Déplacez le curseur du haut vers la gauche ou vers la droite pour déplacez la zone vers la gauche ou vers le centre. Déplacez le curseur de gauche vers le haut ou vers le bas pour déplacez la zone vers le haut ou vers le bas.
+
+<b>Adapter à la page  </b>
+Imprime les graphiques entiers sur une seule page.

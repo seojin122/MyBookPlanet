@@ -1,0 +1,64 @@
+컴비전 과제3 임시 저장
+
+
+
+"C:\Users\joo\Desktop\cars\01.jpg"
+
+
+
+import cv2
+import sys
+import numpy as np
+
+# 피부색 범위 설정 (HSV 기준)
+lower_skin = np.array([0, 20, 70], dtype=np.uint8)
+upper_skin = np.array([20, 255, 255], dtype=np.uint8)
+
+
+cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+
+if not cap.isOpened(): 
+    sys.exit('동영상 연결 실패')
+
+frame_size = (int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)),
+              int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT)))
+
+outV = None  # 비디오 녹화를 위한 변수 초기화
+
+while True:
+    ret, frame = cap.read()  # 비디오를 구성하는 프레임 획득
+    if not ret:
+        print('프레임 획득에 실패하여 루프를 나갑니다.')
+        break
+    hsv_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+    cv2.imshow('Video display', frame)
+    #손색상 찾기
+    mask = cv2.inRange(hsv_frame, lower_skin, upper_skin)
+    contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    # 컨투어 그리기
+    cv2.drawContours(frame, contours, -1, (0, 255, 0), 2)  # 피부 영역을 초록색으로 강조
+
+
+    key = cv2.waitKey(1)  # 1밀리초 동안 키보드 입력 기다림
+    
+    if key == ord('s'):  # 's' 키가 들어오면 녹화 시작
+        if outV is None:  # 녹화 파일이 열려있지 않은 경우
+            fourcc = cv2.VideoWriter_fourcc(*'XVID')
+            outV = cv2.VideoWriter('./record.mp4', fourcc, 20.0, frame_size)
+        print("녹화 시작")
+    
+    if outV is not None:
+        outV.write(frame)  # 녹화 중인 경우 프레임 기록
+
+    if key == ord('q'):  # 'q' 키가 들어오면 루프를 빠져나감
+        break
+
+cap.release()  # 카메라와 연결을 끊음
+if outV is not None:
+    outV.release()  # 녹화 파일 닫기
+cv2.destroyAllWindows()
+
+
+
+
+

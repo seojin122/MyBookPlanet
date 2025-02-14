@@ -1,0 +1,20 @@
+<b>-----Paramètres de texte-----</b>
+
+
+<b>Format de texte  </b>
+<b>---------------------------------------</b>
+
+<b>Caractères par pouce  </b>
+Imprime le document en caractères par pouce. Par exemple, si vous voulez imprimer les caractères pouce par pouce, cochez la case « Caractères par pouce ».
+
+<b>Lignes par pouce  </b>
+Imprime les lignes du document pouce par pouce.
+
+<b>Nombre de colonnes </b>
+Le document peut être imprimé en « n » colonnes sur une seule page. Indiquez le nombre de colonnes.
+
+<b>Couleur de la syntaxe</b>
+L'option de couleur de syntaxe peut être activée/désactivée. Vous pouvez personnaliser la couleur de la syntaxe selon le type de document, comme C-source, perl source etc. Pour pouvoir utiliser cette option, vous devez exporter la variable d'environnement CONTENT_TYPE vers les valeurs suivantes : application/x-cshell application/x-csource application/x-perl application/x-shell
+
+<b>Bouclage des lignes de texte</b>
+Gère le bouclage de texte. Les lignes seront bouclées si cette case est cochée. Dans le cas contraire, elles seront tronquées.

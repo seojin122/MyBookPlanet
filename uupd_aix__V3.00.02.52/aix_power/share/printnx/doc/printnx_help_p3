@@ -1,0 +1,24 @@
+<b>-----Text Settings-----</b>
+
+
+<b>Text Format  </b>
+<b>---------------------------------------</b>
+
+<b>Chars Per inch  </b>
+Prints the document by characters per inch. For example, if you want to print the characters inches per inch, click chars per inch box.
+
+<b>Lines Per Inch  </b>
+Prints the lines of the document by lines per inch.
+
+<b>Number of Columns </b>
+You can print the document in 'n' columns on a single page. Give the number of columns here.
+
+<b>Syntax Color</b>
+You can turn the syntax color on/off to set the syntax coloring on/off. You can customise the syntax coloring according to type of document like C-source, perl source etc. To use this you should have exported the environment variable CONTENT_TYPE to the following values : 
+application/x-cshell
+application/x-csource
+application/x-perl
+application/x-shell
+
+<b>Wrap Text Lines</b>
+Manages text wrapping. Lines will be wrapped if selected, or truncated otherwise.

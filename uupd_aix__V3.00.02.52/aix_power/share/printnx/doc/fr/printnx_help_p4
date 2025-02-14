@@ -1,0 +1,8 @@
+<b>-----Paramètres de marge-----</b>
+
+
+<b>Utiliser la marge  </b>
+Imprime le document avec une marge, en ajustant les valeurs du haut, du bas, de gauche et de droite. Cochez/décochez cette option pour imprimer avec/sans les marges. La valeur maximum et la valeur minimum sont définies selon la taille du papier sélectionnée dans les paramètres « Généralités ».
+
+<b>Unités  </b> 
+Spécifie les unités de modification d'alignement des marges (points, pouces et centimètres). Par exemple, si vous voulez imprimer le document en 2 pouces à partir du haut, 3 pouces à partir du bas, 3 pouces à partir de la gauche et 3 pouces à partir de la droite, cochez la case « Unités ».  

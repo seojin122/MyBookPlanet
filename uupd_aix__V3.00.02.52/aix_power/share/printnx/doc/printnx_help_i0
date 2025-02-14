@@ -1,0 +1,41 @@
+<b>-----Install Printer-----</b>
+
+<b>Name </b>
+Enter the name of the printer to be installed in the system.
+
+<b>Printer Model  </b> 
+Shows list of available printer models. Select appropriate printer model.
+
+<b>Type  </b> 
+Specifies the type of the spooling system used. It supports SVR4, BSD, Cups and AIX.
+
+<b>Location   </b>
+Identifies the location of the selected printer where it is.
+
+<b>Description  </b> 
+Type any valid name.
+
+
+<b>Device  </b> 
+<b>-------------------------</b>
+For network-connected printer enter printer's IP address or DNS name.
+On IBM AIX DNS name must be used, numeric IP address is not allowed.
+
+On Sun Solaris USB-connected printers are supported also. For USB-connected
+printer enter printer device file name.
+
+<b>Queue Type  </b> 
+<b>-------------------------</b>
+Specifies the queue type listed as jetdirect and usb for network connection.
+
+<b>Copies  </b>
+Enter the number of copies you want to print. For example, if you want more than two copies select the value in the copies box.
+
+<b>Collate  </b> 
+Prints the copies of the document in proper binding order. For example, if you want set of copies in sorted order, click Collate check box.It is enabled only the number of copies is more then one.
+
+<b>Reverse Order  </b> 
+Prints the copies of the document in reverse order. For example, if you want reverse order print, click Reverse Order box.
+
+<b>Make Default  </b> 
+Specifies any of the printer to be set default.
