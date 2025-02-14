@@ -58,16 +58,33 @@ router.get('/logout', isLoggedIn, logout);
 //   }
 // });
 
+// router.post("/delete", isLoggedIn, async (req, res, next) => {
+//   try {
+//     await User.destroy({
+//       where: { id: req.user.id }
+//     });
+
+//     req.logout((err) => {
+//       if (err) return next(err);
+//       req.session.destroy(() => {
+//         res.redirect('/');  // 회원 탈퇴 후 홈으로 리다이렉트
+//       });
+//     });
+//   } catch (error) {
+//     console.error(error);
+//     next(error);
+//   }
+// });
+
 router.post("/delete", isLoggedIn, async (req, res, next) => {
   try {
     await User.destroy({
       where: { id: req.user.id }
     });
-
     req.logout((err) => {
       if (err) return next(err);
       req.session.destroy(() => {
-        res.redirect('/');  // 회원 탈퇴 후 홈으로 리다이렉트
+        res.json({ message: "회원 탈퇴가 완료되었습니다." });
       });
     });
   } catch (error) {
