@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>{{title}}</title>
+    <meta name="viewport" content="width=device-width, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="stylesheet" href="/main.css">
+  </head>
+  <body>
+    <div class="container">
+      <div class="profile-wrap">
+        <div class="profile">
+          {% if user and user.id %}
+            <div class="user-name">{{user.nick + '님,' + ' 반가워요!'}}</div>
+            <div class="half">
+              <div>팔로잉</div>
+              <div class="count following-count">{{followingCount}}</div>
+            </div>
+            <div class="half">
+              <div>팔로워</div>
+              <div class="count follower-count">{{followerCount}}</div>
+            </div>
+          <input id="my-id" type="hidden" value="{{user.id}}">
+          <a id="my-profile" href="/profile" class="btn">내 프로필</a>
+          <a id="logout" href="/auth/logout" class="btn">로그아웃</a>
+        {% else %}
+          <form id="login-form" action="/auth/login" method="post">
+            <div class="input-group">
+              <label for="email">이메일</label>
+              <input id="email" type="email" name="email" required autofocus>
+            </div>
+            <div class="input-group">
+              <label for="password">비밀번호</label>
+              <input id="password" type="password" name="password" required>
+            </div>
+            <a id="join" href="/join" class="btn">회원가입</a>
+            <button id="login" type="submit" class="btn">로그인</button>
+          </form>
+        {% endif %}
+        </div>
+      </div>
+      {% block content %}
+      {% endblock %}
+
+      
+    </div>
+    <div class="member">
+        <h1>회원 목록</h1>
+        <ul>
+            {% for user in users %}
+                <li>
+                    {{ user.nick }}
+                    {% if user.id != myId %} <!-- 본인을 제외하고 팔로우 버튼을 표시 -->
+                        <button class="follow-btn" data-user-id="{{ user.id }}">팔로우</button>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+    
+
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+      window.onload = () => {
+        if (new URL(location.href).searchParams.get('error')) {
+          alert(new URL(location.href).searchParams.get('error'));
+        }
+      };
+
+
+      document.querySelectorAll('.follow-btn').forEach(button => {
+    button.addEventListener('click', (event) => {
+      const userId = event.target.getAttribute('data-user-id');
+
+      axios.post('/follow', { userId: userId })
+        .then(response => {
+          alert(response.data);
+        })
+        .catch(error => {
+          console.error(error);
+          alert('팔로우 처리에 실패했습니다');
+        });
+    });
+  });
+
+  
+    </script>
+    {% block script %}
+    {% endblock %}
+  </body>
+</html>
