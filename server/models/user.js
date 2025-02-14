@@ -39,6 +39,7 @@ class User extends Model {
 
   static associate(db) {
     db.User.hasMany(db.Post, { foreignKey: 'userId', as: 'Posts' });
+
     db.User.belongsToMany(db.User, {
       foreignKey: 'followingId',
       as: 'Followers',

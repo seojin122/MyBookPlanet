@@ -20,6 +20,8 @@ const postsRouter = require("./routes/posts");
 const commentsRouter = require("./routes/comments");
 const booklist = require('./routes/booklist');
 const booklumi = require('./routes/booklumi'); 
+const imageRouter = require('./routes/image');  // image 라우터 추가
+
 
 const { User } = require('./models'); // User 모델을 임포트
 const { Follow } = require('./models');  // Follow 모델 임포트
@@ -75,6 +77,49 @@ app.use("/posts", postsRouter);
 app.use("/comments", commentsRouter);
 app.use('/api/booklist', booklist);
 app.use('/api/booklumi', booklumi);  
+app.use('/image', imageRouter);  // /image 경로에서 이미지 업로드 라우터 처리
+
+
+app.get('/user_profile/:username', async (req, res) => {
+  const username = req.params.username;  // URL에서 'username'을 받아옴
+  
+  // 'nick'을 기준으로 사용자 정보 조회
+  const user = await User.findOne({
+    where: { nick: username },  // 닉네임으로 사용자 조회
+    include: [
+      {
+        model: User,
+        as: 'Followers',  // 팔로워 목록을 가져옴
+        attributes: ['nick'],  // 팔로워의 닉네임만 가져옴
+      },
+      {
+        model: User,
+        as: 'Followings',  // 팔로잉 목록을 가져옴
+        attributes: ['nick'],  // 팔로잉의 닉네임만 가져옴
+      }
+    ],
+  });
+
+  if (!user) {
+    return res.status(404).send('사용자를 찾을 수 없습니다.');
+  }
+
+  // 유저의 정보를 'user_profile' 템플릿에 전달하여 렌더링
+  res.render('user_profile', {
+    user,
+    followers: user.Followers,  // 팔로워 목록
+    followings: user.Followings,  // 팔로잉 목록
+  });
+});
+
+// 서버 실행
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
+
+
+
 
 // 동적 렌더링
 const fs = require('fs');
@@ -113,71 +158,25 @@ app.post('/join', (req, res) => {
   res.redirect('/auth/login');
 });
 
-// 회원 목록 조회
-app.get('/users', (req, res) => {
-  User.findAll()
-    .then(users => {
-      res.render('layout', { 
-        title: '회원 목록', 
-        users: users,
-        user: req.user,
-        myId: req.user ? req.user.id : null // 로그인한 사용자의 ID
-      });
+app.post('/follow', (req, res) => {
+  const followerId = req.user.id;  // 현재 로그인한 사용자의 ID
+  const followingId = req.body.userId;  // 팔로우하려는 사용자의 ID
+
+  // 이미 팔로우 중인지 확인
+  Follow.findOrCreate({
+    where: { followerId, followingId }
+  })
+    .then(([follow, created]) => {
+      if (created) {
+        res.send('팔로우 성공');
+      } else {
+        res.send('이미 팔로우한 사용자입니다');
+      }
     })
     .catch(err => {
       console.error(err);
       res.status(500).send("서버 오류");
     });
-});
-
-
-
-// 팔로우 처리
-// app.post('/follow', (req, res) => {
-//   const followerId = req.user.id;  // 현재 로그인한 사용자의 ID
-//   const followingId = req.body.userId;  // 팔로우하려는 사용자의 ID
-  
-//   // 이미 팔로우 중인지 확인
-//   Follow.findOrCreate({
-//     where: { followerId, followingId }
-//   })
-//     .then(([follow, created]) => {
-//       if (created) {
-//         res.send('팔로우 성공');
-//       } else {
-//         res.send('이미 팔로우한 사용자입니다');
-//       }
-//     })
-//     .catch(err => {
-//       console.error(err);
-//       res.status(500).send("서버 오류");
-//     });
-// });
-
-
-app.post('/follow', async (req, res) => {
-  try {
-    console.log('req.user:', req.user); 
-    console.log('req.body:', req.body);
-
-    if (!req.user || !req.user.id) {
-      return res.status(401).json({ error: '로그인이 필요합니다.' });
-    }
-
-    const followerId = req.user.id;
-    const followingId = req.body.userId;
-
-    if (!followingId) {
-      return res.status(400).json({ error: '팔로우할 유저 ID가 필요합니다.' });
-    }
-
-    await Follow.create({ followerId, followingId });
-    res.status(200).json({ message: '팔로우 성공!' });
-
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: '서버 오류' });
-  }
 });
 
 
@@ -192,32 +191,6 @@ app.get('/', (req, res) => {
     user: req.user,  // 로그인한 사용자 정보 (로그인 상태 확인용)
   });
 });
-
-
-// 한줄소개 저장
-// app.post('/save-intro', (req, res) => {
-//   const { content } = req.body;
-//   const userId = req.user.id;  // 로그인된 사용자의 ID
-
-//   // 글이 비어있는지 확인
-//   if (!content) {
-//     return res.status(400).send('내용을 입력해주세요.');
-//   }
-
-//   // 한줄소개 저장
-//   Intro.create({
-//     content,
-//     userId,
-//   })
-//     .then(() => {
-//       res.redirect('/');  // 글 작성 후 홈으로 리다이렉트
-//     })
-//     .catch((err) => {
-//       console.error(err);
-//       res.status(500).send('서버 오류');
-//     });
-// });
-
 
 
 
@@ -250,9 +223,6 @@ app.post('/save-intro', async (req, res) => {
     res.status(500).send('서버 오류');
   }
 });
-
-
-
 
 app.use((req, res, next) => {
   res.status(404).send('Not Found');
