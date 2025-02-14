@@ -27,7 +27,9 @@
     "passport-local": "^1.0.0",
     "pug": "^3.0.3",
     "sequelize": "^6.37.5",
-    "sequelize-cli": "^6.6.2"
+    "sequelize-cli": "^6.6.2",
+    "stopword": "^3.1.4",
+    "xml2js": "^0.6.2"
   },
   "devDependencies": {
     "nodemon": "^3.1.9"
