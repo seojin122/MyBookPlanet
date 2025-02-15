@@ -1,0 +1,135 @@
+
+.container {
+  background-color: #f6f2e6;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+}
+
+.header_community{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 15px;
+  position: relative;
+  margin-bottom: 5px;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: bold;
+}
+.search-bar {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.search-input {
+  position: relative;
+}
+.search-icon {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: gray;
+}
+input {
+  padding-left: 30px;
+  padding-right: 10px;
+  border-radius: 5px;
+  border: 1px solid gray;
+  height: 30px;
+}
+.write-button {
+  background-color: gray;
+  padding: 5px 10px;
+  border-radius: 5px;
+  color: white;
+}
+.review-list {
+  display: flex;
+  gap: 20px;
+}
+.review-card {
+  width: 200px;
+  padding: 15px;
+  background-color: white;
+  box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+  position: relative;
+}
+.pin {
+  position: absolute;
+  top: -10px;
+  right: 10px;
+  background-color: white;
+  padding: 5px;
+  border-radius: 50%;
+  box-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+}
+.book-title {
+  font-size: 22px;
+  color: gray;
+}
+.stars {
+  margin: 5px 0;
+}
+.review-title {
+  font-size: 18px;
+  font-weight: bold;
+}
+.nickname {
+  display: flex;
+  gap: 5px;
+  color: gray;
+}
+.pagination {
+  margin-top: 20px;
+  display: flex;
+  gap: 5px;
+}
+.page-button {
+  width: 30px;
+  height: 30px;
+  background-color: #ddd;
+  border-radius: 5px;
+}
+
+.header_community{
+  color:white;
+}
+
+.form-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+}
+
+button {
+  margin-top: 10px;
+}
+
+.view_ractangle{
+  border: 2px solid black; /* 큰 사각형 테두리 */
+    width: 400px; /* 원하는 가로 크기 */
+    min-height: 30px; /* 충분한 세로 크기 확보 */
+    border-radius: 8px;
+    border: 1px solid black;
+    background-color: transparent;
+    display: inline-block; /* 내부 요소 가로 정렬 */
+    align-items: center; /* 세로 중앙 정렬 */
+    justify-content: space-between; /* 내부 요소를 양쪽 정렬 */
+    padding: 10px; /* 내부 여백 */
+    padding-top: 100px;
+}
