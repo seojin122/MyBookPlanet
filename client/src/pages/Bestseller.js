@@ -9,12 +9,14 @@ import axios from "axios";
 const Bestseller = () => {
   const [books, setBooks] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  
   const [allBooks, setAllBooks] = useState([]);
   const navigate = useNavigate();
 
 
   const [currentPage, setCurrentPage] = useState(1);
 
+  // API 호출하여 베스트셀러 목록 가져오기
   // API 호출하여 베스트셀러 목록 가져오기
   const fetchBestseller = async () => {
     try {
