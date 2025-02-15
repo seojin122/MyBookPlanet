@@ -6,6 +6,7 @@ const dotenv = require('dotenv');
 const path = require('path');
 const nunjucks = require('nunjucks');
 const passport = require('passport');
+const cors = require("cors");
 
 dotenv.config();
 const indexRouter = require('./routes');
@@ -31,7 +32,14 @@ const app = express();
 app.use('/api', indexRouter);  //FE에서 작성
 app.set('port', process.env.PORT || 3002);  //node 서버가 사용할 포트 번호, 리액트의 포트번호(3000)와 충돌하지 않게 다른 번호로 할당
 
+app.use(cors({
+  origin: ["http://localhost:3000"],  // ✅ React 앱(포트 3000) 허용
+  credentials: true,  // ✅ 쿠키, 인증 정보 포함 허용
+  methods: ["GET", "POST", "PUT", "DELETE"], // ✅ 사용할 HTTP 메서드 지정
+  allowedHeaders: ["Content-Type", "Authorization"] // ✅ 허용할 헤더 지정
+}));
 passportConfig(); // 패스포트 설정
+
 
 // 템플릿 엔진 설정
 app.set('view engine', 'html');
@@ -113,13 +121,14 @@ app.get('/user_profile/:username', async (req, res) => {
 });
 
 // 서버 실행
+/*
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+*/
 
-const cors = require('cors');
-app.use(cors()); // 모든 도메인에서의 요청을 허용
+
 
 
 // 동적 렌더링

@@ -36,7 +36,13 @@
                     {% for _ in range(post.rating) %}⭐{% endfor %}
                 </p>
                 
-                <p>작성자: {{ post.user.nick }}</p>
+                <!-- ✅ 프로필 이미지 표시 -->
+                <p>
+                    <img src="{{ post.user.profileImage or '/uploads/default-profile.png' }}" 
+                        alt="프로필 사진" 
+                        style="width: 30px; height: 30px; border-radius: 50%; object-fit: cover;">
+                    작성자: {{ post.user.nick }}
+                </p>
             </div>
         {% endfor %}
     </div>

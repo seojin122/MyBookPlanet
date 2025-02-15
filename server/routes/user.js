@@ -183,9 +183,4 @@ router.get('/user_profile/:username', async (req, res, next) => {
   }
 });
 
-
-
-
-
-
 module.exports = router;

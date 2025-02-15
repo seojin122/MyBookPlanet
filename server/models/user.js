@@ -16,6 +16,10 @@ class User extends Model {
         type: DataTypes.STRING(100),
         allowNull: true,
       },
+      profileImage: { // ✅ 프로필 이미지 컬럼 추가
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
       provider: {
         type: DataTypes.ENUM('local', 'kakao'),
         allowNull: false,
@@ -44,7 +48,7 @@ class User extends Model {
           through: 'user_booklumi_tests',
           as: 'BooklumiTests',
         });
-        
+
     db.User.hasMany(db.Post, { foreignKey: 'userId', as: 'Posts' });
 
     db.User.belongsToMany(db.User, {

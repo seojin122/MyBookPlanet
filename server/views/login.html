@@ -3,13 +3,18 @@
 {% block content %}
   {% if user %}
     <!-- 로그인한 사용자만 글 작성 폼을 볼 수 있도록 조건 추가 -->
-
     <input type="text" id="introContentInput" placeholder="짧은 글을 작성하세요" />
-<button id="saveIntroButton">저장</button>
+    <button id="saveIntroButton">저장</button>
 
-<div id="introListContainer">
-  <!-- 저장된 글들이 이곳에 표시됩니다 -->
-</div>
+    <div id="introListContainer">
+      <!-- 저장된 글들이 이곳에 표시됩니다 -->
+    </div>
+
+    <!-- ✅ 파일 업로드 -->
+    <input type="file" id="fileInput">
+    <button id="uploadButton">이미지 업로드</button>
+    <br>
+    <img id="previewImage" style="max-width: 100px; height: auto; display: none;">
 
   {% else %}
     <!-- 로그인하지 않은 사용자에게는 폼이 보이지 않음 -->
@@ -17,131 +22,148 @@
 {% endblock %}
 
 {% block script %}
-  <script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    // ✅ 기존 이미지 업로드 코드 유지
     if (document.getElementById('img')) {
-      document.getElementById('img').addEventListener('change', function(e) {
-        const formData = new FormData();
-        console.log(this, this.files);
-        formData.append('img', this.files[0]);
-        axios.post('/post/img', formData)
-          .then((res) => {
-            document.getElementById('img-url').value = res.data.url;
-            document.getElementById('img-preview').src = res.data.url;
-            document.getElementById('img-preview').style.display = 'inline';
-          })
-          .catch((err) => {
-            console.error(err);
-          });
-      });
-    }
-    document.querySelectorAll('.twit-follow').forEach(function(tag) {
-      tag.addEventListener('click', function() {
-        const myId = document.querySelector('#my-id');
-        if (myId) {
-          const userId = tag.parentNode.querySelector('.twit-user-id').value;
-          if (userId !== myId.value) {
-            if (confirm('팔로잉하시겠습니까?')) {
-              axios.post(`/user/${userId}/follow`)
-                .then(() => {
-                  location.reload();
+        document.getElementById('img').addEventListener('change', function(e) {
+            const formData = new FormData();
+            console.log(this, this.files);
+            formData.append('img', this.files[0]);
+            axios.post('/post/img', formData)
+                .then((res) => {
+                    document.getElementById('img-url').value = res.data.url;
+                    document.getElementById('img-preview').src = res.data.url;
+                    document.getElementById('img-preview').style.display = 'inline';
                 })
                 .catch((err) => {
-                  console.error(err);
+                    console.error(err);
                 });
-            }
-          }
-        }
-      });
-    });
-
-
-    // 한줄소개
-
-//     const saveIntroButton = document.getElementById('saveIntroButton');
-// const introContentInput = document.getElementById('introContentInput');
-// const introListContainer = document.getElementById('introListContainer');
-
-// saveIntroButton.addEventListener('click', async () => {
-//   const content = introContentInput.value;
-  
-//   if (!content) {
-//     alert('내용을 입력해주세요.');
-//     return;
-//   }
-
-//   try {
-//     const response = await fetch('/save-intro', {
-//       method: 'POST',
-//       headers: {
-//         'Content-Type': 'application/json',
-//       },
-//       body: JSON.stringify({ content }),
-//     });
-
-//     if (!response.ok) {
-//       throw new Error('서버 오류');
-//     }
-
-//     const intros = await response.json();
-
-//     // 저장된 데이터를 화면에 표시
-//     introListContainer.innerHTML = ''; // 기존 목록 초기화
-//     intros.forEach(intro => {
-//       const introElement = document.createElement('div');
-//       introElement.textContent = intro.content;
-//       introListContainer.appendChild(introElement);
-//     });
-
-//     // 입력 필드 비우기
-//     introContentInput.value = '';
-//   } catch (error) {
-//     console.error('Error saving intro:', error);
-//   }
-// });
-
-
-const saveIntroButton = document.getElementById('saveIntroButton');
-const introContentInput = document.getElementById('introContentInput');
-const introListContainer = document.getElementById('introListContainer');
-
-saveIntroButton.addEventListener('click', async () => {
-  const content = introContentInput.value;
-  
-  if (!content) {
-    alert('내용을 입력해주세요.');
-    return;
-  }
-
-  try {
-    const response = await fetch('/save-intro', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ content }),
-    });
-
-    if (!response.ok) {
-      throw new Error('서버 오류');
+        });
     }
 
-    const intros = await response.json();
-
-    // 새 글만 화면에 표시 (기존 목록 삭제 후 추가)
-    introListContainer.innerHTML = ''; // 기존 목록 초기화
-    intros.forEach(intro => {
-      const introElement = document.createElement('div');
-      introElement.textContent = intro.content;
-      introListContainer.appendChild(introElement);
+    document.querySelectorAll('.twit-follow').forEach(function(tag) {
+        tag.addEventListener('click', function() {
+            const myId = document.querySelector('#my-id');
+            if (myId) {
+                const userId = tag.parentNode.querySelector('.twit-user-id').value;
+                if (userId !== myId.value) {
+                    if (confirm('팔로잉하시겠습니까?')) {
+                        axios.post(`/user/${userId}/follow`)
+                            .then(() => {
+                                location.reload();
+                            })
+                            .catch((err) => {
+                                console.error(err);
+                            });
+                    }
+                }
+            }
+        });
     });
 
-    // 입력 필드 비우기
-    introContentInput.value = '';
-  } catch (error) {
-    console.error('Error saving intro:', error);
-  }
+    // ✅ 한줄 소개 저장 기능 유지
+    const saveIntroButton = document.getElementById("saveIntroButton");
+    const introContentInput = document.getElementById("introContentInput");
+    const introListContainer = document.getElementById("introListContainer");
+
+    if (saveIntroButton) {
+        saveIntroButton.addEventListener("click", async () => {
+            const content = introContentInput.value;
+
+            if (!content) {
+                alert("내용을 입력해주세요.");
+                return;
+            }
+
+            try {
+                const response = await fetch("/save-intro", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ content }),
+                });
+
+                if (!response.ok) {
+                    throw new Error("서버 오류");
+                }
+
+                const intros = await response.json();
+
+                // 기존 목록 초기화 후 새 글 추가
+                introListContainer.innerHTML = "";
+                intros.forEach((intro) => {
+                    const introElement = document.createElement("div");
+                    introElement.textContent = intro.content;
+                    introListContainer.appendChild(introElement);
+                });
+
+                // 입력 필드 비우기
+                introContentInput.value = "";
+            } catch (error) {
+                console.error("Error saving intro:", error);
+            }
+        });
+    }
+
+    // ✅ 🔥 **프로필 이미지 업로드 기능 (기존 기능 유지 & 새로고침 후에도 유지됨!)**
+    const fileInput = document.getElementById("fileInput");
+    const previewImage = document.getElementById("previewImage");
+    const uploadButton = document.getElementById("uploadButton");
+
+    // 📌 **서버에서 현재 프로필 이미지 가져와서 미리보기 표시**
+    fetch("/user/profile")
+        .then(response => response.json())
+        .then(data => {
+            if (data.profileImage) {
+                previewImage.src = data.profileImage;
+                previewImage.style.display = "block";
+            }
+        })
+        .catch(error => console.error("프로필 이미지 로드 오류:", error));
+
+    // 📌 **파일 선택 시 미리보기 업데이트**
+    fileInput.addEventListener("change", function () {
+        if (fileInput.files.length > 0) {
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                previewImage.src = e.target.result;
+                previewImage.style.display = "block";
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    // 📌 **파일 업로드 기능 (🔥 기존 `/users/profile-image` → `/image/profile`로 수정)**
+    uploadButton.addEventListener("click", function () {
+        if (fileInput.files.length === 0) {
+            alert("파일을 선택하세요!");
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append("profileImage", fileInput.files[0]);
+
+        fetch("/image/profile", {  // ✅ 올바른 엔드포인트로 변경
+            method: "POST",
+            body: formData,
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert("프로필 이미지가 업데이트되었습니다.");
+                location.reload();  // 새로고침
+            } else {
+                alert("업로드 실패: " + data.message);
+            }
+        })
+        .catch(error => {
+            console.error("업로드 오류:", error);
+            alert("업로드 중 오류가 발생했습니다.");
+        });
+    });
 });
-
-  </script>
+</script>
 {% endblock %}
-
