@@ -10,8 +10,7 @@ import bookicon from '../assets/bookicon.png';
 const MyDrawer = () => {
   const [profile, setProfile] = useState({
     nickname: "닉네임",
-    introduction: "안녕하세요~",  // 한 줄 소개
-    readerType: "📖 활기 넘치는 탐구자",
+    introduction: "📖 활기 넘치는 탐구자입니다!",  // 한 줄 소개
     following: 120, 
     followers: 350, 
   });
@@ -63,6 +62,7 @@ const MyDrawer = () => {
   };
 
   return (
+    // 상단바
     <div className="MyDrawer">
       <header className="header">
         <div className="img-group">
@@ -104,6 +104,7 @@ const MyDrawer = () => {
             onClick={handleBookClick}
           />
 
+          {/* 닉네임 수정하기 */}
           <h3 className="greeting">
             {!isEditingNickname ? (
               <span>{profile.nickname} 님, 반가워요!</span>
@@ -118,7 +119,6 @@ const MyDrawer = () => {
 
           {!isEditingNickname ? (
             <button className="nick-btn" onClick={handleEditNickname}>
-              닉네임 변경하기
             </button>
           ) : (
             <div>
@@ -137,12 +137,14 @@ const MyDrawer = () => {
             alt="Book Logo"
             onClick={handleBookClick}
           />
+          {/* 책 이미지 위에 팔로잉, 팔로워수 표시 */}
           <h3 className="f-num">
             <span className="f1">팔로잉</span><span className="f2"> 팔로워</span>
             <span className="f3">{profile.following}</span><span className="f4">{profile.followers}</span>
           </h3>
         </div>
 
+{/* 한줄소개 설정 및 수정 */}
         <div className="right-section">
           {content === "MyDrawer_following" ? (
             <div className="intro">
@@ -175,7 +177,8 @@ const MyDrawer = () => {
             )}
             </div>
           </div>
-          ) : (
+          ) : ( 
+            // 팔로잉 팔로워 목록
             <div className="profile-details2">
               <div className="info-box">
                 <h3>팔로잉/팔로워 정보</h3>
@@ -196,6 +199,7 @@ const MyDrawer = () => {
               )}
             </div>
 
+            {/* 책 이미지 클릭하면 팔로워 목록 보여줌 */}
             <div className="follower-section">
               <h4>팔로워 목록</h4>
               {profile.followersList && profile.followersList.length > 0 ? (
@@ -217,38 +221,7 @@ const MyDrawer = () => {
 
           )}
 
-
-{/* <div className="intro">
-            <h4 className="intro-title">한 줄 소개</h4>
-            <div className="intro-container">
-            {!isEditingIntroduction ? (
-              <p className="introduction-box">{profile.introduction}</p>
-            ) : (
-              <input
-                type="text"
-                value={newIntroduction}
-                onChange={(e) => setNewIntroduction(e.target.value)}
-              />
-            )}
-
-            {!isEditingIntroduction ? (
-              <button className="edit-btn" onClick={handleEditIntroduction}>
-                수정하기
-              </button>
-            ) : (
-              <div>
-                <button className="edit-btn" onClick={handleSaveIntroduction}>
-                  저장
-                </button>
-                <button className="edit-btn" onClick={handleCancelIntroduction}>
-                  취소
-                </button>
-              </div>
-            )}
-            </div>
-          </div> */}
-
-
+          {/* 회원 탈퇴 버튼 */}
           <button className="delete-btn">👤 회원 탈퇴</button>
         </div>
       </div>
