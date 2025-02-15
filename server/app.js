@@ -6,7 +6,6 @@ const dotenv = require('dotenv');
 const path = require('path');
 const nunjucks = require('nunjucks');
 const passport = require('passport');
-const cors = require("cors");
 
 dotenv.config();
 const indexRouter = require('./routes');
@@ -32,14 +31,7 @@ const app = express();
 app.use('/api', indexRouter);  //FE에서 작성
 app.set('port', process.env.PORT || 3002);  //node 서버가 사용할 포트 번호, 리액트의 포트번호(3000)와 충돌하지 않게 다른 번호로 할당
 
-app.use(cors({
-  origin: ["http://localhost:3000"],  // ✅ React 앱(포트 3000) 허용
-  credentials: true,  // ✅ 쿠키, 인증 정보 포함 허용
-  methods: ["GET", "POST", "PUT", "DELETE"], // ✅ 사용할 HTTP 메서드 지정
-  allowedHeaders: ["Content-Type", "Authorization"] // ✅ 허용할 헤더 지정
-}));
 passportConfig(); // 패스포트 설정
-
 
 // 템플릿 엔진 설정
 app.set('view engine', 'html');
@@ -128,6 +120,14 @@ app.listen(PORT, () => {
 });
 */
 
+const cors = require("cors");
+
+app.use(cors({
+    origin: ["http://localhost:3000"],  // ✅ React 앱(포트 3000) 허용
+    credentials: true,  // ✅ 쿠키, 인증 정보 포함 허용
+    methods: ["GET", "POST", "PUT", "DELETE"], // ✅ 사용할 HTTP 메서드 지정
+    allowedHeaders: ["Content-Type", "Authorization"] // ✅ 허용할 헤더 지정
+}));
 
 
 
@@ -245,4 +245,23 @@ app.use((err, req, res, next) => {
 
 app.listen(app.get('port'), () => {
   console.log(app.get('port'), '번 포트에서 대기 중');
+});
+
+
+//날씨
+require('dotenv').config();
+const weatherRoutes = require('./routes/weather');
+const PORT = process.env.PORT || 5000;
+
+app.use(express.static(path.join(__dirname, 'public'))); // ✅ 정적 파일 제공
+
+// ✅ HTML 파일을 제공하도록 설정
+app.get('/weather', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'weather.html'));
+});
+
+app.use('/api', weatherRoutes);
+
+app.listen(PORT, () => {
+    console.log(`✅ Server is running on http://localhost:${PORT}`);
 });

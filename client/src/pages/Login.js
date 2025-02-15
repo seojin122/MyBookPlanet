@@ -6,7 +6,7 @@ import bookIcon from "../assets/bookicon.png";
 import lamp from "../assets/lamp.png";
 
 const Login = () => {
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(""); // 이메일, 비번 등 상태 관리 초기화
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
@@ -14,18 +14,19 @@ const Login = () => {
   const handleEmailChange = (e) => setEmail(e.target.value);
   const handlePasswordChange = (e) => setPassword(e.target.value);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e) => { // 로그인 요청 함수
     e.preventDefault();
-    setError("");
+    setError(""); 
 
-    try {
-      const response = await axios.post("/auth/login", {
+    try { // 서버에 로그인 요청
+      //POST /auth/login 엔드포인트로 이메일과 비밀번호 json으로 전송
+      const response = await axios.post("/auth/login", { 
         email,
         password,
-      }, { withCredentials: true });
+      }, { withCredentials: true }); //쿠키 포험험
 
       console.log("로그인 성공:", response.data);
-      localStorage.setItem("token", response.data.token); // JWT 저장
+      localStorage.setItem("token", response.data.token); // JWT 토큰을 localStorage에 저장
       alert("로그인 성공!");
       navigate("/"); // 메인 페이지로 이동
     } catch (err) {
