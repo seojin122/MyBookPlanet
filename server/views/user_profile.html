@@ -1,0 +1,28 @@
+{% extends 'layout.html' %}
+
+
+{% block content %}
+  <div class="profile">
+    <h2>{{ user.nick }}의 프로필</h2>
+
+    <p>닉네임: {{ user.nick }}</p>
+    <p>이메일: {{ user.email }}</p>
+    <p>팔로잉: {{ user.Followings.length }}</p>
+    <p>팔로워: {{ user.Followers.length }}</p>
+
+    <h3>팔로잉 목록</h3>
+    <ul>
+      {% for following in user.Followings %}
+        <li><a href="/user_profile/{{ following.nick }}">{{ following.nick }}</a></li>
+      {% endfor %}
+    </ul>
+
+    <h3>팔로워 목록</h3>
+    <ul>
+      {% for follower in user.Followers %}
+        <li><a href="/user_profile/{{ follower.nick }}">{{ follower.nick }}</a></li>
+      {% endfor %}
+    </ul>
+  </div>
+{% endblock %}
+
