@@ -118,7 +118,8 @@ app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
 
-
+const cors = require('cors');
+app.use(cors()); // 모든 도메인에서의 요청을 허용
 
 
 // 동적 렌더링
