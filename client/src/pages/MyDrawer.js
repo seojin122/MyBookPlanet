@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import axios from "axios";
 import '../styles/MyDrawer.css';
 import logo from "../assets/logo.png";
 import lamp from '../assets/lamp.png';
@@ -8,61 +9,39 @@ import book from '../assets/book.png';
 import bookicon from '../assets/bookicon.png';
 
 const MyDrawer = () => {
+  const userId = "1"; // 실제 사용자 ID
+
   const [profile, setProfile] = useState({
-    nickname: "닉네임",
-    introduction: "📖 활기 넘치는 탐구자입니다!",  // 한 줄 소개
-    following: 120, 
-    followers: 350, 
+    nickname: "로딩 중...",
+    followingCount: 0,
+    followerCount: 0,
   });
 
   const [isEditingNickname, setIsEditingNickname] = useState(false);
-  const [newNickname, setNewNickname] = useState(profile.nickname);
+  const [newNickname, setNewNickname] = useState("");
 
-  const [isEditingIntroduction, setIsEditingIntroduction] = useState(false);
-  const [newIntroduction, setNewIntroduction] = useState(profile.introduction);
+  useEffect(() => {
+    axios.get(`http://localhost:5000/api/users/${userId}`)
+      .then(response => {
+        setProfile(response.data);
+        setNewNickname(response.data.nickname); // 닉네임 변경 초기값 설정
+      })
+      .catch(error => console.error("사용자 정보 불러오기 실패:", error));
+  }, []);
 
-  const handleEditNickname = () => {
-    setIsEditingNickname(true);
-  };
-
-  const handleCancelNickname = () => {
-    setIsEditingNickname(false);
-    setNewNickname(profile.nickname);
-  };
-
+  const handleEditNickname = () => setIsEditingNickname(true);
+  const handleCancelNickname = () => setIsEditingNickname(false);
+  
   const handleSaveNickname = () => {
-    setProfile((prevProfile) => ({
-      ...prevProfile,
-      nickname: newNickname,
-    }));
-    setIsEditingNickname(false);
-  };
-
-  const handleEditIntroduction = () => {
-    setIsEditingIntroduction(true);
-  };
-
-  const handleCancelIntroduction = () => {
-    setIsEditingIntroduction(false);
-    setNewIntroduction(profile.introduction);
-  };
-
-  const handleSaveIntroduction = () => {
-    setProfile((prevProfile) => ({
-      ...prevProfile,
-      introduction: newIntroduction,
-    }));
-    setIsEditingIntroduction(false);
-  };
-
-  const [content, setContent] = useState("MyDrawer_following");
-
-  const handleBookClick = () => {
-    setContent(content === "MyDrawer_following" ? "MyDrawer_profile" : "MyDrawer_following");
+    axios.put(`http://localhost:5000/api/users/${userId}/nickname`, { nickname: newNickname })
+      .then(response => {
+        setProfile(prevProfile => ({ ...prevProfile, nickname: response.data.nickname }));
+        setIsEditingNickname(false);
+      })
+      .catch(error => console.error("닉네임 변경 실패:", error));
   };
 
   return (
-    // 상단바
     <div className="MyDrawer">
       <header className="header">
         <div className="img-group">
@@ -97,14 +76,9 @@ const MyDrawer = () => {
 
       <div className="main-container-Drawer">
         <div className="left-section">
-          <img
-            src={logo_user}
-            className="logo-user"
-            alt="User Profile"
-            onClick={handleBookClick}
-          />
+          <img src={logo_user} className="logo-user" alt="User Profile" />
 
-          {/* 닉네임 수정하기 */}
+          {/* 닉네임 수정 */}
           <h3 className="greeting">
             {!isEditingNickname ? (
               <span>{profile.nickname} 님, 반가워요!</span>
@@ -132,97 +106,24 @@ const MyDrawer = () => {
             </div>
           )}
 
-          <img
-            src={book}
-            className="logo-Drawer"
-            alt="Book Logo"
-            onClick={handleBookClick}
-          />
-          {/* 책 이미지 위에 팔로잉, 팔로워수 표시 */}
+          <img src={book} className="logo-Drawer" alt="Book Logo" />
+          
+          {/* 팔로잉/팔로워 수 표시 */}
           <h3 className="f-num">
             <span className="f1">팔로잉</span><span className="f2"> 팔로워</span>
-            <span className="f3">{profile.following}</span><span className="f4">{profile.followers}</span>
+            <span className="f3">{profile.followingCount}</span>
+            <span className="f4">{profile.followerCount}</span>
           </h3>
         </div>
 
-{/* 한줄소개 설정 및 수정 */}
         <div className="right-section">
-          {content === "MyDrawer_following" ? (
-            <div className="intro">
+          <div className="intro">
             <h4 className="intro-title">한 줄 소개</h4>
             <div className="intro-container">
-            {!isEditingIntroduction ? (
-              <p className="introduction-box">{profile.introduction}</p>
-            ) : (
-              <input
-                type="text" 
-                className="edit-input"
-                value={newIntroduction}
-                onChange={(e) => setNewIntroduction(e.target.value)}
-              />
-            )}
-
-            {!isEditingIntroduction ? (
-              <button className="edit-btn" onClick={handleEditIntroduction}>
-                수정하기
-              </button>
-            ) : (
-              <div>
-                <button className="edit-btn" onClick={handleSaveIntroduction}>
-                  저장
-                </button>
-                <button className="edit-btn" onClick={handleCancelIntroduction}>
-                  취소
-                </button>
-              </div>
-            )}
+              <p className="introduction-box">📖 활기 넘치는 탐구자입니다!</p>
             </div>
           </div>
-          ) : ( 
-            // 팔로잉 팔로워 목록
-            <div className="profile-details2">
-              <div className="info-box">
-                <h3>팔로잉/팔로워 정보</h3>
-              </div>
-              <div className="following-followers">
-              <div className="following-section">
-              <h4>팔로잉 목록</h4>
-              {profile.followings && profile.followings.length > 0 ? (
-                profile.followings.map((following) => (
-                  <div key={following.nick}>
-                    <Link to={`/myDrawer/${following.nick}`}>
-                      {following.nick}
-                    </Link>
-                  </div>
-                ))
-              ) : (
-                <p>팔로잉이 없습니다.</p>
-              )}
-            </div>
 
-            {/* 책 이미지 클릭하면 팔로워 목록 보여줌 */}
-            <div className="follower-section">
-              <h4>팔로워 목록</h4>
-              {profile.followersList && profile.followersList.length > 0 ? (
-                profile.followersList.map((follower) => (
-                  <div key={follower.nick}>
-                    <Link to={`/myDrawer/${follower.nick}`}>
-                      {follower.nick}
-                    </Link>
-                  </div>
-                ))
-              ) : (
-                <p>팔로워가 없습니다.</p>
-              )}
-            </div>
-              </div>
-            </div>
-
-
-
-          )}
-
-          {/* 회원 탈퇴 버튼 */}
           <button className="delete-btn">👤 회원 탈퇴</button>
         </div>
       </div>
@@ -231,4 +132,3 @@ const MyDrawer = () => {
 };
 
 export default MyDrawer;
-

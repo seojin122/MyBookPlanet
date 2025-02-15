@@ -113,10 +113,10 @@ app.get('/user_profile/:username', async (req, res) => {
 });
 
 // 서버 실행
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+// const PORT = process.env.PORT || 3000;
+// app.listen(PORT, () => {
+//   console.log(`Server running on port ${PORT}`);
+// });
 
 
 
@@ -241,6 +241,7 @@ app.listen(app.get('port'), () => {
 //날씨
 require('dotenv').config();
 const weatherRoutes = require('./routes/weather');
+const PORT = process.env.PORT || 5000;
 
 app.use(express.static(path.join(__dirname, 'public'))); // ✅ 정적 파일 제공
 
