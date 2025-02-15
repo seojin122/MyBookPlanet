@@ -1,0 +1,183 @@
+.main-container {
+    text-align: center;
+    font-family: Arial, sans-serif;
+    background-color: #f9f6ec;
+    height: 100vh;
+  }
+  
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 45px 150px;
+    background-color: #f9f6ec;;
+    border-bottom: 2px solid #201f11;
+    position: relative;
+    margin-bottom: 50px;
+  }
+  
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+  }
+
+.underline {
+    width: 90px;
+    height: 20px;
+    background-color: #684c30;
+    margin-top: 5px;
+  }
+
+.nav-group {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 150px;
+    position: absolute;
+    left: 50%;
+    top: calc(100% + 15px);
+    transform: translateX(-50%);
+    border-bottom: 2px solid #201f11;
+    width: 100%;
+  }
+
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+.nav-group a {
+    text-decoration: none;
+    font-weight: bold;
+    color: black;
+    padding-bottom: 10%;
+  }
+
+.logout-btn {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    background-color: #ccb494;
+    border: none;
+    padding: 3px 15px;
+    border-radius: 15px;
+    cursor: pointer;
+  }
+  
+.logo-container {
+    margin-top: 80px;
+  }
+  
+.logo {
+    width: 300px;
+    height: auto;
+  }
+  
+.button-group {
+    display: flex;
+    justify-content: center;
+    margin-top: 45px;
+  }
+  
+.btn {
+    display: inline-block;
+    padding: 10px 30px;
+    margin: 0 30px;
+    border-radius: 15px;
+    text-decoration: none;
+    font-weight: bold;
+    color: white;
+  }
+  
+.brown {
+    background-color: #9b744c;
+  }
+  
+.green {
+    background-color: #459e48;
+  }
+  
+
+.lamp {
+  width: 45px;
+  height: auto;
+  margin: 0 15px; 
+}
+
+.img-group {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 150px;
+  position:fixed;
+  top: 0px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  padding-bottom: 20%;
+}
+
+
+
+
+/*
+<div className="squre" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', width: "700px", height: "auto" }}>
+  <form onSubmit={handleSubmit} className="comment-form" style={{ width: "100%" }}>
+    <div className="user-info" style={{ marginLeft: '20px', display: 'flex', alignItems: 'center', justifyContent: 'flex-start' }}>
+      <img src={logo_user} className="logo-community" alt="Logo" style={{ width: '50px', height: 'auto', justifyContent: 'flex-start' }} />
+      <span className="nickname" style={{ marginRight: '10px' }}>{review.nickname}</span>
+    </div>
+    <input 
+      type="text" 
+      name="reviewContent" 
+      placeholder="댓글 작성하기" 
+      value={newComment} 
+      onChange={handleInputChange} 
+      required 
+      style={{ width: "680px", height: "100px", fontSize: "16px", padding: "10px" }} 
+    />
+    <button type="submit">등록</button>
+  </form>
+
+  { 댓글 리스트 (최신 댓글이 위쪽으로) }
+  <ul style={{ listStyleType: "none", padding: 0, width: "100%", display: 'flex', flexDirection: 'column-reverse' }}>
+    {comments?.slice().reverse().map((comment) => (
+      <li key={comment.id} style={{ border: "1px solid #ddd", padding: "10px", margin: "10px 0", borderRadius: "5px" }}>
+        <strong>{comment.nickname}</strong>: {comment.content}
+        <button onClick={() => setReplyTo(comment.id)}>답글 달기</button>
+
+        {replyTo === comment.id && (
+          <div>
+            <input 
+              type="text" 
+              placeholder="답글 작성하기" 
+              value={replyContent} 
+              onChange={handleReplyChange} 
+              required 
+              style={{ padding: "5px", fontSize: "14px" }} 
+            />
+            <button onClick={() => handleReply(comment.id)}>등록</button>
+          </div>
+        )}
+
+        {comment.replies?.length > 0 && (
+          <ul style={{ listStyleType: "none", paddingLeft: "20px" }}>
+            {comment.replies.map((reply) => (
+              <li key={reply.id} style={{ border: "1px solid #eee", padding: "5px", margin: "5px 0", borderRadius: "5px" }}>
+                <strong>{reply.nickname}</strong>: {reply.content}
+              </li>
+            ))}
+          </ul>
+        )}
+      </li>
+    ))}
+  </ul>
+</div>
+
+
+
+*/
+

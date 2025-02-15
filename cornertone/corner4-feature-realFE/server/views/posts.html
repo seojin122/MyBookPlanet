@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>게시글 목록</title>
+    <style>
+        .post { border-bottom: 1px solid #ddd; padding: 10px; }
+        .post a { text-decoration: none; color: black; }
+        .post a:hover { text-decoration: underline; }
+        .search-box { margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+    <h1>게시글 목록</h1>
+
+    <!-- 📌 검색 폼 추가 -->
+    <div class="search-box">
+        <form action="/posts" method="GET">
+            <input type="text" name="search" placeholder="책 제목 또는 감상평 검색" value="{{ search or '' }}">
+            <button type="submit">검색</button>
+        </form>
+    </div>
+
+    <button class="btn" onclick="location.href='/posts/new'">작성하기</button>
+    <div>
+        {% for post in posts %}
+            <div class="post">
+                <h3>
+                    <a href="/posts/{{ post.id }}">책 제목: {{ post.bookTitle }}</a>
+                </h3>
+                <h4>
+                    <a href="/posts/{{ post.id }}">감상평: {{ post.reviewTitle }}</a>
+                </h4>
+                <p class="star">
+                    {% for _ in range(post.rating) %}⭐{% endfor %}
+                </p>
+                
+                <p>작성자: {{ post.user.nick }}</p>
+            </div>
+        {% endfor %}
+    </div>
+</body>
+</html>

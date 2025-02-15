@@ -1,0 +1,147 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+  {% if user %}
+    <!-- 로그인한 사용자만 글 작성 폼을 볼 수 있도록 조건 추가 -->
+
+    <input type="text" id="introContentInput" placeholder="짧은 글을 작성하세요" />
+<button id="saveIntroButton">저장</button>
+
+<div id="introListContainer">
+  <!-- 저장된 글들이 이곳에 표시됩니다 -->
+</div>
+
+  {% else %}
+    <!-- 로그인하지 않은 사용자에게는 폼이 보이지 않음 -->
+  {% endif %}
+{% endblock %}
+
+{% block script %}
+  <script>
+    if (document.getElementById('img')) {
+      document.getElementById('img').addEventListener('change', function(e) {
+        const formData = new FormData();
+        console.log(this, this.files);
+        formData.append('img', this.files[0]);
+        axios.post('/post/img', formData)
+          .then((res) => {
+            document.getElementById('img-url').value = res.data.url;
+            document.getElementById('img-preview').src = res.data.url;
+            document.getElementById('img-preview').style.display = 'inline';
+          })
+          .catch((err) => {
+            console.error(err);
+          });
+      });
+    }
+    document.querySelectorAll('.twit-follow').forEach(function(tag) {
+      tag.addEventListener('click', function() {
+        const myId = document.querySelector('#my-id');
+        if (myId) {
+          const userId = tag.parentNode.querySelector('.twit-user-id').value;
+          if (userId !== myId.value) {
+            if (confirm('팔로잉하시겠습니까?')) {
+              axios.post(`/user/${userId}/follow`)
+                .then(() => {
+                  location.reload();
+                })
+                .catch((err) => {
+                  console.error(err);
+                });
+            }
+          }
+        }
+      });
+    });
+
+
+    // 한줄소개
+
+//     const saveIntroButton = document.getElementById('saveIntroButton');
+// const introContentInput = document.getElementById('introContentInput');
+// const introListContainer = document.getElementById('introListContainer');
+
+// saveIntroButton.addEventListener('click', async () => {
+//   const content = introContentInput.value;
+  
+//   if (!content) {
+//     alert('내용을 입력해주세요.');
+//     return;
+//   }
+
+//   try {
+//     const response = await fetch('/save-intro', {
+//       method: 'POST',
+//       headers: {
+//         'Content-Type': 'application/json',
+//       },
+//       body: JSON.stringify({ content }),
+//     });
+
+//     if (!response.ok) {
+//       throw new Error('서버 오류');
+//     }
+
+//     const intros = await response.json();
+
+//     // 저장된 데이터를 화면에 표시
+//     introListContainer.innerHTML = ''; // 기존 목록 초기화
+//     intros.forEach(intro => {
+//       const introElement = document.createElement('div');
+//       introElement.textContent = intro.content;
+//       introListContainer.appendChild(introElement);
+//     });
+
+//     // 입력 필드 비우기
+//     introContentInput.value = '';
+//   } catch (error) {
+//     console.error('Error saving intro:', error);
+//   }
+// });
+
+
+const saveIntroButton = document.getElementById('saveIntroButton');
+const introContentInput = document.getElementById('introContentInput');
+const introListContainer = document.getElementById('introListContainer');
+
+saveIntroButton.addEventListener('click', async () => {
+  const content = introContentInput.value;
+  
+  if (!content) {
+    alert('내용을 입력해주세요.');
+    return;
+  }
+
+  try {
+    const response = await fetch('/save-intro', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ content }),
+    });
+
+    if (!response.ok) {
+      throw new Error('서버 오류');
+    }
+
+    const intros = await response.json();
+
+    // 새 글만 화면에 표시 (기존 목록 삭제 후 추가)
+    introListContainer.innerHTML = ''; // 기존 목록 초기화
+    intros.forEach(intro => {
+      const introElement = document.createElement('div');
+      introElement.textContent = intro.content;
+      introListContainer.appendChild(introElement);
+    });
+
+    // 입력 필드 비우기
+    introContentInput.value = '';
+  } catch (error) {
+    console.error('Error saving intro:', error);
+  }
+});
+
+  </script>
+{% endblock %}
+
