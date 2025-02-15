@@ -6,51 +6,19 @@ import lamp from "../assets/lamp.png";
 import logo from "../assets/logo.png";
 import axios from "axios";
 
-// 더미 데이터터
-const dummyData = [
-  {
-    title: "광현원의 진보를 위한 역사",
-    author: "저자 A",
-    cover: "https://via.placeholder.com/150",
-    link: "#"
-  },
-  {
-    title: "초역 부처님의 말",
-    author: "저자 B",
-    cover: "https://via.placeholder.com/150",
-    link: "#"
-  },
-  {
-    title: "소년이 온다",
-    author: "저자 C",
-    cover: "https://via.placeholder.com/150",
-    link: "#"
-  },
-  {
-    title: "대한민국 건국은 혁명이었다",
-    author: "저자 D",
-    cover: "https://via.placeholder.com/150",
-    link: "#"
-  },
-  {
-    title: "해커스 토익 VOCA",
-    author: "저자 E",
-    cover: "https://via.placeholder.com/150",
-    link: "#"
-  }
-];
-
 const Bestseller = () => {
   const [books, setBooks] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  
   const [allBooks, setAllBooks] = useState([]);
   const navigate = useNavigate();
+
+
+  const [currentPage, setCurrentPage] = useState(1);
 
   // API 호출하여 베스트셀러 목록 가져오기
   const fetchBestseller = async () => {
     try {
-      const response = await axios.get('/book/bestseller', {
+      const response = await axios.get('/book/bestseller?itemsPerPage=25', {
         headers: {
           'Cache-Control': 'no-cache', 
           'Pragma': 'no-cache',
@@ -60,32 +28,41 @@ const Bestseller = () => {
   
       console.log('받아온 데이터:', response.data); // 데이터 확인
       
-      // item 배열로 데이터 저장
-      const items = response.data.item || response.data; // item이 없으면 data 전체 사용
-      setBooks(items); 
-      setAllBooks(items); 
-
+      const items = response.data.item || response.data;
+      setAllBooks(items); // 전체 25개 저장
+      setBooks(items.slice(0, 5)); // 첫 페이지 1~5위 책만 표시
+  
     } catch (error) {
-      console.error("베스트셀러 목록을 가져오는 중 오류 발생:", error);
+      console.error("베스트셀러 목록 오류", error);
     }
   };
+  
 
   // 페이지 로드 시 API 호출
   useEffect(() => {
     fetchBestseller();
   }, []);
 
-  // 입력된 검색어로 필터링
-  const handleSearch = () => {
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    const startIndex = (page - 1) * 5;
+    setBooks(allBooks.slice(startIndex, startIndex + 5));
+  };
+
+
+  // 검색어가 변경될 때마다 자동으로 필터링
+  useEffect(() => {
     if (searchTerm.trim() === "") {
-      setBooks(allBooks);
+      const startIndex = (currentPage - 1) * 5;
+      setBooks(allBooks.slice(startIndex, startIndex + 5));
     } else {
       const filteredBooks = allBooks.filter((book) =>
         book.title.toLowerCase().includes(searchTerm.toLowerCase())
       );
       setBooks(filteredBooks);
     }
-  };
+  }, [searchTerm, allBooks, currentPage]);
 
   return (
     <div className="main-container">
@@ -127,20 +104,15 @@ const Bestseller = () => {
               placeholder="🔍 검색"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  handleSearch();
-                }
-              }}
             />
           </div>
         </div>
 
         <div className="book-list">
-          {books && books.length > 0 ? (
+        {books.length > 0 ? (
             books.map((book, index) => (
               <div key={index} className="book-item">
-                <span className="rank">{index + 1}</span>
+                <span className="rank">{(currentPage - 1) * 5 + index + 1}</span>
                 <img 
                   src={book.cover} 
                   alt={book.title} 
@@ -151,23 +123,45 @@ const Bestseller = () => {
                 <p 
                   className="book-title"
                   onClick={() => navigate(`/book/${encodeURIComponent(book.title)}`)}
-                  style={{ cursor: "pointer" }}
+                  style={{ cursor: "pointer", fontSize: "15px" }}
                 >
-                  {book.title}
+                  {book.title.split("-")[0].trim()}
                 </p>
-                <p className="book-author">{book.author}</p>
-                <a href={book.link} target="_blank" rel="noopener noreferrer">
-                  자세히 보기
-                </a>
               </div>
             ))
           ) : (
             <p className="no-results">검색 결과가 없습니다.</p>
           )}
         </div>
-      </div>
-    </div>
-  );
+        <div className="pagination">
+          {[1, 2].map((page) => (
+            <button
+              key={page}
+              className={currentPage === page ? "active" : ""}
+              onClick={() => handlePageChange(page)}
+            >
+              {page}
+            </button>
+          ))}
+        </div>
+</div>
+</div>
+);
 };
 
+
 export default Bestseller;
+
+/* 데이터 크기에 따라 동적 코딩
+<div className="pagination">
+{Array.from({ length: Math.ceil(allBooks.length / 5) }, (_, i) => i + 1).map((page) => (
+  <button
+    key={page}
+    className={currentPage === page ? "active" : ""}
+    onClick={() => handlePageChange(page)}
+  >
+    {page}
+  </button>
+))}
+  </div>
+ */

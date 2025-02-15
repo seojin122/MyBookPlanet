@@ -81,7 +81,7 @@
   }
   
   .bestseller-section {
-    margin-top: 100px; /* 100px 아래로 이동 */
+    margin-top: 100px;  
   }
   
   .bestseller-header {
@@ -89,7 +89,7 @@
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    max-width: 800px; /* 적절한 최대 너비 설정 */
+    max-width: 800px; 
     margin: 0 auto 20px;
   }
   
@@ -110,6 +110,7 @@
     border: 1px solid #ccc;
     border-radius: 5px;
     width: 300px;
+    padding: 10px 10px 10px 35px; /*검색창 패딩*/
   }
   
   .search-bar button {
@@ -127,18 +128,18 @@
   
   .book-list {
     display: flex;
-    flex-direction: row; /* 가로 정렬 */
-    justify-content: center; /* 가운데 정렬 */
-    gap: 20px; /* 각 책 사이의 간격 */
-    flex-wrap: wrap; /* 화면이 좁을 때 줄바꿈 */
-    margin-top: 100px;
+    flex-direction: row; 
+    justify-content: center;  
+    gap: 20px;  
+    flex-wrap: wrap; 
+    margin-top: 40px;
   }
   
   .book-item {
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 150px; /* 아이템 크기 조정 */
+    width: 150px; 
   }
   
   .book-cover {
@@ -149,12 +150,57 @@
   
   .book-title {
     margin-top: 10px;
-    font-size: 14px;
+    font-size: 7px;
     text-align: center;
+    color: #201f11;
   }
 
   .bestseller-header h2 {
     position: relative;
     right: 70px;
+  }
+  
+  .rank {
+    display: inline-block;  
+    width: 25px;  
+    height: 25px;  
+    text-align: center;  
+    line-height: 30px; 
+    font-size: 14px;  
+    font-weight: bold;  
+    border-radius: 5px;  
+    border: 3px solid black;  
+    margin: 10px;
+    background-color: #ffffff;
+  }
+  
+  .pagination {
+    display: flex;
+    justify-content: center; 
+    align-items: center;  
+    gap: 10px; 
+    margin-top: 20px; 
+  }
+  
+  .pagination button {
+    padding: 5px 10px;
+    border: none;
+    background-color: #f0f0f0;
+    color: #333;
+    font-size: 13px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+    border: 3px solid black; 
+  }
+  
+  .pagination button:hover {
+    background-color: #ddd;
+  }
+  
+  .pagination .active {
+    background-color: #ffffff;  
+    color: rgb(0, 0, 0);
+    font-weight: bold;
   }
   
