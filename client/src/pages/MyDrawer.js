@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import '../styles/MyDrawer.css';
 import logo from "../assets/logo.png";
@@ -10,24 +10,51 @@ import bookicon from '../assets/bookicon.png';
 const MyDrawer = () => {
   const [profile, setProfile] = useState({
     nickname: "닉네임",
-    introduction: "안녕하세요~",
+    introduction: "안녕하세요~",  // 한 줄 소개
     readerType: "📖 활기 넘치는 탐구자",
     following: 120, 
     followers: 350, 
   });
 
-  const [reviews, setReviews] = useState([
-    [
-      { title: "어린왕자", rating: "⭐⭐⭐⭐", comment: "감상평..." },
-      { title: "성난돌아다니는소녀", rating: "⭐⭐⭐", comment: "감상평..." },
-      { title: "어드벤처 타임", rating: "⭐⭐⭐⭐⭐", comment: "재밌어요!" }
-    ],
-    [
-      { title: "호밀밭의 파수꾼", rating: "⭐⭐⭐", comment: "재밌는 이야기" },
-      { title: "모비딕", rating: "⭐⭐⭐⭐", comment: "긴장감 넘침" },
-      { title: "1984", rating: "⭐⭐⭐⭐⭐", comment: "강력 추천!" }
-    ]
-  ]);
+  const [isEditingNickname, setIsEditingNickname] = useState(false);
+  const [newNickname, setNewNickname] = useState(profile.nickname);
+
+  const [isEditingIntroduction, setIsEditingIntroduction] = useState(false);
+  const [newIntroduction, setNewIntroduction] = useState(profile.introduction);
+
+  const handleEditNickname = () => {
+    setIsEditingNickname(true);
+  };
+
+  const handleCancelNickname = () => {
+    setIsEditingNickname(false);
+    setNewNickname(profile.nickname);
+  };
+
+  const handleSaveNickname = () => {
+    setProfile((prevProfile) => ({
+      ...prevProfile,
+      nickname: newNickname,
+    }));
+    setIsEditingNickname(false);
+  };
+
+  const handleEditIntroduction = () => {
+    setIsEditingIntroduction(true);
+  };
+
+  const handleCancelIntroduction = () => {
+    setIsEditingIntroduction(false);
+    setNewIntroduction(profile.introduction);
+  };
+
+  const handleSaveIntroduction = () => {
+    setProfile((prevProfile) => ({
+      ...prevProfile,
+      introduction: newIntroduction,
+    }));
+    setIsEditingIntroduction(false);
+  };
 
   const [content, setContent] = useState("MyDrawer_following");
 
@@ -45,11 +72,11 @@ const MyDrawer = () => {
         </div>
         <div className="nav-group">
           <div className="nav-item">
-            <Link to="/account">회원가입</Link>
+            <Link to="/Bestseller">베스트셀러</Link>
             <div className="underline"></div>
           </div>
           <div className="nav-item">
-            <Link to="/login">로그인</Link>
+            <Link to="/Test">북루미테스트</Link>
             <div className="underline"></div>
           </div>
           <div className="nav-item">
@@ -58,26 +85,51 @@ const MyDrawer = () => {
           </div>
           <div className="nav-item">
             <Link to="/myDrawer">나의 서랍</Link>
-            <img src={bookicon} className="logo-Drawer" alt="Logo" />
+            <img src={bookicon} className="book-icon" alt="book icon" />
           </div>
         </div>
-        <button className="logout-btn">👤 로그아웃</button>
       </header>
 
       <div className="logo-container-Drawer">
-        <img src={logo} className="logo-Drawer" alt="Logo" />
-        <h1>내서랍</h1>
+        <img src={logo} className="logo" alt="Logo" />
+        <h1>나의 서랍</h1>
       </div>
 
       <div className="main-container-Drawer">
         <div className="left-section">
           <img
             src={logo_user}
-            className="logo-Drawer"
+            className="logo-user"
             alt="User Profile"
             onClick={handleBookClick}
           />
-          <h3>{profile.nickname}</h3>
+
+          <h3 className="greeting">
+            {!isEditingNickname ? (
+              <span>{profile.nickname} 님, 반가워요!</span>
+            ) : (
+              <input
+                type="text"
+                value={newNickname}
+                onChange={(e) => setNewNickname(e.target.value)}
+              />
+            )}
+          </h3>
+
+          {!isEditingNickname ? (
+            <button className="nick-btn" onClick={handleEditNickname}>
+              닉네임 변경하기
+            </button>
+          ) : (
+            <div>
+              <button className="nick-btn" onClick={handleSaveNickname}>
+                저장
+              </button>
+              <button className="nick-btn" onClick={handleCancelNickname}>
+                취소
+              </button>
+            </div>
+          )}
 
           <img
             src={book}
@@ -85,72 +137,119 @@ const MyDrawer = () => {
             alt="Book Logo"
             onClick={handleBookClick}
           />
-          <h3>
-            팔로잉: {profile.following} <br />
-            팔로워: {profile.followers}
+          <h3 className="f-num">
+            <span className="f1">팔로잉</span><span className="f2"> 팔로워</span>
+            <span className="f3">{profile.following}</span><span className="f4">{profile.followers}</span>
           </h3>
         </div>
 
         <div className="right-section">
           {content === "MyDrawer_following" ? (
-            <>
-              <div className="profile-details">
-                <p className="introduction-box">
-                  {profile.introduction}
-                  <span className="reader-badge">{profile.readerType}</span>
-                </p>
+            <div className="intro">
+            <h4 className="intro-title">한 줄 소개</h4>
+            <div className="intro-container">
+            {!isEditingIntroduction ? (
+              <p className="introduction-box">{profile.introduction}</p>
+            ) : (
+              <input
+                type="text" 
+                className="edit-input"
+                value={newIntroduction}
+                onChange={(e) => setNewIntroduction(e.target.value)}
+              />
+            )}
+
+            {!isEditingIntroduction ? (
+              <button className="edit-btn" onClick={handleEditIntroduction}>
+                수정하기
+              </button>
+            ) : (
+              <div>
+                <button className="edit-btn" onClick={handleSaveIntroduction}>
+                  저장
+                </button>
+                <button className="edit-btn" onClick={handleCancelIntroduction}>
+                  취소
+                </button>
               </div>
-              <div className="reviews">
-                {reviews.map((row, rowIndex) => (
-                  <div key={rowIndex} className="review-row">
-                    {row.map((review, index) => (
-                      <div key={index} className="review-card">
-                        <div className="review-title">
-                          <strong>{review.title}</strong> {review.rating}
-                        </div>
-                        <p className="review-comment">{review.comment}</p>
-                      </div>
-                    ))}
-                  </div>
-                ))}
-              </div>
-            </>
+            )}
+            </div>
+          </div>
           ) : (
             <div className="profile-details2">
               <div className="info-box">
                 <h3>팔로잉/팔로워 정보</h3>
               </div>
               <div className="following-followers">
-                <div className="following-section">
-                  <h3>팔로잉</h3>
-                  <div className="logos">
-                    {[...Array(6)].map((_, index) => (
-                      <img
-                        src={logo_user}
-                        className="logo-Drawer"
-                        alt={`팔로잉 로고 ${index + 1}`}
-                        key={index}
-                      />
-                    ))}
+              <div className="following-section">
+              <h4>팔로잉 목록</h4>
+              {profile.followings && profile.followings.length > 0 ? (
+                profile.followings.map((following) => (
+                  <div key={following.nick}>
+                    <Link to={`/user_profile/${following.nick}`}>
+                      {following.nick}
+                    </Link>
                   </div>
-                </div>
+                ))
+              ) : (
+                <p>팔로잉이 없습니다.</p>
+              )}
+            </div>
 
-                <div className="follower-section">
-                  <h3>팔로워</h3>
-                  <div className="logos">
-                    {[...Array(6)].map((_, index) => (
-                      <img
-                        src={logo_user}
-                        className="logo-Drawer"
-                        alt={`팔로워 로고 ${index + 1}`}
-                        key={index}
-                      />
-                    ))}
+            <div className="follower-section">
+              <h4>팔로워 목록</h4>
+              {profile.followersList && profile.followersList.length > 0 ? (
+                profile.followersList.map((follower) => (
+                  <div key={follower.nick}>
+                    <Link to={`/user_profile/${follower.nick}`}>
+                      {follower.nick}
+                    </Link>
                   </div>
-                </div>
+                ))
+              ) : (
+                <p>팔로워가 없습니다.</p>
+              )}
+            </div>
               </div>
             </div>
+
+
+
           )}
+
+
+{/* <div className="intro">
+            <h4 className="intro-title">한 줄 소개</h4>
+            <div className="intro-container">
+            {!isEditingIntroduction ? (
+              <p className="introduction-box">{profile.introduction}</p>
+            ) : (
+              <input
+                type="text"
+                value={newIntroduction}
+                onChange={(e) => setNewIntroduction(e.target.value)}
+              />
+            )}
+
+            {!isEditingIntroduction ? (
+              <button className="edit-btn" onClick={handleEditIntroduction}>
+                수정하기
+              </button>
+            ) : (
+              <div>
+                <button className="edit-btn" onClick={handleSaveIntroduction}>
+                  저장
+                </button>
+                <button className="edit-btn" onClick={handleCancelIntroduction}>
+                  취소
+                </button>
+              </div>
+            )}
+            </div>
+          </div> */}
+
+
+          <button className="delete-btn">👤 회원 탈퇴</button>
         </div>
       </div>
     </div>
@@ -158,3 +257,4 @@ const MyDrawer = () => {
 };
 
 export default MyDrawer;
+

@@ -17,19 +17,23 @@ body {
     display: flex;
     justify-content: space-between; /* 왼쪽과 오른쪽을 띄워서 배치 */
     align-items: flex-start; /* 세로 정렬 기준을 상단으로 */
-    width: 80%; /* 전체 너비 조절 */
-    max-width: 1000px; /* 최대 너비 설정 */
+    width: 100%; /* 전체 너비 조절 */
+    max-width: 2000px; /* 최대 너비 설정 */
     margin: 0 auto; /* 가운데 정렬 */
   }
 
   .left-section {
     margin-top: 50px;
-    margin-left: 150px;
+    margin-left: 120px;
     padding: 10;
-    width: 30%; /* 왼쪽 영역 크기 */
+    width: 40%; /* 왼쪽 영역 크기 */
     display: flex;
     flex-direction: column;
     align-items: center; /* 중앙 정렬 */
+  }
+
+  .left-section h3 {
+    margin-top: 100px;
   }
   
   .right-section {
@@ -53,24 +57,43 @@ body {
 
 
 
-
   /* 로고 */
   .logo-container-Drawer {
     padding-left: 100px;
-    margin-top: 80px;
+    margin-top: 100px;
     display: flex;
   }
+
+  .logo-user {
+    width: 120px;
+    margin-bottom: -80px;
+  }
   
+  /* 팔로잉/팔로워 위 책모양 */
   .logo-Drawer {
-    width: 100px;
-    height: auto;
+    position: relative;
+    width: 140px;
     margin-right: 10px;
+    margin-top: 20px;
+    top: 20px;
   }
 
-  .logo-Drawer{
-    width: 100px;
-    margin-top: -10px; 
+  .f-num {
+    display: grid;          /* Flexbox 사용 */
+  /* flex-direction: column; */
+  grid-template-columns: repeat(2, 1fr);
+  justify-content: center; /* 중앙 정렬 */
+  gap: 15px;             /* 항목 간 간격 */
+  font-size: 16px;       /* 글씨 크기 조정 */
+  font-weight: bold;  
+  position: relative; top: -180px;
+  left: -1px;
   }
+
+  .f1, .f2 {
+    color: rgb(9, 80, 22);
+  }
+
 
   /* 프로필 */
   .profile {
@@ -92,7 +115,10 @@ body {
     font-size: 24px; /* 아이콘 크기 */
   }
 
-
+.greeting {
+  width: 400px;
+  margin-left: 250px;
+}
 
   /* 프로필 디테일 */
   .profile-details {
@@ -102,16 +128,29 @@ body {
   }
 
   
-  .introduction-box {
+  .introduction-box, .edit-input{
     border: 2px solid black; /* 큰 사각형 테두리 */
     width: 400px; /* 원하는 가로 크기 */
-    min-height: 30px; /* 충분한 세로 크기 확보 */
+    min-height: 20px; /* 충분한 세로 크기 확보 */
     border-radius: 8px;
     background-color: transparent;
     display: flex; /* 내부 요소 가로 정렬 */
     align-items: center; /* 세로 중앙 정렬 */
     justify-content: space-between; /* 내부 요소를 양쪽 정렬 */
     padding: 10px; /* 내부 여백 */
+    margin-top: 5px;
+  }
+
+  .intro-container {
+    display: flex;
+    align-items: center;  /* Vertically align elements */
+    justify-content: space-between;  /* Add space between elements */
+    font-size: 15px;
+  }
+
+  .intro-title {
+    font-size: 25px;
+    margin-bottom: 20px;
   }
   
   .reader-badge {
@@ -120,7 +159,7 @@ body {
     background-color: transparent;
     font-weight: bold;
     margin-left: 10px; /* 텍스트와 간격 조절 */
-    background-color: #09fd2d;
+    background-color: #0d791d;
   }
   
   
@@ -129,9 +168,6 @@ body {
     font-style: italic;
   }
   
-
-
-
 
   /* 감상평 */
   .reviews {
@@ -151,8 +187,6 @@ body {
     margin-bottom: 10px; /* 감상평 간격 */
   }
   
-
-
 
 
   .followers {
@@ -184,14 +218,15 @@ body {
 /* 팔로잉 팔로워 */
 .info-box {
   border: 2px solid black; /* 큰 사각형 테두리 */
-  width: auto; /* 원하는 가로 크기 */
-  min-height: auto; /* 충분한 세로 크기 확보 */
+  width: 400px; /* 원하는 가로 크기 */
   border-radius: 8px;
   background-color: transparent;
   display: flex; /* 내부 요소 가로 정렬 */
   align-items: center; /* 세로 중앙 정렬 */
-  justify-content: space-between; /* 내부 요소를 양쪽 정렬 */
-  padding: 10px; /* 내부 여백 */
+  justify-content: center; /* 내부 요소를 양쪽 정렬 */
+  font-size: 15px;
+  margin-left: -200px;
+  margin-top: 20px;
 }
 
 .profile-details2 h3 {
@@ -201,7 +236,45 @@ body {
 .following-followers {
   display: flex;
   gap: 100px; /* 팔로잉과 팔로워 사이의 간격 */
+  margin-left: -180px;
+  margin-top: 10px;
 }
 
+/* 한줄소개 */
+.intro {
+  display: flex;
+  flex-direction: column; /* 수직 방향으로 배치 */
+  align-items: flex-start; /* 왼쪽 정렬 */
+  margin-left: -50px;
+}
 
+.delete-btn {
+  position: absolute;
+  bottom: -20px;
+  right: 210px;
+  background-color: #ccb494;
+  border: none;
+  padding: 3px 15px;
+  border-radius: 15px;
+  cursor: pointer;
+}
 
+.nick-btn {
+  margin-top: -5px;
+  background-color: #ccb494;
+  border: none;
+  border-radius: 15px;
+  cursor: pointer;
+  padding: 3px 15px;
+}
+
+.edit-btn {
+  margin-top: -5px;
+  background-color: #ccb494;
+  border: none;
+  border-radius: 15px;
+  cursor: pointer;
+  padding: 3px 15px;
+  margin-left: 10px;
+  width: 80px;
+}
