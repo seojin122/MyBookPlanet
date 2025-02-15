@@ -1,64 +1,177 @@
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center; 
+  background-color: #fff5e1;
+}
 
-  
-  .container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    background-color: #f9f6ec;
-    padding: 20px;
-  }
-  
-  .content-box {
-    background-color: #f9f6ec;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-    padding: 20px;
-    max-width: 400px;
-    width: 100%;
-    align-items: center;
-  }
-  
-  /* Titles */
-  .result-title, .question-title {
-    font-size: 1.25rem;
-    font-weight: bold;
-    margin-bottom: 16px;
-    text-align: center;
-    width: 100%;
-  }
-  
-  .result-text {
-    font-size: 1.125rem;
-    margin-top: 10px;
-    text-align: center;
-  }
-  
-  .option-buttons {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-  
-  .option-button {
-    padding: 10px;
-    background-color: #f9f6ec;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
-  
-  .option-button:hover {
-    background-color: #e0e0e0;
-  }
-  
+.result-title, .question-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 20px;
+  text-align: center;
+  color: #5a3e2b;
+}
 
-  .logo-book-Test {
-    width: 1500px; /* 더 크게 설정 */
-    height: 900px; /* 원하는 높이 설정 */
-    object-fit: contain; /* 이미지 비율 유지 */
-    align-items: center;
-    align-self: center;
-  }
+.result-text {
+  font-size: 1.2rem;
+  margin-top: 15px;
+  text-align: center;
+  color: #4d392e;
+}
+
+.logo-book-Test {
+  width: 100%;
+  max-width: 350px;
+  height: auto;
+  margin-top: 20px;
+}
+
+.recommend-title {
+  font-size: 1.3rem;
+  font-weight: bold;
+  margin-top: 25px;
+  color: #5a3e2b;
+}
+
+.book-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow-y: auto; /* 스크롤이 생기도록 */
+  flex-grow: 1; /* 남은 공간을 채우도록 설정 */
+  max-height: 100%; /* 부모 요소의 높이에 맞춰 확장 */
+}
+
+.book-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background-color: #fff;
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.book-cover {
+  width: 50px;
+  height: auto;
+  border-radius: 5px;
+}
+
+.loading-text {
+  font-size: 1rem;
+  color: #4d392e;
+}
+
+/* Book Question Container */
+.book-question-container {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 60vw; /* 부모 너비의 60% */
+  max-width: 1200px; /* 최대 너비 1200px */
+  height: auto;
+  padding: 20px; /* 필요시 여백 추가 */
+  border-radius: 12px;
+}
+
+/* Book Question 이미지 */
+.book-question {
+  width: 80%;    /* 부모 요소 너비에 맞게 설정 */
+  height: 80%;   /* 부모 요소 높이에 맞게 설정 */
+  object-fit: cover; /* 이미지가 부모 요소에 맞춰 비율을 유지하며 꽉 차도록 */
+}
+
+/* Question Content */
+.question-content {
+  position: absolute;
+  left: 15%;
+  top: 10%;
+  width: 35%;
+  text-align: center;
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: #4a3628;
+}
+
+/* Option Buttons */
+.option-buttons {
+  position: absolute;
+  right: 15%;
+  top: 30%;
+  width: 30%;
+  display: flex;
+  flex-direction: column;
+  gap: 25px; /* 버튼 간 간격 */
+}
+
+.option-button {
+  padding: 18px 12px; /* 세로 길이 증가 */
+  border: 2px solid black;
+  border-radius: 0;
+  cursor: pointer;
+  transition: background 0.3s;
+  font-size: 1.1rem;
+  background-color: transparent;
+  color: #4a3628;
+  text-align: center;
+}
+
+.option-button:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+/* 테스트 시작 전 소개 부분 */
+.test-intro {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;  /* 각 요소 간 간격 */
+}
+
+/* 테스트 소개 제목 */
+.test-intro h2 {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #5a3e2b;
+}
+
+/* 테스트 소개 문단 */
+.test-intro p {
+  font-size: 1.1rem;
+  color: #4d392e;
+  margin-bottom: 20px;
+}
+
+/* 테스트 시작 이미지 */
+.start-image {
+  width: 100%;
+  max-width: 200px;  /* 이미지 크기 설정 */
+  height: auto;
+  margin-top: 20px;
+}
+
+/* 테스트 시작 버튼 */
+.start-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: transform 0.3s ease;  /* 버튼에 애니메이션 추가 */
+}
+
+.start-btn:hover {
+  transform: scale(1.1);  /* 버튼 크기 확대 효과 */
+}
+
+.start-btn img {
+  width: 150px;  /* 버튼 이미지 크기 설정 */
+  height: auto;
+  border-radius: 8px;  /* 버튼 이미지 모서리 둥글게 */
+}
