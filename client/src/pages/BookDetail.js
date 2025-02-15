@@ -1,91 +1,50 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import "../styles/Bestseller.css";
 import bookIcon from "../assets/bookicon.png";
 import lamp from "../assets/lamp.png";
 import logo from "../assets/logo.png";
 import axios from "axios";
-
-// 더미 데이터터
-const dummyData = [
-  {
-    title: "광현원의 진보를 위한 역사",
-    author: "저자 A",
-    cover: "https://via.placeholder.com/150",
-    link: "#"
-  },
-  {
-    title: "초역 부처님의 말",
-    author: "저자 B",
-    cover: "https://via.placeholder.com/150",
-    link: "#"
-  },
-  {
-    title: "소년이 온다",
-    author: "저자 C",
-    cover: "https://via.placeholder.com/150",
-    link: "#"
-  },
-  {
-    title: "대한민국 건국은 혁명이었다",
-    author: "저자 D",
-    cover: "https://via.placeholder.com/150",
-    link: "#"
-  },
-  {
-    title: "해커스 토익 VOCA",
-    author: "저자 E",
-    cover: "https://via.placeholder.com/150",
-    link: "#"
-  }
-];
+import { useNavigate } from "react-router-dom";
 
 const Bestseller = () => {
   const [books, setBooks] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  
   const [allBooks, setAllBooks] = useState([]);
+
   const navigate = useNavigate();
 
-  // API 호출하여 베스트셀러 목록 가져오기
+  // 📌 베스트셀러 목록 가져오기
   const fetchBestseller = async () => {
     try {
-      const response = await axios.get('/book/bestseller', {
-        headers: {
-          'Cache-Control': 'no-cache', 
-          'Pragma': 'no-cache',
-          'Expires': '0'
-        }
-      });
-  
-      console.log('받아온 데이터:', response.data); // 데이터 확인
-      
-      // item 배열로 데이터 저장
-      const items = response.data.item || response.data; // item이 없으면 data 전체 사용
-      setBooks(items); 
-      setAllBooks(items); 
-
+      const response = await axios.get('/book/bestseller');
+      console.log('📌 받아온 데이터:', response.data);
+      setBooks(response.data.item); // 백엔드에서 반환한 item 배열 사용
+      setAllBooks(response.data.item);
     } catch (error) {
       console.error("베스트셀러 목록을 가져오는 중 오류 발생:", error);
     }
   };
 
-  // 페이지 로드 시 API 호출
-  useEffect(() => {
-    fetchBestseller();
-  }, []);
-
-  // 입력된 검색어로 필터링
-  const handleSearch = () => {
+  // 📌 검색 기능
+  const handleSearch = async () => {
     if (searchTerm.trim() === "") {
       setBooks(allBooks);
     } else {
-      const filteredBooks = allBooks.filter((book) =>
-        book.title.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-      setBooks(filteredBooks);
+      try {
+        const response = await axios.get(`/book/search?query=${searchTerm}`);
+        console.log('📌 검색 결과:', response.data);
+        setBooks(response.data);
+      } catch (error) {
+        console.error("검색 중 오류 발생:", error);
+      }
     }
   };
+
+  // 📌 페이지 로드 시 베스트셀러 목록 가져오기
+  useEffect(() => {
+    fetchBestseller();
+  }, []);
 
   return (
     <div className="main-container">
@@ -137,7 +96,7 @@ const Bestseller = () => {
         </div>
 
         <div className="book-list">
-          {books && books.length > 0 ? (
+          {books.length > 0 ? (
             books.map((book, index) => (
               <div key={index} className="book-item">
                 <span className="rank">{index + 1}</span>

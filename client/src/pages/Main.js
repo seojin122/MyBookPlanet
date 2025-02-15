@@ -5,6 +5,25 @@ import logo from "../assets/logo.png";
 import lamp from "../assets/lamp.png";
 
 const Main = () => {
+  const handleLogout = async () => {
+    try {
+      const response = await fetch('/auth/logout', {
+        method: 'GET',
+        credentials: 'include', // 쿠키 포함
+      });
+      if (response.ok) {
+        alert('로그아웃 되었습니다.');
+        localStorage.removeItem('token'); // 필요 시 토큰 삭제
+        window.location.href = '/'; // 메인 페이지로 이동
+      } else {
+        alert('로그인 상태가 아닙니다.');
+      }
+    } catch (error) {
+      console.error('로그아웃 오류:', error);
+      alert('서버 오류');
+    }
+  };
+
   return (
     <div className="main-container">
       <header className="header">
@@ -28,7 +47,7 @@ const Main = () => {
         </div> </div>
         </div>
 
-        <button className="logout-btn">👤 로그아웃</button>
+        <button className="logout-btn"  onClick={handleLogout}>👤 로그아웃</button>
       </header>
 
       <div className="logo-container">
