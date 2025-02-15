@@ -1,21 +1,53 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "../styles/Bestseller.css";
 import bookIcon from "../assets/bookicon.png";
 import lamp from "../assets/lamp.png";
 import logo from "../assets/logo.png";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 
+// 더미 데이터터
+const dummyData = [
+  {
+    title: "광현원의 진보를 위한 역사",
+    author: "저자 A",
+    cover: "https://via.placeholder.com/150",
+    link: "#"
+  },
+  {
+    title: "초역 부처님의 말",
+    author: "저자 B",
+    cover: "https://via.placeholder.com/150",
+    link: "#"
+  },
+  {
+    title: "소년이 온다",
+    author: "저자 C",
+    cover: "https://via.placeholder.com/150",
+    link: "#"
+  },
+  {
+    title: "대한민국 건국은 혁명이었다",
+    author: "저자 D",
+    cover: "https://via.placeholder.com/150",
+    link: "#"
+  },
+  {
+    title: "해커스 토익 VOCA",
+    author: "저자 E",
+    cover: "https://via.placeholder.com/150",
+    link: "#"
+  }
+];
 
 const Bestseller = () => {
   const [books, setBooks] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  
   const [allBooks, setAllBooks] = useState([]);
-
   const navigate = useNavigate();
 
-  // 📌 API 호출하여 베스트셀러 목록 가져오기
+  // API 호출하여 베스트셀러 목록 가져오기
   const fetchBestseller = async () => {
     try {
       const response = await axios.get('/book/bestseller', {
@@ -26,59 +58,30 @@ const Bestseller = () => {
         }
       });
   
-      console.log('📌 받아온 데이터:', response.data); // 📌 데이터 확인
-  
-      setBooks(response.data);
-      setAllBooks(response.data);
+      console.log('받아온 데이터:', response.data); // 데이터 확인
+      
+      // item 배열로 데이터 저장
+      const items = response.data.item || response.data; // item이 없으면 data 전체 사용
+      setBooks(items); 
+      setAllBooks(items); 
+
     } catch (error) {
       console.error("베스트셀러 목록을 가져오는 중 오류 발생:", error);
     }
   };
-  /*
-    // 📌 API 호출하여 베스트셀러 목록 가져오기
-  const fetchBestseller = async () => {
-    try {
-      // 더미 데이터로 테스트트
-      const dummyData = [
-        {
-          title: "황현필의 진보를 위한 역사",
-          author: "황현필",
-          cover: "https://image.aladin.co.kr/product/35711/76/cover200/k612036127_1.jpg",
-          link: "http://www.aladin.co.kr/shop/wproduct.aspx?ItemId=357117660",
-        },
-        {
-          title: "초역 부처의 말",
-          author: "이케다 사야카",
-          cover: "https://image.aladin.co.kr/product/1470/34/cover500/8997227203_1.jpg",
-          link: "http://www.aladin.co.kr/shop/wproduct.aspx?ItemId=357117661",
-        },
-      ];
-  
-      setBooks(dummyData);
-  
-    } catch (error) {
-      console.error("베스트셀러 목록을 가져오는 중 오류 발생:", error);
-    }
-  };
-  
-  useEffect(() => {
-    fetchBestseller();
-  }, []);
-   */
-  
 
-  // 📌 페이지 로드 시 API 호출
+  // 페이지 로드 시 API 호출
   useEffect(() => {
     fetchBestseller();
   }, []);
 
-  // 📌 검색 기능 (입력된 검색어로 필터링)
+  // 입력된 검색어로 필터링
   const handleSearch = () => {
     if (searchTerm.trim() === "") {
       setBooks(allBooks);
     } else {
       const filteredBooks = allBooks.filter((book) =>
-        book.title.includes(searchTerm)
+        book.title.toLowerCase().includes(searchTerm.toLowerCase())
       );
       setBooks(filteredBooks);
     }
@@ -134,16 +137,24 @@ const Bestseller = () => {
         </div>
 
         <div className="book-list">
-          {books.length > 0 ? (
+          {books && books.length > 0 ? (
             books.map((book, index) => (
               <div key={index} className="book-item">
                 <span className="rank">{index + 1}</span>
-                <img src={book.cover} alt={book.title} className="book-cover" 
+                <img 
+                  src={book.cover} 
+                  alt={book.title} 
+                  className="book-cover" 
                   onClick={() => navigate(`/book/${encodeURIComponent(book.title)}`)}
-                  style={{ cursor: "pointer" }}/>
-                <p className="book-title"
-              onClick={() => navigate(`/book/${encodeURIComponent(book.title)}`)}
-              style={{ cursor: "pointer" }}>{book.title}</p>
+                  style={{ cursor: "pointer" }}
+                />
+                <p 
+                  className="book-title"
+                  onClick={() => navigate(`/book/${encodeURIComponent(book.title)}`)}
+                  style={{ cursor: "pointer" }}
+                >
+                  {book.title}
+                </p>
                 <p className="book-author">{book.author}</p>
                 <a href={book.link} target="_blank" rel="noopener noreferrer">
                   자세히 보기
@@ -160,4 +171,3 @@ const Bestseller = () => {
 };
 
 export default Bestseller;
-
