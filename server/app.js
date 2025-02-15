@@ -113,11 +113,21 @@ app.get('/user_profile/:username', async (req, res) => {
 });
 
 // 서버 실행
+/*
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+*/
 
+const cors = require("cors");
+
+app.use(cors({
+    origin: ["http://localhost:3000"],  // ✅ React 앱(포트 3000) 허용
+    credentials: true,  // ✅ 쿠키, 인증 정보 포함 허용
+    methods: ["GET", "POST", "PUT", "DELETE"], // ✅ 사용할 HTTP 메서드 지정
+    allowedHeaders: ["Content-Type", "Authorization"] // ✅ 허용할 헤더 지정
+}));
 
 
 
