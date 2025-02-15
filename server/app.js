@@ -236,3 +236,21 @@ app.use((err, req, res, next) => {
 app.listen(app.get('port'), () => {
   console.log(app.get('port'), '번 포트에서 대기 중');
 });
+
+//나의 서랍 유저 정보 불러오기
+app.use("/api", userRouter);  // 🔹 /api/user 사용 가능하도록 설정
+
+require('./passport')();  // 🔹 passport 설정 불러오기
+
+app.use(session({
+  secret: process.env.COOKIE_SECRET || 'mysecret',  // 환경 변수 사용 가능
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    httpOnly: true,
+    secure: false, // HTTPS 적용 시 true
+  },
+}));
+
+app.use(passport.initialize());
+app.use(passport.session());  // 🔹 세션 적용 필수!!

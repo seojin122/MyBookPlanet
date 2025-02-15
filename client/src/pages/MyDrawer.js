@@ -10,7 +10,7 @@ import bookicon from '../assets/bookicon.png';
 const MyDrawer = () => {
   const [profile, setProfile] = useState({
     nickname: "닉네임",
-    introduction: "📖 활기 넘치는 탐구자입니다!",  // 한 줄 소개
+    introduction: localStorage.getItem("introduction") || "📖 활기 넘치는 탐구자입니다!", // localStorage에서 가져오기  // 한 줄 소개
     following: 120, 
     followers: 350, 
   });
@@ -38,13 +38,19 @@ const MyDrawer = () => {
     setIsEditingNickname(false);
   };
 
+  // profile.introduction이 변경될 때 newIntroduction도 갱신되도록 설정
+  useEffect(() => {
+    setNewIntroduction(profile.introduction);
+  }, [profile.introduction]);
+
   const handleEditIntroduction = () => {
+    setNewIntroduction(profile.introduction); // 현재 값으로 설정
     setIsEditingIntroduction(true);
   };
 
   const handleCancelIntroduction = () => {
     setIsEditingIntroduction(false);
-    setNewIntroduction(profile.introduction);
+    setNewIntroduction(profile.introduction); // 기존 값으로 복구
   };
 
   const handleSaveIntroduction = () => {
@@ -52,6 +58,7 @@ const MyDrawer = () => {
       ...prevProfile,
       introduction: newIntroduction,
     }));
+    localStorage.setItem("introduction", newIntroduction); // localStorage에 저장
     setIsEditingIntroduction(false);
   };
 
@@ -232,3 +239,91 @@ const MyDrawer = () => {
 
 export default MyDrawer;
 
+
+// import React, { useState, useEffect } from "react";
+// import { Link } from "react-router-dom";
+// import '../styles/MyDrawer.css';
+// import logo from "../assets/logo.png";
+// import lamp from '../assets/lamp.png';
+// import logo_user from '../assets/user.png';
+// import book from '../assets/book.png';
+// import bookicon from '../assets/bookicon.png';
+
+// const MyDrawer = () => {
+//   const [profile, setProfile] = useState({
+//     nickname: "닉네임",  // 기본값 (로그인하면 변경됨)
+//     introduction: "📖 활기 넘치는 탐구자입니다!",  
+//     following: 120, 
+//     followers: 350, 
+//   });
+
+//   // 🔹 닉네임 불러오기 (백엔드에서 가져옴)
+//   useEffect(() => {
+//     fetch("http://localhost:3002/api/user", {  // 백엔드 API 요청
+//       method: "GET",
+//       credentials: "include",  // 세션 쿠키 포함 (로그인 상태 유지)
+//     })
+//       .then((res) => res.json())
+//       .then((data) => {
+//         if (data.nickname) {
+//           setProfile((prevProfile) => ({
+//             ...prevProfile,
+//             nickname: data.nickname,  // 닉네임 업데이트
+//           }));
+//         }
+//       })
+//       .catch((error) => console.error("닉네임 불러오기 오류:", error));
+//   }, []);
+
+//   return (
+//     <div className="MyDrawer">
+//       <header className="header">
+//         <div className="img-group">
+//           <img src={lamp} className="lamp" alt="lamp" />
+//           <img src={lamp} className="lamp" alt="lamp" />
+//           <img src={lamp} className="lamp" alt="lamp" />
+//         </div>
+//         <div className="nav-group">
+//           <div className="nav-item">
+//             <Link to="/Bestseller">베스트셀러</Link>
+//             <div className="underline"></div>
+//           </div>
+//           <div className="nav-item">
+//             <Link to="/Test">북루미테스트</Link>
+//             <div className="underline"></div>
+//           </div>
+//           <div className="nav-item">
+//             <Link to="/community">북작북작</Link>
+//             <div className="underline"></div>
+//           </div>
+//           <div className="nav-item">
+//             <Link to="/myDrawer">나의 서랍</Link>
+//             <img src={bookicon} className="book-icon" alt="book icon" />
+//           </div>
+//         </div>
+//       </header>
+
+//       <div className="logo-container-Drawer">
+//         <img src={logo} className="logo" alt="Logo" />
+//         <h1>나의 서랍</h1>
+//       </div>
+
+//       <div className="main-container-Drawer">
+//         <div className="left-section">
+//           <img
+//             src={logo_user}
+//             className="logo-user"
+//             alt="User Profile"
+//           />
+
+//           {/* 🔹 로그인한 유저의 닉네임 표시 */}
+//           <h3 className="greeting">
+//             <span>{profile.nickname} 님, 반가워요!</span>
+//           </h3>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default MyDrawer;
