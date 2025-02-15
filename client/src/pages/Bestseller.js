@@ -107,7 +107,8 @@ const Bestseller = () => {
             />
           </div>
         </div>
-
+        <p className="weather">🔔오늘의 날씨는 : 책📚 읽기에 완벽한 맑은 날☀️</p>
+        {/* 날씨 알림 */}
         <div className="book-list">
         {books.length > 0 ? (
             books.map((book, index) => (
