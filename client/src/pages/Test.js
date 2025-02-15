@@ -12,7 +12,7 @@ import thinking from '../assets/thinking.png';
 const questions = {
   start: {
     chapter: "Chapter 1",
-    question: "오늘은 책과 함께 여유를 즐기고픈 날이야. 지금 심정이 어때?",
+    question: "오늘은 책과 함께 <br><br> 여유를 즐기고픈 날이야. <br><br> 지금 심정이 어때?",
     options: [
       { text: "🌈 상상의 나래를 펼치고 싶어!", next: "q1" },
       { text: "🧐 실용적인 배움을 얻고 싶어!", next: "q2" },
@@ -36,7 +36,7 @@ const questions = {
   },
   q3: {
     chapter: "Chapter 3",
-    question: "감정을 느끼는 방식 중 선호하는 걸 골라줘!",
+    question: "감정을 느끼는 방식 중 <br><br> 선호하는 걸 골라줘!",
     options: [
       { text: "💧 몰입해서 눈물 나게 만드는 이야기", result: "감성을 노래하는 이야기꾼 🎭"},
       { text: "🎈 동심의 세계에서 위로받고 싶어.", result: "꿈을 좇는 몽상가 🌌"},
@@ -55,7 +55,7 @@ const questions = {
     question: "너의 관심 분야를 골라줘!",
     options: [
       { text: "🔎 인간과 사회에 대한 통찰을 원해.", result: "세상의 흐름을 읽는 사색가 🔍" },
-      { text: "💰 제 흐름이나 돈 관리에 관심 있어.", result: "변화를 이끄는 전략가 📉" },
+      { text: "💰 경제 흐름이나 돈 관리에 관심 있어.", result: "변화를 이끄는 전략가 📉" },
     ],
   },
   q6: {
@@ -199,12 +199,16 @@ const Test = () => {
           <div className="content-box">
             {!isTestStarted ? (
               <div className="test-intro">
-                <h2>북루미테스트 소개</h2>
                 <p>당신이 어떤 북루미인지 9가지 유형으로 분류해주는 테스트입니다.</p>
                 <p>‘시작하기'를 눌러 테스트를 진행하세요!</p>
-                <img src={thinking} alt="Start Test" className="start-image" />
+                
+                <div className="image-container">
+                  <img src={thinking} alt="Start Test" className="start-image" />
+                  <div className="overlay-text">나는 어떤 루미일까..?</div>
+                </div>
                 <button onClick={startTest} className="start-btn">
-                  <img src={book} alt="Start Test" className="start-btn" />
+                  <img src={book} alt="Start Test" className="start-btn-img" />
+                  <span className="start-text">시작하기</span> {/* 시작 텍스트 추가 */}
                 </button>
               </div>
             ) : result ? (
@@ -218,8 +222,8 @@ const Test = () => {
                   <p className="result-text">{result}</p>
                 )}
                 <img src={bookicon} className="logo-book-Test" alt="Logo" />
-
-
+                <><button className="reset-btn" onClick={resetTest}>다시 검사하기</button></>
+              
               {/* 추천 도서 표시 */}
               <h3 className="recommend-title">나를 위한 추천 도서</h3>
               {Object.keys(recommendedBooks).length > 0 ? (
@@ -242,7 +246,7 @@ const Test = () => {
               ) : (
                 <p className="loading-text">추천 도서를 불러오는 중...</p>
               )}
-              <button className="reset-btn" onClick={resetTest}>다시 검사하기</button>
+              
             </>
           ) : (
             <>
@@ -250,10 +254,10 @@ const Test = () => {
                 <img src={booktest} className="book-question" alt="Logo" />
                 
                 {/* 왼쪽 페이지 - 질문 */}
-                <div className="question-content">
-                  <h2>{questions[currentStep].chapter}</h2>
+                <div className="left-page">
+                  <h1 id="chapter">{questions[currentStep].chapter}</h1>
                   {/* <h2>{questions[currentStep].question}</h2> */}
-                  <h2 dangerouslySetInnerHTML={{ __html: questions[currentStep].question.replace(/\n/g, "<br/>") }} />
+                  <h2 className="question-content" dangerouslySetInnerHTML={{ __html: questions[currentStep].question.replace(/\n/g, "<br/>") }} />
                 </div>
 
                 {/* 오른쪽 페이지 - 선택지 */}
