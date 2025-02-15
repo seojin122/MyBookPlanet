@@ -77,6 +77,10 @@ class User extends Model {
         type: DataTypes.STRING(100),
         allowNull: true,
       },
+      profileImage: { // ✅ 프로필 이미지 컬럼 추가
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
       provider: {
         type: DataTypes.ENUM('local', 'kakao'),
         allowNull: false,
@@ -99,6 +103,13 @@ class User extends Model {
   }
 
   static associate(db) {
+        // 다대다 관계 설정: User와 BooklumiTest가 중간 테이블을 통해 다대다 관계
+        db.User.belongsToMany(db.BooklumiTest, {
+          foreignKey: 'userId',
+          through: 'user_booklumi_tests',
+          as: 'BooklumiTests',
+        });
+        
     db.User.hasMany(db.Post, { foreignKey: 'userId', as: 'Posts' });
 
     // ✅ 팔로잉/팔로워 관계 추가

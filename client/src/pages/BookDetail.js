@@ -1,50 +1,36 @@
-import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import "../styles/Bestseller.css";
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import "../styles/BookDetail.css";
+import { Link, useNavigate } from "react-router-dom";
 import bookIcon from "../assets/bookicon.png";
 import lamp from "../assets/lamp.png";
 import logo from "../assets/logo.png";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 
-const Bestseller = () => {
-  const [books, setBooks] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [allBooks, setAllBooks] = useState([]);
+const BookDetail = () => {
+  const { title } = useParams(); // URL에서 title 가져오기
+  const [book, setBook] = useState(null);
 
-  const navigate = useNavigate();
-
-  // 📌 베스트셀러 목록 가져오기
-  const fetchBestseller = async () => {
-    try {
-      const response = await axios.get('/book/bestseller');
-      console.log('📌 받아온 데이터:', response.data);
-      setBooks(response.data.item); // 백엔드에서 반환한 item 배열 사용
-      setAllBooks(response.data.item);
-    } catch (error) {
-      console.error("베스트셀러 목록을 가져오는 중 오류 발생:", error);
-    }
-  };
-
-  // 📌 검색 기능
-  const handleSearch = async () => {
-    if (searchTerm.trim() === "") {
-      setBooks(allBooks);
-    } else {
-      try {
-        const response = await axios.get(`/book/search?query=${searchTerm}`);
-        console.log('📌 검색 결과:', response.data);
-        setBooks(response.data);
-      } catch (error) {
-        console.error("검색 중 오류 발생:", error);
-      }
-    }
-  };
-
-  // 📌 페이지 로드 시 베스트셀러 목록 가져오기
   useEffect(() => {
-    fetchBestseller();
-  }, []);
+    const fetchBookDetail = async () => {
+      try {
+        const response = await axios.get(`/book/bestseller`);
+        const books = response.data.item || response.data;
+
+        // title이 일치하는 책 찾기 
+        const foundBook = books.find(b => decodeURIComponent(b.title) === decodeURIComponent(title));
+        setBook(foundBook);
+      } catch (error) {
+        console.error("책 정보를 가져오는 중 오류 발생:", error);
+      }
+    };
+
+    fetchBookDetail();
+  }, [title]);
+
+  if (!book) {
+    return <p>책 정보를 찾을 수 없습니다.</p>;
+  }
 
   return (
     <div className="main-container">
@@ -74,59 +60,14 @@ const Bestseller = () => {
         </div>
       </header>
 
-      <div className="bestseller-section">
-        <div className="bestseller-header">
-          <Link to="/">
-            <img src={logo} className="logo" alt="로고" />
-          </Link>
-          <h2>이달의 베스트셀러</h2>
-          <div className="search-bar">
-            <input
-              type="text"
-              placeholder="🔍 검색"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  handleSearch();
-                }
-              }}
-            />
-          </div>
-        </div>
-
-        <div className="book-list">
-          {books.length > 0 ? (
-            books.map((book, index) => (
-              <div key={index} className="book-item">
-                <span className="rank">{index + 1}</span>
-                <img 
-                  src={book.cover} 
-                  alt={book.title} 
-                  className="book-cover" 
-                  onClick={() => navigate(`/book/${encodeURIComponent(book.title)}`)}
-                  style={{ cursor: "pointer" }}
-                />
-                <p 
-                  className="book-title"
-                  onClick={() => navigate(`/book/${encodeURIComponent(book.title)}`)}
-                  style={{ cursor: "pointer" }}
-                >
-                  {book.title}
-                </p>
-                <p className="book-author">{book.author}</p>
-                <a href={book.link} target="_blank" rel="noopener noreferrer">
-                  자세히 보기
-                </a>
-              </div>
-            ))
-          ) : (
-            <p className="no-results">검색 결과가 없습니다.</p>
-          )}
-        </div>
-      </div>
+    <div className="book-detail">
+      <h2>{book.title}</h2>
+      <img src={book.cover} alt={book.title} className="book-cover" />
+      <p><strong>저자:</strong> {book.author}</p>
+      <p><strong>설명:</strong> {book.description}</p>
+    </div>
     </div>
   );
 };
 
-export default Bestseller;
+export default BookDetail;

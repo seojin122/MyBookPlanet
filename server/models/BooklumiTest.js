@@ -18,16 +18,21 @@ const BooklumiTest = sequelize.define('BooklumiTest', {
 
 module.exports = BooklumiTest;
 */
+
 module.exports = (sequelize, DataTypes) => {
     class BooklumiTest extends sequelize.Sequelize.Model {
       static associate(models) {
-        // 필요하다면 다른 모델과 관계를 설정
-        // BooklumiTest.belongsTo(models.User, { foreignKey: "userId", as: "user" });
+        // 다대다 관계 설정: BooklumiTest는 여러 User와 연결
+        BooklumiTest.belongsToMany(models.User, {
+          foreignKey: 'booklumiTestId',
+          through: 'user_booklumi_tests',
+          as: 'Users',
+        });
       }
     }
   
     BooklumiTest.init({
-      userId: { type: DataTypes.INTEGER, allowNull: true }, 
+      userId: { type: DataTypes.STRING, allowNull: true }, 
       bookType: { type: DataTypes.STRING, allowNull: true },  
       categoryID: { type: DataTypes.INTEGER, allowNull: true },  
       readerType: { type: DataTypes.STRING, allowNull: true }
