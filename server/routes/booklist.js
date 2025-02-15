@@ -6,6 +6,11 @@ const { getBookList } = require("../services/booklist");
 const router = express.Router();
 
 router.get("/:listType/:readerType", async (req, res) => {
+    // CORS 헤더 추가
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3001');  // 클라이언트 주소 허용
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');  // 허용할 HTTP 메서드 설정
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');  // 허용할 헤더 설정
+    
     const { listType, readerType } = req.params;
 
     if (!listType) {

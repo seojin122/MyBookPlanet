@@ -42,6 +42,13 @@ class User extends Model {
   }
 
   static associate(db) {
+        // 다대다 관계 설정: User와 BooklumiTest가 중간 테이블을 통해 다대다 관계
+        db.User.belongsToMany(db.BooklumiTest, {
+          foreignKey: 'userId',
+          through: 'user_booklumi_tests',
+          as: 'BooklumiTests',
+        });
+        
     db.User.hasMany(db.Post, { foreignKey: 'userId', as: 'Posts' });
 
     db.User.belongsToMany(db.User, {
