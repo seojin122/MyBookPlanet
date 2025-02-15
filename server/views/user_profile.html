@@ -13,14 +13,14 @@
     <h3>팔로잉 목록</h3>
     <ul>
       {% for following in user.Followings %}
-        <li><a href="/user_profile/{{ following.username }}">{{ following.nick }}</a></li>
+        <li><a href="/user_profile/{{ following.nick }}">{{ following.nick }}</a></li>
       {% endfor %}
     </ul>
 
     <h3>팔로워 목록</h3>
     <ul>
       {% for follower in user.Followers %}
-        <li><a href="/user_profile/{{ follower.username }}">{{ follower.nick }}</a></li>
+        <li><a href="/user_profile/{{ follower.nick }}">{{ follower.nick }}</a></li>
       {% endfor %}
     </ul>
   </div>
