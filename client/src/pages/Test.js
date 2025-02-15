@@ -88,29 +88,29 @@ const Test = () => {
     }
   };
 
-  // 로그인된 사용자 정보 가져오기
-  const getUserId = () => {
-    const userId = localStorage.getItem("userId"); // 실제 로그인 시 userId는 로컬스토리지나 상태에서 가져옵니다.
-    console.log("userId from localStorage:", userId);
-    return userId || "testUser"; 
-  };
+  // // 로그인된 사용자 정보 가져오기
+  // const getUserId = () => {
+  //   const userId = localStorage.getItem("userId"); // 실제 로그인 시 userId는 로컬스토리지나 상태에서 가져옵니다.
+  //   console.log("userId from localStorage:", userId);
+  //   return userId || "testUser"; 
+  // };
 
-  const fetchBooklumiResult = async (userId, readerType) => {
-    try {
-      const response = await fetch("http://localhost:3002/api/booklumi", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ userId, readerType }),
-      });
+  // const fetchBooklumiResult = async (userId, readerType) => {
+  //   try {
+  //     const response = await fetch("http://localhost:3002/api/booklumi", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify({ userId, readerType }),
+  //     });
   
-      const data = await response.json();
-      console.log("Booklumi API 응답:", data);
-    } catch (error) {
-      console.error("Booklumi API 요청 실패:", error);
-    }
-  };
+  //     const data = await response.json();
+  //     console.log("Booklumi API 응답:", data);
+  //   } catch (error) {
+  //     console.error("Booklumi API 요청 실패:", error);
+  //   }
+  // };
 
   const fetchRecommendedBooks = async (result) => {
     const readerType = result;
@@ -141,8 +141,8 @@ const Test = () => {
   // useEffect에서 `result`가 변경될 때 호출
   useEffect(() => {
     if (result) {
-      const userId = getUserId(); // 로그인 상태 확인 
-      fetchBooklumiResult(userId, result);
+      //const userId = getUserId(); // 로그인 상태 확인 
+      //fetchBooklumiResult(userId, result);
       fetchRecommendedBooks(result);
     }
   }, [result]);
@@ -162,7 +162,7 @@ const Test = () => {
   };
 
     return (
-      <div className="main-container">
+      <div className="Test">
         <header className="header">
           <div className="img-group">
             <img src={lamp} className="lamp" alt="lamp" />
@@ -190,30 +190,35 @@ const Test = () => {
           <button className="logout-btn">👤 로그아웃</button>
         </header>
 
-        <div className="logo-container-Drawer">
-          <img src={logo} className="logo-Drawer" alt="Logo" />
+        <div className="logo-container-Test">
+          <img src={logo} className="logo" alt="Logo" />
           <h1>북루미테스트</h1>
         </div>
 
-        <div className="container">
-          <div className="content-box">
+        <div className="test-container">
+          <div className="start-section">
             {!isTestStarted ? (
               <div className="test-intro">
-                <p>당신이 어떤 북루미인지 9가지 유형으로 분류해주는 테스트입니다.</p>
-                <p>‘시작하기'를 눌러 테스트를 진행하세요!</p>
-                
-                <div className="image-container">
-                  <img src={thinking} alt="Start Test" className="start-image" />
-                  <div className="overlay-text">나는 어떤 루미일까..?</div>
+                <div className="test-intro-text">
+                  <p>당신이 어떤 북루미인지 9가지 유형으로 분류해주는 테스트입니다.</p>
+                  <p>‘시작하기'를 눌러 테스트를 진행하세요!</p>
                 </div>
-                <button onClick={startTest} className="start-btn">
-                  <img src={book} alt="Start Test" className="start-btn-img" />
-                  <span className="start-text">시작하기</span> {/* 시작 텍스트 추가 */}
+                <div className="test-intro-icons">
+                <div className="test-image-container">
+                  <img src={thinking} alt="Start Test" className="test-start-image" />
+                  <div className="test-overlay-text">나는 어떤 루미일까..?</div>
+                </div>
+                <button onClick={startTest} className="test-start-btn">
+                  <img src={book} alt="Start Test" className="test-start-btn-img" />
+                  <span className="test-overlay-text">&emsp;시작&emsp;하기</span>
                 </button>
               </div>
+            </div>
             ) : result ? (
             <>
+              <div className="result-section">
                 <h2 className="result-title">나의 독서 유형은?</h2>
+                <div classname="result-container">
                 {Array.isArray(result) ? (
                   result.map((line, index) => (
                     <p key={index} className="result-text">{line}</p>
@@ -223,7 +228,7 @@ const Test = () => {
                 )}
                 <img src={bookicon} className="logo-book-Test" alt="Logo" />
                 <><button className="reset-btn" onClick={resetTest}>다시 검사하기</button></>
-              
+                </div>
               {/* 추천 도서 표시 */}
               <h3 className="recommend-title">나를 위한 추천 도서</h3>
               {Object.keys(recommendedBooks).length > 0 ? (
@@ -246,7 +251,7 @@ const Test = () => {
               ) : (
                 <p className="loading-text">추천 도서를 불러오는 중...</p>
               )}
-              
+              </div>
             </>
           ) : (
             <>
