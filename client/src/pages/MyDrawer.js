@@ -119,6 +119,7 @@ const MyDrawer = () => {
 
           {!isEditingNickname ? (
             <button className="nick-btn" onClick={handleEditNickname}>
+              닉네임 변경하기
             </button>
           ) : (
             <div>
@@ -189,7 +190,7 @@ const MyDrawer = () => {
               {profile.followings && profile.followings.length > 0 ? (
                 profile.followings.map((following) => (
                   <div key={following.nick}>
-                    <Link to={`/user_profile/${following.nick}`}>
+                    <Link to={`/myDrawer/${following.nick}`}>
                       {following.nick}
                     </Link>
                   </div>
@@ -205,7 +206,7 @@ const MyDrawer = () => {
               {profile.followersList && profile.followersList.length > 0 ? (
                 profile.followersList.map((follower) => (
                   <div key={follower.nick}>
-                    <Link to={`/user_profile/${follower.nick}`}>
+                    <Link to={`/myDrawer/${follower.nick}`}>
                       {follower.nick}
                     </Link>
                   </div>
