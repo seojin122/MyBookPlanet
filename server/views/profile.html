@@ -1,50 +1,45 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>프로필</title>
+    <style>
+      .following-list a{
+        text-decoration-line: none;
+      }
+    </style>
+</head>
+<body>
+    {% extends 'layout.html' %}
 
-
-{% extends 'layout.html' %}
-
-{% block content %}
-  <div class="timeline">
-    <div class="followings-half">
-      <h2>팔로잉 목록</h2>
-      {% if user.Followings %}
-        {% for following in user.Followings %}
-          <!-- <div>{{following.nick}}</div> -->
-
-          <div class="followings-list">
-            <!-- 팔로잉 사용자의 이름을 클릭하면 해당 사용자의 프로필로 이동 -->
-            <a href="/user_profile/{{ following.nick }}">{{ following.nick }}</a>
-          </div>
-
-          
-        {% endfor %}
-      {% endif %}
+    {% block content %}
+    <div class="timeline">
+        <div class="followings-half">
+            <h2>팔로잉 목록</h2>
+            {% if user.Followings %}
+                {% for following in user.Followings %}
+                    <div class="followings-list">
+                        <a href="/user_profile/{{ following.nick }}">{{ following.nick }}</a>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <div class="followers-half">
+            <h2>팔로워 목록</h2>
+            {% if user.Followers %}
+                {% for follower in user.Followers %}
+                    <div class="followers-list">
+                        <a href="/user_profile/{{ follower.nick }}">{{ follower.nick }}</a>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
     </div>
-    <div class="followers-half">
-      <h2>팔로워 목록</h2>
-      {% if user.Followers %}
-        {% for follower in user.Followers %}
-          <!-- <div>{{follower.nick}}</div> -->
+    {% endblock %}
 
-          <div class="followers-list">
-            <!-- 팔로워 사용자의 이름을 클릭하면 해당 사용자의 프로필로 이동 -->
-            <a href="/user_profile/{{ follower.nick }}">{{ follower.nick }}</a>
-          </div>
-
-
-        {% endfor %}
-      {% endif %}
-          </div>
-  </div>
-{% endblock %}
-
-{% block intro_section %}
-  {# 한 줄 소개를 숨기기 위해 아무 내용도 렌더링하지 않음 #}
-{% endblock %}
-
-<style>
-.followings-half .followings-list, .followers-half .followers-list {
-  color: red !important;
-}
-
-
-</style>
+    {% block intro_section %}
+    {# 한 줄 소개를 숨기기 위해 아무 내용도 렌더링하지 않음 #}
+    {% endblock %}
+</body>
+</html>

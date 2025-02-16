@@ -78,6 +78,7 @@ app.use("/comments", commentsRouter);
 app.use('/api/booklist', booklist);
 app.use('/api/booklumi', booklumi);  
 app.use('/image', imageRouter);  // /image 경로에서 이미지 업로드 라우터 처리
+app.use('/user_profile', userRouter);
 
 
 app.get('/user_profile/:username', async (req, res) => {

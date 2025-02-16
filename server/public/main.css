@@ -48,13 +48,13 @@ input[type='text'], input[type='email'], input[type='password'], textarea {
 }
 .user-name { font-weight: bold; font-size: 18px; }
 .count { font-weight: bold; color: black; font-size: 18px; }
-.timeline {
+/* .timeline {
   margin-top: 10px;
   width: 100%;
   display: inline-block;
   border-radius: 4px;
   vertical-align: top;
-}
+} */
 @media screen and (min-width: 800px) { .timeline { width: 500px; } }
 #twit-form {
   border-bottom: 1px solid silver;
