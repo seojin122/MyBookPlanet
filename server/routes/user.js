@@ -6,9 +6,11 @@ const { User } = require('../models');
 
 const router = express.Router();
 
-// 팔로우 처리
 router.post('/:id/follow', isLoggedIn, async (req, res, next) => {
   try {
+    console.log("✅ 팔로우 요청 받음:", req.params.id); // 요청 ID 확인
+    console.log("✅ 현재 로그인한 사용자:", req.user); // 로그인 상태 확인
+
     const { id } = req.params;
     const me = await User.findByPk(req.user.id);
     const targetUser = await User.findByPk(id);
@@ -17,9 +19,7 @@ router.post('/:id/follow', isLoggedIn, async (req, res, next) => {
       return res.status(404).json({ message: '해당 사용자를 찾을 수 없습니다.' });
     }
 
-    if (me.id === targetUser.id) {
-      return res.status(400).json({ message: '자기 자신을 팔로우할 수 없습니다.' });
-    }
+    console.log("✅ 팔로우 대상:", targetUser.nick);
 
     const isFollowing = await me.hasFollowing(targetUser);
     if (isFollowing) {
@@ -29,10 +29,11 @@ router.post('/:id/follow', isLoggedIn, async (req, res, next) => {
     await me.addFollowing(targetUser);
     return res.json({ message: '팔로우 성공!' });
   } catch (error) {
-    console.error(error);
+    console.error("🔥 오류 발생:", error);
     next(error);
   }
 });
+
 
 // 팔로우 취소 처리
 router.post('/:id/unfollow', isLoggedIn, async (req, res, next) => {
@@ -160,11 +161,16 @@ router.post('/update-nickname', isLoggedIn, async (req, res) => {
 
 router.get('/user_profile/:username', async (req, res, next) => {
   try {
-    const { username } = req.params; // req.params.username이 아니라 req.params로 가져와야 합니다.
+    console.log("🔹 현재 로그인한 사용자:", req.user); // 로그 추가
+    console.log("🔹 요청된 사용자 프로필:", req.params.username);
 
-    // 'nick'으로 사용자 조회
+    if (!req.user) {
+      return res.status(401).json({ message: "로그인이 필요합니다." });
+    }
+
+    const { username } = req.params;
     const user = await User.findOne({
-      where: { nick: username }, // 'nick'을 이용해 사용자 조회
+      where: { nick: username },
       include: [
         { model: User, as: 'Followings' },
         { model: User, as: 'Followers' }
@@ -175,12 +181,19 @@ router.get('/user_profile/:username', async (req, res, next) => {
       return res.status(404).json({ message: '해당 사용자를 찾을 수 없습니다.' });
     }
 
-    // 사용자 프로필 렌더링
     res.render('user_profile', { user });
   } catch (error) {
-    console.error(error);
+    console.error("🔥 프로필 로드 중 오류 발생:", error);
     next(error);
   }
 });
+
+
+/*
+router.get('/test', (req, res) => {
+  res.send("✅ userRouter 정상 작동 중!");
+});
+*/
+
 
 module.exports = router;

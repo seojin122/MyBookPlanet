@@ -2,14 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { Post, User, Like } = require("../models"); // ✅ Like 모델 추가
 const { Op } = require("sequelize");
-const cors = require("cors");
 
-// CORS 설정 추가
-router.use(cors({
-    origin: "*",
-    methods: "GET,POST",
-    allowedHeaders: "Content-Type",
-}));
 // 📌 [1] 게시글 목록 조회 + 검색 기능 (GET /posts)
 router.get("/", async (req, res) => {
     try {
@@ -30,12 +23,12 @@ router.get("/", async (req, res) => {
             include: [{
                 model: User,
                 as: "user",
-                attributes: ["id", "nick", "profileImage"]
+                attributes: ["id", "nick"]
             }],
             order: [["createdAt", "DESC"]],
         });
 
-        res.json(posts);  // ✅ JSON으로 응답
+        res.render("posts", { posts, search });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: "서버 오류" });
@@ -90,7 +83,7 @@ router.get("/:id", async (req, res) => {
             include: [{
                 model: User,
                 as: "user",
-                attributes: ["id", "nick", "profileImage"]
+                attributes: ["id", "nick"]
             }]
         });
 
@@ -145,7 +138,7 @@ router.get("/:id/edit", async (req, res) => {
     try {
         const post = await Post.findOne({
             where: { id: req.params.id },
-            include: [{ model: User, as: "user", attributes: ["id", "nick", "profileImage"] }]
+            include: [{ model: User, as: "user", attributes: ["id", "nick"] }]
         });
 
         if (!post) {
