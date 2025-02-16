@@ -48,7 +48,7 @@ class User extends Model {
           through: 'user_booklumi_tests',
           as: 'BooklumiTests',
         });
-        
+
     db.User.hasMany(db.Post, { foreignKey: 'userId', as: 'Posts' });
 
     db.User.belongsToMany(db.User, {

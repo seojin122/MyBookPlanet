@@ -4,17 +4,17 @@ const router = express.Router();
 const { User, BooklumiTest } = require("../models");  // 모델 import
 
 // CORS 설정 추가
-/*
 router.use(cors({
-    origin: "*",
-    methods: "GET,POST",
-    allowedHeaders: "Content-Type",
-}));*/
+    origin: ["http://localhost:3000"],  // 여러 출처 허용
+    credentials: true,  // 쿠키, 인증 정보 포함 허용
+    methods: ["GET", "POST", "PUT", "DELETE"], // 사용할 HTTP 메서드 지정
+    allowedHeaders: ["Content-Type", "Authorization"] // 허용할 헤더 지정
+}));
 
 router.post("/", async (req, res) => {
     try {
         console.log(req.body);  // 로그를 찍어서 요청 데이터를 확인
-        
+
         const { userId, readerType } = req.body;
 
         // 서버에 readerType 저장
