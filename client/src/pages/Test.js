@@ -68,6 +68,18 @@ const questions = {
   },
 };
 
+// 각 유형별 부연 설명
+const resultDescriptions = {
+  "감성을 노래하는 이야기꾼 🎭": "당신은 감정을 깊이 느끼고, 이를 표현하는 데 능숙한 이야기꾼입니다. <br> 감동적인 이야기를 통해 사람들에게 위로와 영감을 줍니다.",
+  "꿈을 좇는 몽상가 🌌": "당신은 상상력이 풍부하고, 꿈을 좇는 몽상가입니다. <br>동심의 세계에서 위로를 받고, 새로운 가능성을 탐구합니다.",
+  "창조적인 영감을 찾는 예술가 🎨": "당신은 예술과 감각적인 경험을 통해 창조적인 영감을 찾는 예술가입니다. <br>예술을 통해 자신을 표현하고, 세상을 새롭게 바라봅니다.",
+  "마음의 길을 걷는 철학자 🧘": "당신은 철학적인 고민과 깊은 사색을 통해 마음의 길을 걷는 철학자입니다. <br>삶의 의미를 탐구하고, 내면의 평화를 찾습니다.",
+  "세상의 흐름을 읽는 사색가 🔍": "당신은 인간과 사회에 대한 통찰을 통해 세상의 흐름을 읽는 사색가입니다. <br>사회적 이슈에 관심이 많고, 깊이 있는 분석을 즐깁니다.",
+  "변화를 이끄는 전략가 📉": "당신은 경제 흐름과 돈 관리에 관심이 많은 전략가입니다. <br>변화를 이끌고, 새로운 기회를 창출하는 데 능숙합니다.",
+  "호기심 넘치는 탐구자 🧪": "당신은 과학적 지식과 기술에 대한 호기심이 넘치는 탐구자입니다. <br>새로운 지식을 습득하고, 이를 통해 세상을 이해하는 것을 즐깁니다.",
+  "인생을 업그레이드하는 메이커 ⚡": "당신은 생활 속에서 바로 적용할 수 있는 팁을 좋아하는 메이커입니다. <br>실용적인 지식을 통해 자신의 삶을 업그레이드합니다.",
+};
+
 // listType에 대한 사용자 정의 이름 맵핑
 const listTypes = [
   { type: "Bestseller", name: "베스트셀러" },
@@ -224,10 +236,14 @@ const Test = () => {
                     <p key={index} className="result-text">{line}</p>
                   ))
                 ) : (
+                  <>
                   <p className="result-text">{result}</p>
+                  <div className="result-description" dangerouslySetInnerHTML={{ __html: resultDescriptions[result] }} />
+                  </>
                 )}
                 <img src={bookicon} className="logo-book-Test" alt="Logo" />
-                <><button className="reset-btn" onClick={resetTest}>다시 검사하기</button></>
+                <>
+                <button className="reset-btn" onClick={resetTest}>다시 검사하기</button></>
                 </div>
               {/* 추천 도서 표시 */}
               <h3 className="recommend-title">나를 위한 추천 도서</h3>

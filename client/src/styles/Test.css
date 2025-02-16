@@ -162,7 +162,7 @@
   width: 100%;
   max-width: 350px;
   height: auto;
-  margin-top: 0px;
+  margin-top: 30px;
 }
 
 /* 다시하기 버튼 */
@@ -194,6 +194,16 @@
 .result-text {
   text-align: center;
   margin-left: 15px;
+  
+}
+
+/* 결과 설명을 오른쪽에 배치 */
+.result-description {
+  margin-left: 20px;
+  font-size: 1rem;
+  color: #4d392e;
+  text-align: center;
+  max-width: 1000px; /* 설명의 최대 너비 설정 */
 }
 
 .logo-book-Test {
@@ -269,25 +279,6 @@
   font-size: 1rem;
   color: #4d392e;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*수정 완*/
-
 
 
 /* Book Question Container */
