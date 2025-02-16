@@ -227,7 +227,7 @@
 .book-categories {
   display: flex;
   flex-direction: column;
-  margin-left: 10px;
+  margin-left: 50px;
   gap: 30px; /* 카테고리 간 간격 */
 }
 
@@ -254,24 +254,23 @@
   align-items: center;
   flex-direction: column;
   gap: 10px;
-  padding: 5px;
+  padding: 0px;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  /* box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); */
   width: 120px;
 }
 
 /* 책 커버 이미지 */
 .book-cover {
-  width: 50px;
+  width: 80px;
   height: auto;
 }
 
 /* 책 제목 스타일 */
 .book-title {
   text-align: center;
-  font-size: 1rem;
+  font-size: 0.5rem;
   color: #4d392e;
-  word-wrap: break-word;
   width: 100%;
 }
 
