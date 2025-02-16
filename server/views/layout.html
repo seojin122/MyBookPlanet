@@ -21,7 +21,7 @@
       .lamp {
         margin-top: -700px;
         margin-bottom: 15px;
-        margin-left: 200px;
+        margin-left: 230px;
       }
 
       .book-icon {
@@ -115,11 +115,12 @@
   border-radius: 4px;
   border: 1px solid silver;
   background-color: #f9f6ec;
+  width: 350px;
 }
 
   .profile-wrap {
-    width: 300px;
-    
+    width: 350px;
+    align-items: center;
   }
 
   .drawer-title {
@@ -211,7 +212,7 @@
     align-items: center;      /* 세로 중앙 정렬 */
     width: 200px;             /* 프로필 사진 크기 */
     height: 200px;   
-    margin-left: 40px;         
+    margin-left: 60px;         
 }
 
 .half {
@@ -241,8 +242,16 @@
     border-radius: 5px;
     border-color: black;
     margin-top: 5px;
-    border: 2px solid rgb(36, 134, 17);
+    border: 2px solid rgb(97, 67, 13);
 }
+
+
+
+
+.button-container {
+  margin-left: 40px;
+}
+
 
     </style>
 
@@ -255,9 +264,9 @@
     <div class="MyDrawer">
       <header class="header">
         <div class="img-group">
-          <img src="assets/lamp.png" class="lamp" alt="lamp" />
-          <img src="assets/lamp.png" class="lamp" alt="lamp" />
-          <img src="assets/lamp.png" class="lamp" alt="lamp" />
+          <img src="/assets/lamp.png" class="lamp" alt="lamp" />
+          <img src="/assets/lamp.png" class="lamp" alt="lamp" />
+          <img src="/assets/lamp.png" class="lamp" alt="lamp" />
         </div>
         <div class="nav-group">
           <div class="nav-item">
@@ -274,7 +283,7 @@
           </div>
           <div class="nav-item">
             <a href="/layout">나의 서랍</a>
-            <img src="assets/bookicon.png" class="book-icon" alt="book icon" />
+            <img src="/assets/bookicon.png" class="book-icon" alt="book icon" />
           </div>
 
         </div>
@@ -286,14 +295,14 @@
 
     <div class="container">
       <div class="drawer-title">
-        <img src="assets/logo.png" class="logo" alt="logo">
+        <img src="/assets/logo.png" class="logo" alt="logo">
         <p>나의 서랍</p>
       </div>
       <div class="big">
       <div class="profile-wrap">
         <div class="profile">
           {% if user and user.id %}
-          <img src="assets/user.png" class="user" alt="user" />
+          <img src="/assets/user.png" class="user" alt="user" />
             <div class="user-name">
               <span id="nickname-text">{{ user.nick }} 님, 반가워요!</span>
               <input id="nickname-input" type="text" value="{{ user.nick }}" style="display: none;">
