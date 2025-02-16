@@ -1,160 +1,229 @@
 .book-icon {
-    width: 100px;
-    height: 23px;
-  }
-  
-  .lamp {
-    width: 45px;
-    height: auto;
-    margin: 0 15px;
-  }
+  width: 100px;
+  height: 23px;
+}
 
-  
+.lamp {
+  width: 45px;
+  height: auto;
+  margin: 0 15px;
+}
+
+
 .logo {
-    width: 100px;
-    height: auto;
-  }
-  
-  .img-group {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    gap: 150px;
-    position: fixed;
-    top: 0px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 100%;
-    padding-bottom: 20%;
-  }
-  
-  .main-container {
-    text-align: center;
-    font-family: Arial, sans-serif;
-    background-color: #f9f6ec;
-    height: 100vh;
-  }
-  
-  .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 45px 150px;
-    background-color: #f9f6ec;
-    border-bottom: 2px solid #201f11;
-    position: relative;
-    margin-bottom: 50px;
-  }
-  
-  .nav-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    position: relative;
-  }
-  
-  .underline {
-    width: 90px;
-    height: 20px;
-    background-color: #684c30;
-    margin-top: 5px;
-  }
-  
-  .nav-group {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    gap: 150px;
-    position: absolute;
-    left: 50%;
-    top: calc(100% + 15px);
-    transform: translateX(-50%);
-    border-bottom: 2px solid #201f11;
-    width: 100%;
-  }
-  
-  .nav-group a {
-    text-decoration: none;
-    font-weight: bold;
-    color: black;
-    padding-bottom: 10%;
-  }
-  
-  .bestseller-section {
-    margin-top: 100px; /* 100px 아래로 이동 */
-  }
-  
-  .bestseller-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    max-width: 800px; /* 적절한 최대 너비 설정 */
-    margin: 0 auto 20px;
-  }
-  
-  .bestseller-header h2 {
-    margin: 0;
-    font-size: 24px;
-    font-weight: bold;
-  }
-  
-  .search-bar {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  
-  .search-bar input {
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    width: 300px;
-  }
-  
-  .search-bar button {
-    padding: 8px 12px;
-    border: none;
-    background-color: #684c30;
-    color: white;
-    cursor: pointer;
-    border-radius: 5px;
-  }
-  
-  .search-bar button:hover {
-    background-color: #543a22;
-  }
-  
-  .book-list {
-    display: flex;
-    flex-direction: row; /* 가로 정렬 */
-    justify-content: center; /* 가운데 정렬 */
-    gap: 20px; /* 각 책 사이의 간격 */
-    flex-wrap: wrap; /* 화면이 좁을 때 줄바꿈 */
-    margin-top: 100px;
-  }
-  
-  .book-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 150px; /* 아이템 크기 조정 */
-  }
-  
-  .book-cover {
-    width: 120px;
-    height: auto;
-    border-radius: 10px;
-  }
-  
-  .book-title {
-    margin-top: 10px;
-    font-size: 14px;
-    text-align: center;
-  }
+  width: 100px;
+  height: auto;
+}
 
-  .bestseller-header h2 {
-    position: relative;
-    right: 70px;
-  }
-  
+.img-group {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 150px;
+  position: fixed;
+  top: 0px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  padding-bottom: 20%;
+}
+
+.main-container {
+  text-align: center;
+  font-family: Arial, sans-serif;
+  background-color: #f9f6ec;
+  height: 100vh;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 45px 150px;
+  background-color: #f9f6ec;
+  border-bottom: 2px solid #201f11;
+  position: relative;
+  margin-bottom: 50px;
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.underline {
+  width: 90px;
+  height: 20px;
+  background-color: #684c30;
+  margin-top: 5px;
+}
+
+.nav-group {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 150px;
+  position: absolute;
+  left: 50%;
+  top: calc(100% + 15px);
+  transform: translateX(-50%);
+  border-bottom: 2px solid #201f11;
+  width: 100%;
+}
+
+.nav-group a {
+  text-decoration: none;
+  font-weight: bold;
+  color: black;
+  padding-bottom: 10%;
+}
+
+.bestseller-section {
+  margin-top: 100px;  
+}
+
+.bestseller-header {
+  display: flex;
+  align-items: center;
+  width: fit-content; /* 내용 크기에 맞춤 */
+  margin: 0 auto 20px;
+  position: relative;
+}
+
+.bestseller-header h2 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: bold;
+  margin-left: 10px; /* 로고 오른쪽 10px 간격 유지 */
+}
+
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.search-bar input {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  width: 300px;
+  padding: 10px 10px 10px 35px; /*검색창 패딩*/
+}
+
+.search-bar button {
+  padding: 8px 12px;
+  border: none;
+  background-color: #684c30;
+  color: white;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.search-bar button:hover {
+  background-color: #543a22;
+}
+
+.book-list {
+  display: flex;
+  flex-direction: row; 
+  justify-content: center;  
+  gap: 20px;  
+  flex-wrap: wrap; 
+  margin-top: 40px;
+}
+
+.book-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 150px; 
+}
+
+.book-cover {
+  width: 120px;
+  height: auto;
+  border-radius: 10px;
+}
+
+.book-title {
+  margin-top: 10px;
+  font-size: 7px;
+  text-align: center;
+  color: #201f11;
+}
+
+
+
+.rank {
+  display: inline-block;  
+  width: 25px;  
+  height: 25px;  
+  text-align: center;  
+  line-height: 30px; 
+  font-size: 14px;  
+  font-weight: bold;  
+  border-radius: 5px;  
+  border: 3px solid black;  
+  margin: 10px;
+  background-color: #ffffff;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center; 
+  align-items: center;  
+  gap: 10px; 
+  margin-top: 20px; 
+}
+
+.pagination button {
+  padding: 5px 10px;
+  border: none;
+  background-color: #f0f0f0;
+  color: #333;
+  font-size: 13px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: all 0.3s ease;
+  border: 3px solid black; 
+}
+
+.pagination button:hover {
+  background-color: #ddd;
+}
+
+.pagination .active {
+  background-color: #ffffff;  
+  color: rgb(0, 0, 0);
+  font-weight: bold;
+}
+
+
+.logout-btn {
+position: absolute;
+bottom: 10px;
+right: 10px;
+background-color: #ccb494;
+border: none;
+padding: 3px 15px;
+border-radius: 15px;
+cursor: pointer;
+}
+
+/* 날씨 알림 스타일 */
+.weather {
+font-size: 18px;
+font-weight: bold;
+color: #000000e0;
+background-color: #fffdf6;
+padding: 10px 15px;
+border-radius: 10px;
+display: inline-block;
+margin: 10px 0;
+box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+text-align: center;
+}
