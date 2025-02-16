@@ -1,1 +1,74 @@
-<h1>main</h1> 
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Main Page</title>
+  <!-- <link rel="stylesheet" href="server/styles/main.css"> -->
+  <style>
+    body {
+    background-color: #f9f6ec;
+  }
+  </style>
+</head>
+<body>
+  <div class="main-container">
+    <header class="header">
+      <div class="img-group">
+        <img src="assets/lamp.png" class="lamp" />
+        <img src="assets/lamp.png" class="lamp" />
+        <img src="assets/lamp.png" class="lamp" />
+      </div>
+      <div class="nav-group">
+        <div class="nav-item">
+          <a href="/account">회원가입</a>
+          <div class="underline"></div>
+        </div>
+        <div class="nav-item">
+          <a href="/login">로그인</a>
+          <div class="underline"></div>
+        </div>
+        <div class="nav-item">
+          <a href="/layout">나의 서랍</a>
+          <div class="underline"></div>
+        </div>
+      </div>
+
+      <button class="logout-btn" onclick="handleLogout()">👤 로그아웃</button>
+    </header>
+
+    <div class="logo-container">
+      <img src="assets/logo.png" class="logo" />
+      <h1>My Book Planet</h1>
+    </div>
+
+    <div class="button-group">
+      <a href="/bestseller" class="btn brown">베스트셀러</a>
+      <a href="/test" class="btn green">북루미 테스트</a>
+      <a href="/community" class="btn brown">북작북작</a>
+    </div>
+  </div>
+
+  <script>
+    function handleLogout() {
+      fetch('/auth/logout', {
+        method: 'GET',
+        credentials: 'include',
+      })
+        .then(response => {
+          if (response.ok) {
+            alert('로그아웃 되었습니다.');
+            localStorage.removeItem('token');
+            window.location.href = '/';
+          } else {
+            alert('로그인 상태가 아닙니다.');
+          }
+        })
+        .catch(error => {
+          console.error('로그아웃 오류:', error);
+          alert('서버 오류');
+        });
+    }
+  </script>
+</body>
+</html>

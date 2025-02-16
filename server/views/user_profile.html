@@ -1,14 +1,63 @@
-{% extends 'layout.html' %}
 
+<div class="MyDrawer">
+  <header class="header">
+    <div class="img-group">
+      <img src="assets/lamp.png" class="lamp" alt="lamp" />
+      <img src="assets/lamp.png" class="lamp" alt="lamp" />
+      <img src="assets/lamp.png" class="lamp" alt="lamp" />
+    </div>
+    <div class="nav-group">
+      <div class="nav-item">
+        <a href="/Bestseller">베스트셀러</a>
+        <div class="underline"></div>
+      </div>
+      <div class="nav-item">
+        <a href="/Test">북루미테스트</a>
+        <div class="underline"></div>
+      </div>
+      <div class="nav-item">
+        <a href="/community">북작북작</a>
+        <div class="underline"></div>
+      </div>
+      <div class="nav-item">
+        <a href="/layout">나의 서랍</a>
+        <img src="assets/bookicon.png" class="book-icon" alt="book icon" />
+      </div>
+
+    </div>
+    <a id="logout" href="/auth/logout" class="btn">로그아웃</a>
+  </header>
+  </div>
 
 {% block content %}
+<h2 class="drawer-title">{{ user.nick }} 님의 서랍</h2>
   <div class="profile">
-    <h2>{{ user.nick }}의 프로필</h2>
-
-    <p>닉네임: {{ user.nick }}</p>
+    <!-- <div class="half">
     <p>이메일: {{ user.email }}</p>
     <p>팔로잉: {{ user.Followings.length }}</p>
     <p>팔로워: {{ user.Followers.length }}</p>
+
+  </div> -->
+  <img src="assets/user.png" class="user" alt="user" />
+<div class="half">
+  
+  <div class="email">이메일 {{ user.email }}</div>
+  </div>
+
+  <div class="half">
+    <div>팔로잉</div>
+    <div class="count following-count">{{user.Followings.length}}</div>
+  </div>
+  <div class="half">
+    <div>팔로워</div>
+    <div class="count follower-count">{{user.Followers.length}}</div>
+
+  </div>
+
+  <button class="follow-btn" data-user-id="{{ user.id }}"></button>
+
+  </div>
+
 
     <h3>팔로잉 목록</h3>
     <ul>
@@ -23,6 +72,241 @@
         <li><a href="/user_profile/{{ follower.nick }}">{{ follower.nick }}</a></li>
       {% endfor %}
     </ul>
-  </div>
+  
 {% endblock %}
+
+{% block intro_section %}
+  {# 한 줄 소개를 숨기기 위해 아무 내용도 렌더링하지 않음 #}
+{% endblock %}
+
+<script>
+
+
+</script>
+
+
+<style>
+
+  body {
+    background-color: #f9f6ec;
+  }
+
+  .main-container {
+text-align: center;
+font-family: Arial, sans-serif;
+background-color: #f9f6ec;
+height: 100vh;
+}
+
+.header {
+display: flex;
+justify-content: space-between;
+align-items: center;
+padding: 45px 150px;
+background-color: #f9f6ec;;
+border-bottom: 2px solid #201f11;
+position: relative;
+margin-bottom: 50px;
+}
+
+.nav-item {
+display: flex;
+flex-direction: column;
+align-items: center;
+position: relative;
+}
+
+.underline {
+width: 90px;
+height: 20px;
+background-color: #684c30;
+margin-top: 5px;
+}
+
+.nav-group {
+display: flex;
+flex-direction: row;
+justify-content: center;
+gap: 150px;
+position: absolute;
+left: 50%;
+top: calc(100% + 15px);
+transform: translateX(-50%);
+border-bottom: 2px solid #201f11;
+width: 100%;
+}
+
+.nav-item {
+display: flex;
+flex-direction: column;
+align-items: center;
+}
+
+.nav-group a {
+font-family: Arial, sans-serif;
+text-decoration: none;
+font-weight: bold;
+color: black;
+padding-bottom: 10%;
+}
+
+
+.profile {
+font-family: Arial, sans-serif;
+border: 0.5px solid #b6adad;
+border-radius: 8px;
+margin-top: 10px;
+width: 280px;
+height: 350px;
+margin-left: 220px;
+}
+
+.profile-wrap {
+width: 800px;
+
+}
+
+
+.drawer-title {
+  font-family: Arial, sans-serif;
+  font-size: 40px;
+  margin-top: 120px;
+  margin-left: 220px;
+}
+
+
+.drawer-title p {
+font-family: Arial, sans-serif;
+font-size: 40px;
+}
+
+
+#nickname-text {
+font-family: Arial, sans-serif;
+font-size: 25px;
+display: flex;
+align-items: center;
+justify-content: center;
+}
+
+
+#introContentInput {
+margin-top: 5px;
+width: 300px;
+margin-left: 60px;
+}
+
+#edit-nickname-btn, #save-nickname-btn, #cancel-nickname-btn, #my-profile, #delete-account{
+margin-top: 10px;
+background-color: #ccb494;
+border: none;
+border-radius: 15px;
+cursor: pointer;
+padding: 1px 8px;
+/* margin-left: 13px; */
+}
+
+#nickname-input {
+background-color: #f9f6ec;
+border-radius: 8px;
+}
+
+#nickname-input:hover, #nickname-input:active{
+border-color: rgb(65, 40, 15);
+}
+
+
+#introSection {
+display: flex;
+flex-direction: column;
+gap: 10px;
+}
+
+#introListContainer {
+margin-top: 10px;
+display: flex;
+align-items: center;
+gap: 10px;
+}
+
+#introContentContainer {
+display: flex;
+flex-direction: column;
+gap: 10px;
+}
+
+#editIntroButton {
+margin-top: 10px;
+background-color: #ccb494;
+border: none;
+border-radius: 15px;
+cursor: pointer;
+align-items: center;
+width: 70px;
+}
+
+.big {
+display: flex;
+}
+
+
+.user {
+display: flex;
+justify-content: center;  /* 가로 중앙 정렬 */
+align-items: center;      /* 세로 중앙 정렬 */
+width: 200px;             /* 프로필 사진 크기 */
+height: 200px;            
+}
+
+.half {
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+}
+
+#sogae {
+margin-top: 25px;
+margin-left: 60px;
+font-size: 26px;
+font-weight: 700;
+}
+
+#sogae2 {
+font-size: 15px;
+margin-left: 60px;
+}
+
+#savedIntroText {
+margin-left: 60px;
+background: #f9f6ec;
+padding: 8px;
+margin-bottom: 5px;
+border-radius: 5px;
+border-color: black;
+margin-top: 5px;
+border: 2px solid rgb(36, 134, 17);
+}
+
+
+.follow-btn {
+  display: inline-block; /* 버튼이 보이도록 설정 */
+  background-color: #4CAF50; /* 버튼 색상 */
+  color: white; /* 버튼 글자색 */
+  border: none; /* 경계선 제거 */
+  padding: 10px 20px; /* 패딩 추가 */
+  cursor: pointer; /* 마우스 포인터 변경 */
+  text-align: center;
+  border-radius: 5px; /* 둥근 모서리 */
+  margin-top: 10px; /* 버튼 간격 */
+}
+
+.follow-btn:hover {
+  background-color: #45a049; /* 호버 시 색상 변경 */
+}
+
+
+
+</style>
+
 

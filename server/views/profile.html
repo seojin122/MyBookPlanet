@@ -1,14 +1,16 @@
+
+
 {% extends 'layout.html' %}
 
 {% block content %}
   <div class="timeline">
-    <div class="followings half">
+    <div class="followings-half">
       <h2>팔로잉 목록</h2>
       {% if user.Followings %}
         {% for following in user.Followings %}
           <!-- <div>{{following.nick}}</div> -->
 
-          <div>
+          <div class="followings-list">
             <!-- 팔로잉 사용자의 이름을 클릭하면 해당 사용자의 프로필로 이동 -->
             <a href="/user_profile/{{ following.nick }}">{{ following.nick }}</a>
           </div>
@@ -17,13 +19,13 @@
         {% endfor %}
       {% endif %}
     </div>
-    <div class="followers half">
+    <div class="followers-half">
       <h2>팔로워 목록</h2>
       {% if user.Followers %}
         {% for follower in user.Followers %}
           <!-- <div>{{follower.nick}}</div> -->
 
-          <div>
+          <div class="followers-list">
             <!-- 팔로워 사용자의 이름을 클릭하면 해당 사용자의 프로필로 이동 -->
             <a href="/user_profile/{{ follower.nick }}">{{ follower.nick }}</a>
           </div>
@@ -31,6 +33,18 @@
 
         {% endfor %}
       {% endif %}
-    </div>
+          </div>
   </div>
 {% endblock %}
+
+{% block intro_section %}
+  {# 한 줄 소개를 숨기기 위해 아무 내용도 렌더링하지 않음 #}
+{% endblock %}
+
+<style>
+.followings-half .followings-list, .followers-half .followers-list {
+  color: red !important;
+}
+
+
+</style>
