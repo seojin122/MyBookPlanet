@@ -77,7 +77,7 @@ const BookDetail = () => {
 <div className="information">
 <div className="book-information">
 <h2 className="book-detail-title">{book.title}</h2>
-<p className="author"><strong></strong> {book.author},</p>
+<p className="author"><strong></strong> {book.author.split('(')[0]},</p>
 <p className="publisher"><strong></strong> {book.publisher}</p>
 </div>
 <hr></hr>
