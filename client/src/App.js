@@ -1,6 +1,6 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
-
+import { AuthProvider } from "./context/AuthContext";
 import Main from "./pages/Main";
 import Login from "./pages/Login";
 import Account from "./pages/Account";
@@ -24,6 +24,7 @@ function App() {
       <Route path="/bestseller" element={<Bestseller />} />
       <Route path="/book/:title" element={<BookDetail />} />
       <Route path="/community" element={<Community />} />
+      <Route path="/myDrawer" element={<MyDrawer />} />
     </Routes>
     </div>
   );

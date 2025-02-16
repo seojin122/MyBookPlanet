@@ -65,6 +65,23 @@ app.use(session({
   name: 'session-cookie',
 }));
 
+
+
+const cors = require('cors');  // CORS 미들웨어 추가
+
+
+// 🔹 CORS 설정 추가
+app.use(cors({
+  origin: 'http://localhost:3000', // 프론트엔드 주소 허용
+  credentials: true,  // 쿠키 포함 허용 (필요한 경우)
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],  // 허용할 HTTP 메서드
+  allowedHeaders: ['Content-Type', 'Authorization'], // 허용할 헤더
+}));
+
+app.use(express.json());
+
+
+
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -248,7 +265,9 @@ app.use(session({
   saveUninitialized: false,
   cookie: {
     httpOnly: true,
-    secure: false, // HTTPS 적용 시 true
+    //secure: false, // HTTPS 적용 시 true
+    secure: process.env.NODE_ENV === 'production', // HTTPS에서만 쿠키 사용
+    maxAge: 24 * 60 * 60 * 1000 // 24시간
   },
 }));
 
