@@ -12,92 +12,171 @@ import good from '../assets/good.png';
 const Community = () => {
   const [page, setPage] = useState("main");
   const [selectedReview, setSelectedReview] = useState(null);
-  const [reviews, setReviews] = useState([]);  // ✅ 더미 데이터를 제거하고 빈 배열로 초기화
+  const [reviews, setReviews] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredReviews, setFilteredReviews] = useState([]); // 🔹 필터링된 리뷰 저장
 
-  // ✅ 백엔드에서 게시글 데이터를 불러오는 useEffect 추가
   useEffect(() => {
-      const fetchReviews = async () => {
-        try {
-            const response = await axios.get("http://localhost:3002/posts", {
-                //withCredentials: true,  // ✅ CORS 문제 방지 (쿠키 포함)
-                headers: { "Content-Type": "application/json" }  // ✅ 올바른 요청 헤더 추가
-            });
-            setReviews(response.data);
-        } catch (error) {
-            console.error("게시글 목록 불러오기 실패:", error);
-        }
-      };
+    const fetchReviews = async () => {
+      try {
+        const response = await axios.get("http://localhost:3002/posts", {
+          headers: { "Content-Type": "application/json" }
+        });
+        setReviews(response.data);
+        setFilteredReviews(response.data); // 🔹 초기 데이터 설정
+      } catch (error) {
+        console.error("게시글 목록 불러오기 실패:", error);
+      }
+    };
 
-      fetchReviews(); // API 요청 실행
+    fetchReviews();
   }, []);
 
-    return (
-        <div>
-            {page === "main" && <MainPage setPage={setPage} setSelectedReview={setSelectedReview} reviews={reviews} />}
-            {page === "form" && <ReviewForm setPage={setPage} setReviews={setReviews} />}
-            {page === "detail" && <ReviewDetail setPage={setPage} review={selectedReview} />}
-        </div>
-    );
+  // 🔹 검색어 입력 시 자동 필터링
+  useEffect(() => {
+    if (searchTerm.trim() === "") {
+      setFilteredReviews(reviews);
+    } else {
+      const filtered = reviews.filter((review) =>
+        review.bookTitle.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        review.reviewTitle.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setFilteredReviews(filtered);
+    }
+  }, [searchTerm, reviews]);
+
+  return (
+    <div>
+      {page === "main" && (
+        <MainPage
+          setPage={setPage}
+          setSelectedReview={setSelectedReview}
+          reviews={filteredReviews}
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
+        />
+      )}
+      {page === "form" && <ReviewForm setPage={setPage} setReviews={setReviews} />}
+      {page === "detail" && <ReviewDetail setPage={setPage} review={selectedReview} />}
+    </div>
+  );
 };
 
-const MainPage = ({ setPage, setSelectedReview, reviews }) => {
-    return (
-        <div className="container">
-            <div className="MyDrawer">
-                <header className="header">
-                    <div className="img-group">
-                        <img src={lamp} className="lamp" alt="lamp" />
-                        <img src={lamp} className="lamp" alt="lamp" />
-                        <img src={lamp} className="lamp" alt="lamp" />
-                    </div>
-                    <div className="nav-group">
-                        <div className="nav-item">
-                            <Link to="/account">회원가입</Link>
-                            <div className="underline"></div>
-                        </div>
-                        <div className="nav-item">
-                            <Link to="/login">로그인</Link>
-                            <div className="underline"></div>
-                        </div>
-                        <div className="nav-item">
-                            <Link to="/community">북작북작</Link>
-                            <img src={bookicon} className="logo-Drawer" alt="Logo" />
-                        </div>
-                        <div className="nav-item">
-                            <Link to="/myDrawer">나의 서랍</Link>
-                            <div className="underline"></div>
-                        </div>
-                    </div>
-                    <button className="logout-btn">👤 로그아웃</button>
-                </header>
-                <div className="logo-container-Drawer">
-                    <img src={logo} className="logo-Drawer" alt="Logo" />
-                    <h1>북작북작</h1>
-                </div>
-            </div>
-            <div className="header_community">
-            </div>
-            <div className="search-bar">
-                <div className="search-input">
-                    <input type="text" placeholder="검색" />
-                </div>
-                <button className="write-button" onClick={() => setPage("form")}>작성하기</button>
-            </div>
+//seojin
+const PostDetail = ({ postId }) => {
+  const [post, setPost] = useState(null);
 
-            <div className="review-list">
-                {reviews.map((review) => (
-                    <div key={review.id} className="review-card" onClick={() => { setSelectedReview(review); setPage("detail"); }}>
-                        
-                        <p className="book-title">{review.bookTitle}</p>
-                        <div className="stars">{"⭐".repeat(review.rating)}</div>
-                        <h2 className="review-title">{review.reviewTitle}</h2>
-                        <div className="nickname">👤 {review.nick}</div>
-                    </div>
-                ))}
-            </div>
-        </div>
-    );
+  useEffect(() => {
+    fetch(`http://localhost:3002/posts/${postId}`)
+      .then(res => res.json())
+      .then(data => {
+        console.log("📌 API 응답:", data); // 🔥 응답 데이터 확인
+        setPost(data);
+      })
+      .catch(error => console.error("🚨 API 오류:", error));
+  }, [postId]);
+  if (!post) return <p>Loading...</p>;
+  return (
+    <div>
+      <h2>{post.bookTitle}</h2>
+      <h3>{post.reviewTitle} (⭐ {post.rating})</h3>
+      <p>{post.content}</p>
+      <button onClick={() => handleLike(postId)}>❤️ {post.likes}</button>
+    </div>
+  );
 };
+
+// 게시글 좋아요 기능
+const handleLike = (postId) => {
+  fetch(`http://localhost:3002/posts/${postId}/like`, { method: 'POST' })
+    .then(res => res.json())
+    .then(updatedPost => console.log("Liked:", updatedPost));
+};
+
+const MainPage = ({ setPage, setSelectedReview, reviews, searchTerm, setSearchTerm }) => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const reviewsPerPage = 3;
+
+  const totalPages = Math.ceil(reviews.length / reviewsPerPage);
+  const currentReviews = reviews.slice((currentPage - 1) * reviewsPerPage, currentPage * reviewsPerPage);
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
+  return (
+    <div className="main-container">
+      <header className="header">
+        <div className="img-group">
+          <img src={lamp} className="lamp" alt="lamp" />
+          <img src={lamp} className="lamp" alt="lamp" />
+          <img src={lamp} className="lamp" alt="lamp" />
+        </div>
+        <div className="nav-group">
+          <div className="nav-item">
+            <Link to="/Bestseller">베스트셀러</Link>
+            <div className="underline"></div>
+          </div>
+          <div className="nav-item">
+            <Link to="/Test">북루미테스트</Link>
+            <div className="underline"></div>
+          </div>
+          <div className="nav-item">
+            <Link to="/community">북작북작</Link>
+            <img src={bookIcon} className="book-icon" alt="book icon" />
+          </div>
+          <div className="nav-item">
+            <Link to="/myDrawer">나의 서랍</Link>
+            <div className="underline"></div>
+          </div>
+        </div>
+      </header>
+      <div className="logo-container-Drawer">
+        <img src={logo} className="logo-Drawer" alt="Logo" />
+        <h1>북작북작</h1>
+      </div>
+      <div className="h-container">
+        <div className="search-bar">
+          <div className="h-search-input">
+            <input
+              type="text"
+              placeholder="검색"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)} // 🔹 입력할 때마다 자동 필터링
+            />
+          </div>
+          <button className="h-write-button" onClick={() => setPage("form")}>작성하기</button>
+        </div>
+        <div className="review-list">
+          {currentReviews.length > 0 ? (
+            currentReviews.map((review) => (
+              <div key={review.id} className="review-card" onClick={() => { setSelectedReview(review); setPage("detail"); }}>
+                <p className="h-book-title">{review.bookTitle}</p>
+                <div className="stars">{"⭐".repeat(review.rating)}</div>
+                <h2 className="h-review-title">{review.reviewTitle}</h2>
+                <div className="nickname">👤 {review.user?.nick ?? "알 수 없음"}</div>
+              </div>
+            ))
+          ) : (
+            <p className="no-results">검색 결과가 없습니다.</p>
+          )}
+        </div>
+        <div className="pagination">
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+            <button
+              key={page}
+              className={currentPage === page ? "active" : ""}
+              onClick={() => handlePageChange(page)}
+            >
+              {page}
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
 //<div className="pin">📌</div>
 // 리뷰 클릭
 const ReviewDetail = ({ setPage, review, currentUser }) => {

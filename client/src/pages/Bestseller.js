@@ -9,14 +9,12 @@ import axios from "axios";
 const Bestseller = () => {
   const [books, setBooks] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  
   const [allBooks, setAllBooks] = useState([]);
   const navigate = useNavigate();
 
 
   const [currentPage, setCurrentPage] = useState(1);
 
-  // API 호출하여 베스트셀러 목록 가져오기
   // API 호출하여 베스트셀러 목록 가져오기
   const fetchBestseller = async () => {
     try {
@@ -109,11 +107,12 @@ const Bestseller = () => {
             />
           </div>
         </div>
-
+        <p className="weather">🔔오늘의 날씨는 : 책📚 읽기에 완벽한 맑은 날☀️</p>
+        {/* 날씨 알림 */}
         <div className="book-list">
         {books.length > 0 ? (
             books.map((book, index) => (
-              <div key={index} className="b-book-item">
+              <div key={index} className="book-item">
                 <span className="rank">{(currentPage - 1) * 5 + index + 1}</span>
                 <img 
                   src={book.cover} 

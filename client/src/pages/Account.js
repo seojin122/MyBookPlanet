@@ -158,7 +158,7 @@ const Account = () => {
             <input type="password" className="login-input" value={confirmPassword} onChange={handleConfirmPasswordChange} />
             </div>{confirmError && <p className="error-message">{confirmError}</p>}
 
-            <button className="login-button" type="submit">회원가입</button>
+            <button className="account-button" type="submit">회원가입</button>
           </form>
         </div>
       </div>
