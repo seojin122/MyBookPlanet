@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>게시글 작성</title>
+    <style>
+        /*header */
+        .h-container { text-align: center; font-family: Arial, sans-serif; background-color: #f9f6ec; height: 100vh; }
+        .h-search-box { margin-bottom: 20px; display: flex; gap: 10px; padding-left: 900px; position: relative; top: -77px; }
+        .review-list { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; }
+        .review-card { width: 306px; height: 188px; padding: 15px; background-color: white; box-shadow: 2px 2px 5px rgba(0,0,0,0.1); position: relative; }
+        .h-book-title { font-size: 18px; font-weight: bold; text-align: center; color: #201f11; }
+        .stars { margin: -4px; }
+        .h-review-title { font-size: 16px; font-weight: bold; text-align: center; }
+        .nickname { display: flex; justify-content: center; color: gray; }
+        .pagination { margin-top: 20px; display: flex; gap: 5px; justify-content: center; }
+        .page-button { width: 30px; height: 30px; background-color: #ddd; border-radius: 5px; cursor: pointer; }
+        .page-button.active { background-color: #999; }
+        .h-lamp { width: 45px; height: auto; margin: 0 15px; }
+        .h-img-group {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            gap: 150px;
+            position: fixed;
+            top: 0px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            padding-bottom: 20%;
+        }
+        .h-nav-group {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            gap: 150px;
+            position: absolute;
+            left: 50%;
+            top: calc(100% + 15px);
+            transform: translateX(-50%);
+            border-bottom: 2px solid #201f11;
+            width: 100%;
+        }
+        .h-nav-group a {
+            text-decoration: none;
+            font-weight: bold;
+            color: black;
+            padding-bottom: 10%;
+        }
+        .h-header {
+            display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 45px 150px;
+                background-color: #f9f6ec;
+                border-bottom: 2px solid #201f11;
+                position: relative;
+                margin-bottom: 50px;
+        }
+        .h-nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+        .h-book-icon {
+        width: 100px;
+        height: 23px;
+        }
+        .h-underline {
+        width: 90px;
+        height: 20px;
+        background-color: #684c30;
+        margin-top: 5px;
+        }
+        .h-logo-container-Drawer { padding-left: 300px; margin-top: 100px; display: flex; }
+        .h-logo-Drawer { position: relative; width: 140px; margin-right: 10px;
+            margin-top: 20px; top: 20px; }
+        #h-search { border: 1px solid #ccc; border-radius: 8px;
+            width: 300px; height: 35px; padding: 10px 10px 10px 35px; }
+
+
+        /* 게시글 작성 */
+        .input, .textarea {
+            width: 80%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+            background-color: transparent; /* 투명하게 설정 */
+        }
+        .textarea {
+            width: 100%;
+            height: 200px; /* 세로 길이 조정 */
+        }
+        .input::placeholder, .textarea::placeholder {
+            color: #000;
+            transition: opacity 0.3s ease;
+        }
+        .input:focus::placeholder, .textarea:focus::placeholder {
+            opacity: 0;
+        }
+        .btn {
+            padding: 10px;
+            background: #684c30;
+            color: white;
+            border: none;
+            cursor: pointer;
+            width: 10%;
+            position: absolute;
+            right: 250px;
+            bottom: 20px;
+            border-radius: 10px;
+        }
+        .form-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .form-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .form-container input[name="bookTitle"] {
+            width: 500px; /* 가로 길이 조정 */
+        }
+        .form-container input[name="reviewTitle"] {
+            width: 100%; /* 가로 길이 조정 */
+        } 
+        .form-container input[name="rating"] {
+            display: none; /* 별점 입력 창 숨기기 */
+        }
+        .stars {
+            display: flex;
+            gap: 5px;
+        }
+        .star {
+            width: 30px;
+            height: 30px;
+            background: url('/assets/star-empty.png') no-repeat center center;
+            background-size: contain;
+            cursor: pointer;
+        }
+        .star.filled {
+            background-image: url('/assets/star-filled.png');
+        }
+    </style>
+</head>
+
+<body>
+    <div class="h-container">
+        <header class="h-header">
+            <div class="h-img-group">
+                <img src="/assets/lamp.png" class="h-lamp" alt="lamp" />
+                <img src="/assets/lamp.png" class="h-lamp" alt="lamp" />
+                <img src="/assets/lamp.png" class="h-lamp" alt="lamp" />
+            </div>
+            <div class="h-nav-group">
+                <div class="h-nav-item"><a href="http://localhost:3000/Bestseller">베스트셀러</a><div class="h-underline"></div></div>
+                <div class="h-nav-item"><a href="http://localhost:3000/Test">북루미테스트</a><div class="h-underline"></div></div>
+                <div class="h-nav-item"><a href="http://localhost:3003/posts">북작북작</a><img src="/assets/bookicon.png" class="h-book-icon" alt="book icon" /></div>
+                <div class="h-nav-item"><a href="http://localhost:3003/layout">나의 서랍</a><div class="h-underline"></div></div>
+            </div>
+        </header>
+        <div class="h-logo-container-Drawer">
+            <a href="http://localhost:3000">
+                <img src="/assets/logo.png" class="h-logo-Drawer" alt="Logo" />
+            </a>
+            <h1 style="padding-top: 62px">북작북작</h1>
+        </div>
+    
+        <!-- 게시글 작성 -->
+        <div class="form-container">
+            <form action="/posts" method="POST">
+                <div class="form-row">
+                    <input type="text" name="bookTitle" class="input" placeholder="책 제목" required>
+                    <div class="stars">
+                        <div class="star" data-value="1"></div>
+                        <div class="star" data-value="2"></div>
+                        <div class="star" data-value="3"></div>
+                        <div class="star" data-value="4"></div>
+                        <div class="star" data-value="5"></div>
+                    </div>
+                    <input type="number" name="rating" class="input" min="1" max="5" placeholder="별점 (1~5)" required>
+                </div>
+                <input type="text" name="reviewTitle" class="input" placeholder="감상평 제목" required><br>
+                <textarea name="content" class="textarea" placeholder="내용을 입력하세요" required></textarea><br>
+
+                <button type="submit" class="btn">작성</button>
+            </form>
+        </div>
+    </div>
+    <script>
+        document.querySelectorAll('.star').forEach(star => {
+            star.addEventListener('click', function() {
+                const value = this.getAttribute('data-value');
+                document.querySelector('input[name="rating"]').value = value;
+                document.querySelectorAll('.star').forEach(s => {
+                    s.classList.remove('filled');
+                });
+                for (let i = 0; i < value; i++) {
+                    document.querySelectorAll('.star')[i].classList.add('filled');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

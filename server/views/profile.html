@@ -1,0 +1,139 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>프로필</title>
+    <style>
+        /* 스타일 적용 범위 지정 */
+        #timeline {
+            display: flex;
+            justify-content: space-between; /* 두 개의 목록을 좌우로 정렬 */
+            gap: 10px; /* 목록 사이 간격 */
+            width: 1300px;
+            margin-left: 100px;
+        }
+
+        .followings-half,
+        .followers-half {
+            padding: 10px;
+        }
+
+        ul {
+            list-style-type: none; /* 기본 점을 제거 */
+        }
+
+        h2 {
+            text-align: center; /* 제목을 중앙 정렬 */
+        }
+
+
+
+        .followings-list,
+        .followers-list {
+            margin-bottom: 10px; /* 각 항목 간의 간격 */
+        }
+
+        .followings-list a,
+        .followers-list a {
+            text-decoration: none; /* 링크 밑줄 제거 */
+            color: #333; /* 링크 텍스트 색상 */
+            font-size: 16px; /* 폰트 크기 */
+        }
+
+        .more-book {
+    display: inline-block;
+    text-decoration: none; /* 링크 밑줄 제거 */
+    background-color: #2d411d; /* 버튼 배경 색상 */
+    color: white; /* 버튼 텍스트 색상 */
+    padding: 5px 10px; /* 버튼 크기 조정 */
+    border-radius: 5px; /* 둥근 모서리 */
+    text-align: center;
+    margin-top: 340px; /* 목록과 버튼 사이 간격 */
+    margin-left: -550px;
+    box-sizing: border-box; /* 전체 너비 계산에 padding 포함 */
+}
+
+
+
+/* .moremore ul li {
+    color: red !important;
+} */
+
+
+
+
+
+
+
+
+
+    </style>
+</head>
+<body>
+    <div id="timeline">
+        <div class="followings-half">
+            <h2>팔로잉 목록</h2>
+            {% if user.Followings %}
+                <ul>
+                    {% for following in user.Followings %}
+                        <li class="followings-list">
+                            <a href="/user_profile/{{ following.nick }}">{{ following.nick }}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+        <div class="followers-half">
+            <h2>팔로워 목록</h2>
+            {% if user.Followers %}
+                <ul>
+                    {% for follower in user.Followers %}
+                        <li class="followers-list">
+                            <a href="/user_profile/{{ follower.nick }}">{{ follower.nick }}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+            <!-- '더 많은 북루미 보러 가기' 링크를 팔로워 목록 아래로 위치시킴 -->
+            <a href="http://localhost:3003/user/list" class="more-book">더 많은 북루미 보러 가기</a>
+        </div>
+        
+        
+    </div>
+
+    <div id="more">
+    <ul>
+        {% for member in users %}
+          <li>
+            {{ member.nick }}
+            {% if user and user.id != member.id %}
+              {% if member.id in followingIdList %}
+                <button class="follow-btn" data-user-id="{{ member.id }}">팔로우 취소</button>
+              {% else %}
+                <button class="follow-btn" data-user-id="{{ member.id }}">팔로우</button>
+              {% endif %}
+            {% endif %}
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+
+
+{% endblock %}
+
+
+
+
+{% block intro_section %}
+    {# 한 줄 소개를 숨기기 위해 아무 내용도 렌더링하지 않음 #}
+{% endblock %}
+</body>
+</html>
+
+<script>
+
+</script>

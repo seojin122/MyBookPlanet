@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom"; 
 import "../styles/Account.css";
 import bookIcon from "../assets/bookicon.png";
 import lamp from "../assets/lamp.png";
@@ -14,6 +14,8 @@ const Account = () => {
   const [nicknameError, setNicknameError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [confirmError, setConfirmError] = useState("");
+
+  const navigate = useNavigate(); 
 
   const validateEmail = (value) => {
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -65,10 +67,37 @@ const Account = () => {
     setConfirmError(validateConfirmPassword(value));
   };
 
-  const handleSubmit = (e) => { //여기서 api 요청
+  //회원가입 API 연동
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!emailError && !nicknameError && !passwordError && !confirmError) {
-      alert("회원가입이 완료되었습니다!");
+      try {
+        // 프록시 사용 fetch 코드 수정
+        const response = await fetch("/auth/join", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            email,
+            nick: nickname,
+            password
+          }),
+          credentials: "include" // 쿠키 포함
+        });
+        
+
+        if (response.ok) {
+          alert("회원가입이 완료되었습니다!");
+          navigate("/login"); // 로그인 페이지로 이동 기능 추가
+        } else {
+          const errorData = await response.json();
+          alert(errorData.message || "회원가입 실패");
+        }
+      } catch (error) {
+        console.error("회원가입 오류:", error);
+        alert("서버 오류가 발생했습니다.");
+      }
     }
   };
 
@@ -97,8 +126,7 @@ const Account = () => {
       </header>
 
       <div className="login-container">
-        <div className="login-box">
-          <div className="login-header">
+      <div className="login-header">
             <img
               src="https://cdn-icons-png.flaticon.com/512/847/847969.png"
               className="login-icon"
@@ -106,25 +134,31 @@ const Account = () => {
             />
             <h2>회원가입</h2>
           </div>
-
+        <div className="login-box">
           <form className="login-form" onSubmit={handleSubmit}>
+          <div className="input-group">
             <label>이메일</label>
             <input type="email" className="login-input" value={email} onChange={handleEmailChange} />
+            </div>
             {emailError && <p className="error-message">{emailError}</p>}
 
+            <div className="input-group">
             <label>닉네임</label>
             <input type="text" className="login-input" value={nickname} onChange={handleNicknameChange} />
+            </div>
             {nicknameError && <p className="error-message">{nicknameError}</p>}
 
+          <div className="input-group">
             <label>비밀번호</label>
             <input type="password" className="login-input" value={password} onChange={handlePasswordChange} />
-            {passwordError && <p className="error-message">{passwordError}</p>}
+            </div>{passwordError && <p className="error-message">{passwordError}</p>}
 
+            <div className="input-group">
             <label>비밀번호 확인</label>
             <input type="password" className="login-input" value={confirmPassword} onChange={handleConfirmPasswordChange} />
-            {confirmError && <p className="error-message">{confirmError}</p>}
+            </div>{confirmError && <p className="error-message">{confirmError}</p>}
 
-            <button className="login-button" type="submit">회원가입</button>
+            <button className="account-button" type="submit">회원가입</button>
           </form>
         </div>
       </div>

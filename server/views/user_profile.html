@@ -1,0 +1,524 @@
+<!-- layout.html -->
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>{{title}}</title>
+    <meta name="viewport" content="width=device-width, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="stylesheet" href="/main.css">
+
+
+    <style>
+
+      .lamp, .book-icon, .book, .user {
+        width: 45px;
+  height: auto;
+  margin: 0 15px;
+      }
+
+      .lamp {
+        margin-top: -700px;
+        margin-bottom: 15px;
+        margin-left: 200px;
+      }
+
+      .book-icon {
+        width: 100px;
+      }
+
+      .user {
+        margin-left: 230px;
+        margin-top: 20px;
+      }
+
+      body {
+        background-color: #f9f6ec;
+      }
+
+      .main-container {
+    text-align: center;
+    font-family: Arial, sans-serif;
+    background-color: #f9f6ec;
+    height: 100vh;
+  }
+  
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 45px 150px;
+    background-color: #f9f6ec;;
+    border-bottom: 2px solid #201f11;
+    position: relative;
+    margin-bottom: 50px;
+  }
+  
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+  }
+
+.underline {
+    width: 90px;
+    height: 20px;
+    background-color: #684c30;
+    margin-top: 18px;
+  }
+
+.nav-group {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 150px;
+    position: absolute;
+    left: 50%;
+    top: calc(100% + 15px);
+    transform: translateX(-50%);
+    border-bottom: 2px solid #201f11;
+    width: 100%;
+  }
+
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+.nav-group a {
+  font-family: Arial, sans-serif;
+    text-decoration: none;
+    font-weight: bold;
+    color: black;
+    padding-bottom: 10%;
+  }
+
+  .logo {
+    width: 150px;
+    margin-top: 100px;
+    margin-left: -10px;
+  }
+  /* 사진쪽 박스 */
+  /* .profile {
+    font-family: Arial, sans-serif;
+    background-color: #f9f6ec;
+    margin-top: 70px;
+  } */
+
+  .profile {
+  text-align: left;
+  padding: 10px;
+  margin-right: 10px;
+  border-radius: 4px;
+  border: 1px solid silver;
+  background-color: #f9f6ec;
+  height: 350px;
+}
+
+  .profile-wrap {
+    width: 350px;
+    
+  }
+
+  .drawer-title {
+    display: flex;
+  }
+
+  /* 나의 서랍 글씨 */
+  .drawer-title p {
+    font-family: Arial, sans-serif;
+    font-size: 40px;
+    font-weight: 700;
+    margin-top: 150px;
+    margin-left: -10px;
+  }
+
+
+  #nickname-text {
+    font-family: Arial, sans-serif;
+    font-size: 25px;
+    display: flex;
+  align-items: center;
+  justify-content: center;
+  }
+
+
+  #introContentInput {
+    margin-top: 5px;
+    width: 300px;
+    margin-left: 60px;
+  }
+
+  #edit-nickname-btn, #save-nickname-btn, #cancel-nickname-btn, #my-profile, #delete-account{
+    margin-top: 10px;
+  background-color: #ccb494;
+  border: none;
+  border-radius: 15px;
+  cursor: pointer;
+  padding: 1px 8px;
+  /* margin-left: 13px; */
+  }
+
+  #nickname-input {
+    background-color: #f9f6ec;
+    border-radius: 8px;
+  }
+
+  #nickname-input:hover, #nickname-input:active{
+    border-color: rgb(65, 40, 15);
+  }
+
+
+  #introSection {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+#introListContainer {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+#introContentContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+#editIntroButton {
+  margin-top: 10px;
+  background-color: #ccb494;
+  border: none;
+  border-radius: 15px;
+  cursor: pointer;
+  align-items: center;
+  width: 70px;
+}
+
+.big {
+  display: flex;
+}
+
+
+.user {
+  display: flex;
+    justify-content: center;  /* 가로 중앙 정렬 */
+    align-items: center;      /* 세로 중앙 정렬 */
+    width: 200px;             /* 프로필 사진 크기 */
+    height: 200px;   
+    margin-left: 70px;         
+}
+
+.half {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+#sogae {
+  margin-top: 25px;
+  margin-left: 60px;
+  font-size: 26px;
+  font-weight: 700;
+}
+
+#sogae2 {
+  font-size: 15px;
+  margin-left: 60px;
+}
+
+#savedIntroText {
+  margin-left: 60px;
+  background: #f9f6ec;
+    padding: 8px;
+    margin-bottom: 5px;
+    border-radius: 5px;
+    border-color: black;
+    margin-top: 5px;
+    border: 2px solid rgb(73, 42, 11);
+}
+
+.f-list {
+  margin-left: 60px;
+    display: flex; /* 두 목록을 가로로 배치 */
+    justify-content: space-between; /* 두 목록 사이에 간격을 둡니다 */
+    gap: 20px; /* 목록 사이 간격 */
+}
+
+h3 {
+    text-align: center; /* 제목을 중앙 정렬 */
+    margin-bottom: 10px;
+    font-size: 25px;
+}
+
+ul {
+  text-align: center;
+    list-style: none; /* 목록의 기본 스타일 제거 */
+    padding: 0;
+    margin: 0;
+}
+
+
+ul li {
+    margin-bottom: 10px; /* 각 사람 이름 사이에 간격 */
+}
+
+ul li a {
+    text-decoration: none; /* 링크 밑줄 제거 */
+    color: #333; /* 링크 텍스트 색상 */
+    font-size: 16px; /* 텍스트 크기 조정 */
+}
+
+
+.email {
+  text-align: center;
+}
+
+    </style>
+
+
+
+  </head>
+  <body>
+
+
+    <div class="MyDrawer">
+      <header class="header">
+        <div class="img-group">
+          <img src="/assets/lamp.png" class="lamp" alt="lamp" />
+          <img src="/assets/lamp.png" class="lamp" alt="lamp" />
+          <img src="/assets/lamp.png" class="lamp" alt="lamp" />
+        </div>
+        <div class="nav-group">
+          <div class="nav-item">
+            <a href="http://localhost:3000/Bestseller">베스트셀러</a>
+            <div class="underline"></div>
+          </div>
+          <div class="nav-item">
+            <a href="http://localhost:3000/Test">북루미테스트</a>
+            <div class="underline"></div>
+          </div>
+          <div class="nav-item">
+            <a href="http://localhost:3003/posts">북작북작</a>
+            <div class="underline"></div>
+          </div>
+          <div class="nav-item">
+            <a href="http://localhost:3003/layout">나의 서랍</a>
+            <img src="/assets/bookicon.png" class="book-icon" alt="book icon" />
+          </div>
+
+        </div>
+        <a id="logout" href="/auth/logout" class="btn">로그아웃</a>
+      </header>
+      </div>
+
+
+
+    <div class="container">
+      <div class="drawer-title">
+        <img src="/assets/logo.png" class="logo" alt="logo">
+        <p>{{ user.nick }} 님의 서랍</p>
+      </div>
+      <div class="big">
+      <div class="profile-wrap">
+        <div class="profile">
+          {% if user and user.id %}
+          <img src="/assets/user.png" class="user" alt="user" />
+
+          <div class="email">이메일 {{ user.email }}</div>
+            <div class="half">
+              <div>팔로잉</div>
+              <div class="count following-count">{{user.Followings.length}}</div>
+            </div>
+            <div class="half">
+              <div>팔로워</div>
+              <div class="count follower-count">{{user.Followers.length}}</div>
+
+            </div>
+            <input id="my-id" type="hidden" value="{{user.id}}">
+
+          {% else %}
+            <form id="login-form" action="/auth/login" method="post">
+              <div class="input-group">
+                <label for="email">이메일</label>
+                <input id="email" type="email" name="email" required autofocus>
+              </div>
+              <div class="input-group">
+                <label for="password">비밀번호</label>
+                <input id="password" type="password" name="password" required>
+              </div>
+              <a id="join" href="/auth/join" class="btn">회원가입</a>
+              <button id="login" type="submit" class="btn">로그인</button>
+            </form>
+          {% endif %}
+        </div>
+      </div>
+      {% block content %}
+      {% endblock %}      
+
+      {% block intro_section %}
+      <div id="introSection">
+        <!-- <span id="nickname-text">{{ user.nick }}님, 반가워요!</span> -->
+        <span id="sogae">한 줄 소개</span>
+        <span id="sogae2">{{ user.nick }} 님은 이런 북루미예요!</span>
+        <div id="introListContainer">
+          <p id="savedIntroText">한 줄 소개가 없습니다.</p>
+        </div>
+
+        {% endblock %}
+
+        <div class="f-list">
+          <div class="followings">
+              <h3 class="kk">팔로잉 목록</h3>
+              <ul>
+                  {% for following in user.Followings %}
+                      <li><a href="/user_profile/{{ following.nick }}">{{ following.nick }}</a></li>
+                  {% endfor %}
+              </ul>
+          </div>
+          
+          <div class="followers">
+              <h3 class="gg">팔로워 목록</h3>
+              <ul>
+                  {% for follower in user.Followers %}
+                      <li><a href="/user_profile/{{ follower.nick }}">{{ follower.nick }}</a></li>
+                  {% endfor %}
+              </ul>
+          </div>
+      </div>
+      
+      </div>
+    </div>
+        
+      </div>
+
+    </div>
+
+
+    </div>
+  
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+
+// document.addEventListener('DOMContentLoaded', () => {
+//   // 팔로우 버튼 클릭 이벤트 추가
+//   document.querySelectorAll('.follow-btn').forEach(button => {
+//     button.addEventListener('click', async (event) => {
+//       const button = event.target;
+//       const userId = button.getAttribute('data-user-id');
+//       const action = button.innerText === '팔로우 취소' ? 'unfollow' : 'follow'; // 팔로우 또는 팔로우 취소 결정
+
+//       try {
+//         const response = await axios.post(`/user/${userId}/${action}`);  // 팔로우 또는 팔로우 취소 API 호출
+//         alert(response.data.message || `${action === 'follow' ? '팔로우' : '팔로우 취소'} 성공!`);
+
+//         // UI 업데이트: 팔로우 상태에 맞게 버튼 텍스트 변경
+//         if (action === 'follow') {
+//           button.innerText = '팔로우 취소';
+//         } else {
+//           button.innerText = '팔로우';
+//         }
+
+//         location.reload();
+        
+//       } catch (error) {
+//         console.error(error);
+//         alert(error.response?.data?.message || `${action === 'follow' ? '팔로우' : '팔로우 취소'} 처리에 실패했습니다.`);
+//       }
+//     });
+//   });
+// });
+
+
+
+// 현재 로그인한 사용자의 닉네임 (템플릿 엔진에서 주어진다고 가정)
+const userNick = "{{ user.nick }}";  // Django나 Jinja에서 동적으로 제공된다고 가정
+
+// DOM 요소 선택
+const editIntroButton = document.getElementById('editIntroButton');
+const saveIntroButton = document.getElementById('saveIntroButton');
+const cancelIntroButton = document.getElementById('cancelIntroButton');
+const introContentInput = document.getElementById('introContentInput');
+const introContentContainer = document.getElementById('introContentContainer');
+const savedIntroText = document.getElementById('savedIntroText');
+
+// 사용자별 한 줄 소개 불러오기
+function loadSavedIntro() {
+  const savedIntro = localStorage.getItem(`intro_${userNick}`);
+  
+  if (savedIntro) {
+    savedIntroText.textContent = savedIntro;
+  } else {
+    savedIntroText.textContent = "한 줄 소개가 없습니다.";
+  }
+}
+
+
+
+// 페이지 로드 시 한 줄 소개 불러오기
+window.addEventListener('load', loadSavedIntro);
+
+
+
+document.addEventListener('DOMContentLoaded', () => {
+  // 팔로우 버튼 클릭 이벤트 추가
+  document.querySelectorAll('.follow-btn').forEach(button => {
+    button.addEventListener('click', async (event) => {
+      const button = event.target;
+      const userId = button.getAttribute('data-user-id');
+      const action = button.innerText === '팔로우 취소' ? 'unfollow' : 'follow'; // 팔로우 또는 팔로우 취소 결정
+
+      try {
+        const response = await axios.post(`/user/${userId}/${action}`);  // 팔로우 또는 팔로우 취소 API 호출
+        alert(response.data.message || `${action === 'follow' ? '팔로우' : '팔로우 취소'} 성공!`);
+
+        // UI 업데이트: 팔로우 상태에 맞게 버튼 텍스트 변경
+        if (action === 'follow') {
+          button.innerText = '팔로우 취소';
+        } else {
+          button.innerText = '팔로우';
+        }
+
+        location.reload();
+        
+      } catch (error) {
+        console.error(error);
+        alert(error.response?.data?.message || `${action === 'follow' ? '팔로우' : '팔로우 취소'} 처리에 실패했습니다.`);
+      }
+    });
+  });
+});
+
+
+
+  // 회원 탈퇴 버튼 이벤트 추가
+  document.getElementById('delete-account').addEventListener('click', (event) => {
+        event.preventDefault();
+        if (confirm("정말로 회원 탈퇴하시겠습니까? 이 작업은 되돌릴 수 없습니다.")) {
+          axios.post('/auth/delete')
+            .then(response => {
+              alert(response.data.message);
+              window.location.href = "/"; // 탈퇴 후 메인 페이지로 이동
+            })
+            .catch(error => {
+              console.error('탈퇴 처리 중 오류 발생:', error);
+              alert('회원 탈퇴에 실패했습니다.');
+            });
+        }
+      });
+    
+
+
+
+    </script>
+    {% block script %}
+    {% endblock %}
+  </body>
+</html>

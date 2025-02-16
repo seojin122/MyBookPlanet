@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>북작북작 - 커뮤니티</title>
+    <link rel="stylesheet" href="/assets/community.css">
+    <style>
+        .h-container { 
+            text-align: center;
+            font-family: Arial, sans-serif;
+            background-color: #f9f6ec;
+            height: 100vh;
+        }
+        .h-search-box { margin-bottom: 20px; display: flex; gap: 10px; padding-left: 900px; position: relative;
+            top: -77px; }
+        .review-list { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; }
+        .review-card { 
+            width: 306px; 
+            height: 188px; 
+            padding: 15px; 
+            border: 1px solid #ccc; 
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.1); 
+            position: relative; 
+            cursor: pointer; /* ✅ 클릭 가능하도록 커서 변경 */
+        }
+        .h-book-title, .h-review-title { 
+            font-size: 18px; 
+            font-weight: bold; 
+            text-align: center; 
+            color: #201f11; 
+            cursor: pointer; /* ✅ 클릭 가능하도록 커서 변경 */
+            text-decoration: none; /* ✅ 클릭 가능함을 강조 */
+        }
+        .stars { margin: -4px; }
+        .nickname { display: flex; justify-content: center; color: gray; }
+        .pagination { margin-top: 20px; display: flex; gap: 5px; justify-content: center; }
+        .page-button { width: 30px; height: 30px; background-color: #ddd; border-radius: 5px; cursor: pointer; }
+        .page-button.active { background-color: #999; }
+        .h-lamp {
+        width: 45px;
+        height: auto;
+        margin: 0 15px; 
+        }
+        .h-img-group {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            gap: 150px;
+            position: fixed;
+            top: 0px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            padding-bottom: 20%;
+        }
+        .h-nav-group {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            gap: 150px;
+            position: absolute;
+            left: 50%;
+            top: calc(100% + 15px);
+            transform: translateX(-50%);
+            border-bottom: 2px solid #201f11;
+            width: 100%;
+        }
+        .h-nav-group a {
+            text-decoration: none;
+            font-weight: bold;
+            color: black;
+            padding-bottom: 10%;
+        }
+        .h-header {
+            display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 45px 150px;
+                background-color: #f9f6ec;
+                border-bottom: 2px solid #201f11;
+                position: relative;
+                margin-bottom: 50px;
+        }
+        .h-nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+        .h-book-icon {
+        width: 100px;
+        height: 23px;
+        }
+        .h-underline {
+        width: 90px;
+        height: 20px;
+        background-color: #684c30;
+        margin-top: 5px;
+        }
+        .h-logo-container-Drawer {
+            padding-left: 300px;
+            margin-top: 100px;
+            display: flex;
+        }
+        .h-logo-Drawer {
+            position: relative;
+            width: 140px;
+            margin-right: 10px;
+            margin-top: 20px;
+            top: 20px;
+        }
+        #h-search {
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            width: 300px;
+            height: 35px;
+            padding: 10px 10px 10px 35px;
+        }
+    </style>
+</head>
+<body>
+    <div class="h-container">
+        <header class="h-header">
+            <div class="h-img-group">
+                <img src="/assets/lamp.png" class="h-lamp" alt="lamp" />
+                <img src="/assets/lamp.png" class="h-lamp" alt="lamp" />
+                <img src="/assets/lamp.png" class="h-lamp" alt="lamp" />
+            </div>
+            <div class="h-nav-group">
+                <div class="h-nav-item"><a href="http://localhost:3000/Bestseller">베스트셀러</a><div class="h-underline"></div></div>
+                <div class="h-nav-item"><a href="http://localhost:3000/Test">북루미테스트</a><div class="h-underline"></div></div>
+                <div class="h-nav-item"><a href="http://localhost:3003/posts">북작북작</a><img src="/assets/bookicon.png" class="h-book-icon" alt="book icon" /></div>
+                <div class="h-nav-item"><a href="http://localhost:3003/layout">나의 서랍</a><div class="h-underline"></div></div>
+            </div>
+        </header>
+        <div class="h-logo-container-Drawer">
+            <a href="http://localhost:3000">
+                <img src="/assets/logo.png" class="h-logo-Drawer" alt="Logo" />
+            </a>
+            <h1 style="padding-top: 62px">북작북작</h1>
+        </div>
+
+        <!-- 검색 바 -->
+        <div class="h-search-box">
+            <input type="text" id="h-search" placeholder="책 제목, 감상평, 유저 검색">
+            <button onclick="location.href='/posts/new'">작성하기</button>
+        </div>
+
+        <!-- 게시글 목록 -->
+        <div class="review-list" id="review-list">
+            {% for post in posts %}
+            <div class="review-card">
+                <h2 class="h-book-title" data-id="{{ post.id }}">{{ post.bookTitle }}</h2>
+                <div class="stars">{% for _ in range(post.rating) %}⭐{% endfor %}</div>
+                <h3 class="h-review-title" data-id="{{ post.id }}">{{ post.reviewTitle }}</h3>
+                <p class="nickname">👤 {{ post.user.nick }}</p>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- 페이지네이션 -->
+        <div class="pagination" id="pagination"></div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const postsPerPage = 3;
+            const reviewList = document.getElementById("review-list");
+            const pagination = document.getElementById("pagination");
+            const searchInput = document.getElementById("h-search");
+            let reviews = Array.from(reviewList.children);
+            let filteredReviews = [...reviews];
+            const totalPages = () => Math.ceil(filteredReviews.length / postsPerPage);
+            let currentPage = 1;
+
+            function renderPage(page) {
+                reviewList.innerHTML = "";
+                const start = (page - 1) * postsPerPage;
+                const end = start + postsPerPage;
+                filteredReviews.slice(start, end).forEach(review => reviewList.appendChild(review));
+
+                pagination.innerHTML = "";
+                for (let i = 1; i <= totalPages(); i++) {
+                    const button = document.createElement("button");
+                    button.textContent = i;
+                    button.classList.add("page-button");
+                    if (i === page) button.classList.add("active");
+                    button.addEventListener("click", () => {
+                        currentPage = i;
+                        renderPage(currentPage);
+                    });
+                    pagination.appendChild(button);
+                }
+            }
+
+            searchInput.addEventListener("input", function() {
+                const query = searchInput.value.toLowerCase();
+                filteredReviews = reviews.filter(review =>
+                    review.querySelector(".h-book-title").textContent.toLowerCase().includes(query) ||
+                    review.querySelector(".h-review-title").textContent.toLowerCase().includes(query) ||
+                    review.querySelector(".nickname").textContent.toLowerCase().includes(query) // ✅ 작성자 검색 추가
+                );
+                currentPage = 1;
+                renderPage(currentPage);
+            });
+
+            document.querySelectorAll(".h-book-title, .h-review-title").forEach(item => {
+                item.addEventListener("click", function() {
+                    location.href = "/posts/" + this.dataset.id;
+                });
+            });
+
+            renderPage(currentPage);
+        });
+    </script>
+</body>
+</html>

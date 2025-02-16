@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>게시글 수정</title>
+    <style>
+        /* header */
+        .h-container { text-align: center; font-family: Arial, sans-serif; background-color: #f9f6ec; height: 100vh; }
+        .h-img-group {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            gap: 150px;
+            position: fixed;
+            top: 0px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            padding-bottom: 20%;
+        }
+        .h-lamp {
+        width: 45px;
+        height: auto;
+        margin: 0 15px; 
+        }
+        .h-nav-group {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            gap: 150px;
+            position: absolute;
+            left: 50%;
+            top: calc(100% + 15px);
+            transform: translateX(-50%);
+            border-bottom: 2px solid #201f11;
+            width: 100%;
+        }
+        .h-nav-group a {
+            text-decoration: none;
+            font-weight: bold;
+            color: black;
+            padding-bottom: 10%;
+        }
+        .h-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 45px 150px;
+            background-color: #f9f6ec;
+            border-bottom: 2px solid #201f11;
+            position: relative;
+            margin-bottom: 50px;
+        }
+        .h-nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+        .h-book-icon {
+            width: 100px;
+            height: 23px;
+        }
+        .h-underline {
+            width: 90px;
+            height: 20px;
+            background-color: #684c30;
+            margin-top: 5px;
+        }
+        .h-logo-container-Drawer { padding-left: 300px; margin-top: 100px; display: flex; }
+        .h-logo-Drawer { position: relative; width: 140px; margin-right: 10px;
+            margin-top: 20px; top: 20px; }
+
+        /* 게시글 수정 폼 */
+        .form-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .form-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .input, .textarea {
+            width: 80%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+            background-color: transparent;
+        }
+        .textarea {
+            width: 100%;
+            height: 200px;
+        }
+        .input::placeholder, .textarea::placeholder {
+            color: #000;
+            transition: opacity 0.3s ease;
+        }
+        .input:focus::placeholder, .textarea:focus::placeholder {
+            opacity: 0;
+        }
+        .btn {
+            padding: 10px;
+            background: #684c30;
+            color: white;
+            border: none;
+            cursor: pointer;
+            width: 10%;
+            position: absolute;
+            right: 250px;
+            bottom: 20px;
+            border-radius: 10px;
+        }
+        .form-container input[name="bookTitle"] {
+            width: 500px;
+        }
+        .form-container input[name="reviewTitle"] {
+            width: 100%;
+        }
+        .form-container input[name="rating"] {
+            display: none;
+        }
+        .stars {
+            display: flex;
+            gap: 5px;
+        }
+        .star {
+            width: 30px;
+            height: 30px;
+            background: url('/assets/star-empty.png') no-repeat center center;
+            background-size: contain;
+            cursor: pointer;
+        }
+        .star.filled {
+            background-image: url('/assets/star-filled.png');
+        }
+    </style>
+</head>
+
+<body>
+    <div class="h-container">
+        <header class="h-header">
+            <div class="h-img-group">
+                <img src="/assets/lamp.png" class="h-lamp" alt="lamp" />
+                <img src="/assets/lamp.png" class="h-lamp" alt="lamp" />
+                <img src="/assets/lamp.png" class="h-lamp" alt="lamp" />
+            </div>
+            <div class="h-nav-group">
+                <div class="h-nav-item"><a href="http://localhost:3000/Bestseller">베스트셀러</a><div class="h-underline"></div></div>
+                <div class="h-nav-item"><a href="http://localhost:3000/Test">북루미테스트</a><div class="h-underline"></div></div>
+                <div class="h-nav-item"><a href="http://localhost:3000/posts">북작북작</a><img src="/assets/bookicon.png" class="h-book-icon" alt="book icon" /></div>
+                <div class="h-nav-item"><a href="http://localhost:3000/layout">나의 서랍</a><div class="h-underline"></div></div>
+            </div>
+        </header>
+        <div class="h-logo-container-Drawer">
+            <a href="http://localhost:3000">
+                <img src="/assets/logo.png" class="h-logo-Drawer" alt="Logo" />
+            </a>
+            <h1 style="padding-top: 62px">북작북작</h1>
+        </div>
+
+        <!-- 게시글 수정 -->
+        <div class="form-container">
+            <h1>게시글 수정</h1>
+            <form action="/posts/{{ post.id }}/edit" method="POST">
+                <div class="form-row">
+                    <input type="text" name="bookTitle" class="input" value="{{ post.bookTitle }}" required>
+                    <div class="stars">
+                        <div class="star" data-value="1"></div>
+                        <div class="star" data-value="2"></div>
+                        <div class="star" data-value="3"></div>
+                        <div class="star" data-value="4"></div>
+                        <div class="star" data-value="5"></div>
+                    </div>
+                    <input type="number" name="rating" class="input" min="1" max="5" value="{{ post.rating }}" required>
+                </div>
+                <input type="text" name="reviewTitle" class="input" value="{{ post.reviewTitle }}" required><br>
+                <textarea name="content" class="textarea" required>{{ post.content }}</textarea><br>
+
+                <button type="submit" class="btn">수정 완료</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.querySelectorAll('.star').forEach(star => {
+            star.addEventListener('click', function() {
+                const value = this.getAttribute('data-value');
+                document.querySelector('input[name="rating"]').value = value;
+                document.querySelectorAll('.star').forEach(s => {
+                    s.classList.remove('filled');
+                });
+                for (let i = 0; i < value; i++) {
+                    document.querySelectorAll('.star')[i].classList.add('filled');
+                }
+            });
+        });
+
+        // 별점 채우기 (기존 값 반영)
+        window.onload = function() {
+            const rating = document.querySelector('input[name="rating"]').value;
+            document.querySelectorAll('.star').forEach(s => {
+                s.classList.remove('filled');
+            });
+            for (let i = 0; i < rating; i++) {
+                document.querySelectorAll('.star')[i].classList.add('filled');
+            }
+        };
+    </script>
+</body>
+</html>

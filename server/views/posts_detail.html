@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>게시글 상세</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; background-color: #f9f6ec; }
+        .container { max-width: 600px; margin: auto; text-align: left; }
+        .star { font-size: 20px; color: gold; }
+        .back { display: inline-block; margin-top: 20px; text-decoration: none; color: blue; }
+        .btn-container { margin-top: 20px; }
+        .btn { padding: 10px 15px; margin-right: 10px; cursor: pointer; border: none; }
+        .edit-btn { color: black; } /* 수정 버튼 */
+        .delete-btn {  color: black; } /* 삭제 버튼 */
+        .like-btn {color: black; } /* 좋아요 버튼 */
+        .h-container { 
+            text-align: center;
+            font-family: Arial, sans-serif;
+            background-color: #f9f6ec;
+            height: 100vh;
+        }
+        .h-search-box { margin-bottom: 20px; display: flex; gap: 10px; padding-left: 900px; position: relative;
+            top: -77px; }
+            .h-lamp {
+        width: 45px;
+        height: auto;
+        margin: 0 15px; 
+        }
+        .h-img-group {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            gap: 150px;
+            position: fixed;
+            top: 0px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            padding-bottom: 20%;
+        }
+        .h-nav-group {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            gap: 150px;
+            position: absolute;
+            left: 50%;
+            top: calc(100% + 15px);
+            transform: translateX(-50%);
+            border-bottom: 2px solid #201f11;
+            width: 100%;
+        }
+        .h-nav-group a {
+            text-decoration: none;
+            font-weight: bold;
+            color: black;
+            padding-bottom: 10%;
+        }
+        .h-header {
+            display: flex
+            ;
+                justify-content: space-between;
+                align-items: center;
+                padding: 45px 150px;
+                background-color: #f9f6ec;
+                border-bottom: 2px solid #201f11;
+                position: relative;
+                margin-bottom: 50px;
+        }
+        .h-nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+        .h-book-icon {
+        width: 100px;
+        height: 23px;
+        }
+        .h-underline {
+        width: 90px;
+        height: 20px;
+        background-color: #684c30;
+        margin-top: 5px;
+        }
+        .h-logo-container-Drawer {
+            padding-left: 300px;
+            margin-top: 100px;
+            display: flex;
+        }
+        .h-logo-Drawer {
+            position: relative;
+            width: 140px;
+            margin-right: 10px;
+            margin-top: 20px;
+            top: 20px;
+        }
+        #h-search {
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            width: 300px;
+            height: 35px;
+            padding: 10px 10px 10px 35px;
+        }
+        .h-book-title {
+            border:1px solid #ccc;
+            border-radius: 5px;
+            width: 27%;
+            position: relative;
+            top: 10px;
+            left: 113px;
+            display: flex
+        ;
+            gap: 139px;
+             /*padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+    background-color: transparent;*/
+        }
+        .h-book-title h1 {
+            margin: 20px 20px 1px;
+        }
+        .h-book-head {
+            display: flex ;gap: 17px;
+            position: relative;
+            left: 150px;
+        }
+        .h-like {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 27%;
+            position: relative;
+            top: 10px;
+            left: 113px;
+            display: flex;
+            gap: 139px;
+        }
+        .h-book-content {
+            border:1px solid #ccc;
+            border-radius: 5px;
+            width:67%;
+            height: 42%;
+            position: relative;
+            top: 10px;
+            left: 113px;
+            display: flex;
+            flex-direction: column;
+            margin: 12px 0px;
+            position: relative;
+            left: 261px;
+        }
+        .back {
+            color: black;
+        }
+
+        /* ✅ 댓글 컨테이너 스타일 */
+#comments-container {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 10px;
+}
+
+/* ✅ 개별 댓글 스타일 */
+.comment-box {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 10px;
+    background-color: #f9f6ec;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: relative;
+    left: -300px;
+}
+.comment-box strong {
+    position: relative;
+    left: -221px;
+}
+.comment-box p {
+    position: relative;
+    left: -221px;
+}
+/* ✅ 대댓글 컨테이너 (들여쓰기) */
+.replies {
+    margin-left: 40px; /* 들여쓰기 효과 */
+    padding-left: 10px;
+}
+
+/* ✅ 대댓글 박스 스타일 */
+.reply-box {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 10px;
+    margin-top: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* ✅ 닉네임 스타일 */
+.comment-box strong, .reply-box strong {
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+}
+
+/* ✅ 댓글 내용 */
+.comment-box p, .reply-box p {
+    font-size: 14px;
+    margin-top: 5px;
+    color: #444;
+}
+
+/* ✅ 버튼 스타일 */
+.comment-box button, .reply-box button {
+    background-color: #ccb494;
+    border: none;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 12px;
+    cursor: pointer;
+    margin-right: 5px;
+}
+
+.comment-box button:hover, .reply-box button:hover {
+    background-color: #b39a7d;
+}
+
+/* ✅ 댓글 입력창 스타일 */
+textarea {
+    width: 92%;
+    max-width: 580px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    resize: none;
+    margin-bottom: 10px;
+}
+
+/* ✅ 댓글 작성 버튼 */
+#comment-content, #reply-content {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 8px;
+    width: 100%;
+}
+
+
+    </style>
+</head>
+<body>
+    <div class="h-container">
+        <header class="h-header">
+            <div class="h-img-group">
+                <img src="/assets/lamp.png" class="h-lamp" alt="lamp" />
+                <img src="/assets/lamp.png" class="h-lamp" alt="lamp" />
+                <img src="/assets/lamp.png" class="h-lamp" alt="lamp" />
+            </div>
+            <div class="h-nav-group">
+                <div class="h-nav-item"><a href="http://localhost:3000/Bestseller">베스트셀러</a><div class="h-underline"></div></div>
+                <div class="h-nav-item"><a href="http://localhost:3000/Test">북루미테스트</a><div class="h-underline"></div></div>
+                <div class="h-nav-item"><a href="http://localhost:3000/posts">북작북작</a><img src="/assets/bookicon.png" class="h-book-icon" alt="book icon" /></div>
+                <div class="h-nav-item"><a href="http://localhost:3000/layout">나의 서랍</a><div class="h-underline"></div></div>
+            </div>
+        </header>
+        <div class="h-logo-container-Drawer">
+            <a href="http://localhost:3000">
+                <img src="/assets/logo.png" class="h-logo-Drawer" alt="Logo" />
+            </a>
+            <h1 style="padding-top: 62px">북작북작</h1>
+        </div>
+
+        <div class="h-book-head">
+            <div class="h-book-title">
+                <h1>{{ post.bookTitle }}</h1>
+                <p class="star">
+                    {% for _ in range(post.rating) %}⭐{% endfor %}
+                </p>
+            </div>
+            <div class="h-like">
+                <p style="padding-left: 14px; padding-top: 8px;"><strong>작성자:</strong> {{ post.user.nick }}</p>
+                <!-- ✅ 좋아요 버튼 -->
+                {% if user %}
+                <div class="btn-container">
+                    <button id="like-btn" class="btn like-btn" onclick="toggleLike()" style="background-color: #f9f6ec;">
+                        {% if userLiked %}
+                            💔 좋아요 취소
+                        {% else %}
+                            ❤️ 좋아요
+                        {% endif %}
+                    </button>
+                    <span id="like-count">{{ likeCount }}</span>명
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        <div class="h-book-content">
+            <h3 style="position: relative; left: -500px;">감상평: {{ post.reviewTitle }}</h3>
+            <p style="position: relative;left: -500px;">{{ post.content }}</p>
+        </div>
+
+        <!-- ✅ 작성자만 수정 & 삭제 가능 -->
+        {% if user and user.id == post.user.id %}
+        <div class="btn-container">
+            <a href="/posts/{{ post.id }}/edit"><button class="btn edit-btn">수정</button></a>
+            <form action="/posts/{{ post.id }}/delete" method="POST" style="display:inline;">
+                <button type="submit" class="btn delete-btn">삭제</button>
+            </form>
+        </div>
+        {% endif %}
+
+        <a href="/posts" class="back">← 게시글 목록으로</a>
+    </div>
+    <hr>
+    <!-- 댓글 영역 -->
+    <h2 style="display: flex; margin-left: 250px;">댓글</h2>
+    <div id="comments-container"></div>
+
+    {% if user %}
+        <textarea id="comment-content" placeholder="댓글을 입력하세요"></textarea>
+        <button onclick="addComment()" style="background-color: #ccb494;
+        border: none;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-size: 12px;
+        cursor: pointer;
+        margin-right: 5px;
+        position: relative;
+        top: -20px;">댓글 작성</button>
+    {% endif %}
+
+    <script>
+        async function loadComments() {
+    try {
+        const response = await fetch("/comments/{{ post.id }}");
+        if (!response.ok) throw new Error("댓글 데이터를 불러올 수 없습니다.");
+
+        const comments = await response.json();
+        let commentsHTML = "";
+
+        comments.forEach(comment => {
+            commentsHTML += `
+                <div class="comment-box">
+                    <strong>${comment.user.nick}</strong>
+                    <p id="comment-content-${comment.id}">${comment.content}</p>
+
+                    <div class="btn-container">
+                        {% if user and user.id == post.user.id %}
+                            <button class="btn" onclick="editComment(${comment.id})">수정</button>
+                            <button class="btn" onclick="deleteComment(${comment.id})">삭제</button>
+                        {% endif %}
+                        <button class="btn" onclick="showReplyForm(${comment.id})">답글</button>
+                    </div>
+
+                    <div id="reply-form-${comment.id}" style="display:none;">
+                        <textarea id="reply-content-${comment.id}" placeholder="답글을 입력하세요"></textarea>
+                        <button class="btn" onclick="addReply(${comment.id})">답글 작성</button>
+                    </div>
+
+                    <div id="replies-${comment.id}" class="replies">
+                        ${comment.replies.map(reply => `
+                            <div class="reply-box">
+                                <strong>${reply.user.nick}</strong>
+                                <p id="reply-content-${reply.id}">${reply.content}</p>
+
+                                <div class="btn-container">
+                                    {% if user and user.id == post.user.id %}
+                                        <button class="btn" onclick="editComment(${reply.id})">수정</button>
+                                        <button class="btn" onclick="deleteComment(${reply.id})">삭제</button>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        });
+
+        document.getElementById("comments-container").innerHTML = commentsHTML;
+    } catch (error) {
+        console.error("댓글 로딩 오류:", error);
+    }
+}
+
+
+    async function editComment(commentId) {
+        const commentElement = document.getElementById(`comment-content-${commentId}`);
+        const newContent = prompt("댓글을 수정하세요:", commentElement.textContent);
+
+        if (newContent === null || newContent.trim() === "") {
+            alert("댓글 내용을 입력하세요.");
+            return;
+        }
+
+        try {
+            const response = await fetch(`/comments/${commentId}/edit`, {  // ✅ URL 수정
+                method: "POST",  // ✅ POST 요청으로 변경
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ content: newContent })
+            });
+
+            if (!response.ok) throw new Error("댓글 수정 실패");
+
+            commentElement.textContent = newContent; // UI 업데이트
+        } catch (error) {
+            console.error("댓글 수정 오류:", error);
+        }
+    }
+
+    async function deleteComment(commentId) {
+        try {
+            const response = await fetch(`/comments/${commentId}/delete`, { method: "POST" });
+            if (!response.ok) throw new Error("댓글 삭제 실패");
+
+            loadComments();
+        } catch (error) {
+            console.error("댓글 삭제 오류:", error);
+        }
+    }
+
+    function showReplyForm(commentId) {
+        const replyForm = document.getElementById(`reply-form-${commentId}`);
+        replyForm.style.display = replyForm.style.display === "none" ? "block" : "none";
+    }
+
+    loadComments();
+
+        async function addComment() {
+            const content = document.getElementById("comment-content").value;
+            if (!content.trim()) {
+                alert("댓글 내용을 입력하세요.");
+                return;
+            }
+
+            try {
+                const response = await fetch("/comments", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ postId: {{ post.id }}, content })
+                });
+
+                if (!response.ok) throw new Error("댓글 작성에 실패했습니다.");
+
+                document.getElementById("comment-content").value = "";
+                loadComments();
+            } catch (error) {
+                console.error("댓글 작성 오류:", error);
+            }
+        }
+
+        async function addReply(commentId) {
+            const content = document.getElementById(`reply-content-${commentId}`).value;
+            if (!content.trim()) {
+                alert("답글 내용을 입력하세요.");
+                return;
+            }
+
+            try {
+                const response = await fetch("/comments", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ postId: {{ post.id }}, content, parentId: commentId })
+                });
+
+                if (!response.ok) throw new Error("답글 작성에 실패했습니다.");
+
+                document.getElementById(`reply-content-${commentId}`).value = "";
+                loadComments();
+            } catch (error) {
+                console.error("답글 작성 오류:", error);
+            }
+        }
+
+        async function deleteComment(commentId) {
+            try {
+                const response = await fetch(`/comments/${commentId}/delete`, { method: "POST" });
+                if (!response.ok) throw new Error("댓글 삭제 실패");
+
+                loadComments();
+            } catch (error) {
+                console.error("댓글 삭제 오류:", error);
+            }
+        }
+
+        function showReplyForm(commentId) {
+            const replyForm = document.getElementById(`reply-form-${commentId}`);
+            replyForm.style.display = replyForm.style.display === "none" ? "block" : "none";
+        }
+
+        async function toggleLike() {
+            const response = await fetch("/posts/{{ post.id }}/like", { method: "POST" });
+            const data = await response.json();
+            document.getElementById("like-btn").innerHTML = data.liked ? "💔 좋아요 취소" : "❤️ 좋아요";
+            document.getElementById("like-count").textContent = parseInt(document.getElementById("like-count").textContent) + (data.liked ? 1 : -1);
+        }
+
+        loadComments();
+    </script>
+</body>
+</html>
