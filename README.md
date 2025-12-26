@@ -1,94 +1,65 @@
-# 📚 MyBookPlanet (마이북플래닛)
+# 📚 MyBookPlanet
 
-나의 독서 취향을 기반으로 책을 추천하고, 감상평·별점을 공유하는 **독서 커뮤니티 플랫폼**입니다.  
-“나만의 책 우주(MyBookPlanet)”에서 사용자는 **북루미(BookLumi)** 로 함께 독서 경험을 확장합니다.
-
----
-
-## 🎯 기획 의도 & 목표
-
-- **맞춤형 도서 추천 부재 해소**  
-  영화·음악처럼 개인화가 활발한 분야와 달리, 도서는 개인 성향을 반영한 추천이 부족합니다.  
-  개인의 장르/분위기/독서 목적 등을 반영해 **정확하고 의미 있는 추천**을 제공하는 것이 목표입니다.
-
-- **독서 부족 → 문해력 저하 문제 대응**  
-  사용자 맞춤 추천과 습관화 기능(알림/출석체크)을 통해 **지속적인 독서 활동**을 돕습니다.
-
-- **추천에서 커뮤니티로 확장**  
-  단순 추천에 그치지 않고 감상평·별점·댓글·친구 맺기 등을 통해 **소통 기반의 독서 생태계**를 만듭니다.
-
-- **데이터 기반 고도화**  
-  축적되는 행동/감상 데이터로 추천 모델을 지속 개선하고, 도서 산업(서점·출판사)과의 **협업 활용성**을 갖습니다.
+A personalized book recommendation and community platform designed to help users discover their "Reading Universe." Interact with fellow readers through **BookLumi**, our unique social reading feature.
 
 ---
 
-## ⚙️ 구현 기능
+## 🎯 Motivation & Goals
 
-### 1) 회원가입/로그인/로그아웃
-- 이메일 기반 계정 생성 및 인증
-- 프로필(닉네임·사진·한 줄 소개) 관리
-
-### 2) 독서 취향 검사 → 개인 맞춤형 도서 추천
-- **시나리오형 설문 흐름**으로 독서 성향 분석  
-  예: 선호 장르(판타지/SF/로맨스/추리/인문/경제/자기계발), 분위기(밝음/감성/스릴러), 독서 습관(동시 읽기 권수), 선택 기준(스토리/문체/작가/주제), 독서 목적(재미/지식/위로/계발), 최근 인상 깊은 책 등
-- 검사 결과 유형 도출 + **추천 도서 4권** 제시(평점순·베스트셀러·날씨 연동 등 규칙 기반, 이후 데이터 축적 시 ML 고도화)
-- 추천 도서 **저장(스크랩)** → 마이페이지 연동
-
-### 3) 책 감상평 & 별점 공유 (커뮤니티)
-- 감상평 작성/수정/삭제, **별점**, 댓글, 좋아요
-- 친구 맺기 / 팔로우 기반 피드
-- (선택) 실시간 채팅
-
-### 4) 베스트셀러 & 검색
-- 알라딘/인터파크 API 활용 **베스트셀러** 목록 제공
-- 도서 **검색** 및 상세 보기
-
-### 5) 독서 습관 형성
-- 매일 **10분 독서 알림**
-- **출석 체크**(스트릭/배지)
+- **Personalized Recommendations**: Unlike movies or music, book recommendations often lack deep personalization. MyBookPlanet provides **meaningful suggestions** based on individual genres, moods, and reading purposes.
+- **Tackling Literacy Decline**: We encourage **consistent reading habits** through personalized alerts and attendance tracking to address the growing issue of declining literacy.
+- **Community-Driven Ecosystem**: Beyond just recommendations, we foster a **social reading environment** where users share reviews, ratings, and follow like-minded readers.
+- **Data-Driven Optimization**: We aim to continuously refine our recommendation engine using accumulated behavioral data for potential B2B collaborations with publishers and bookstores.
 
 ---
 
-## 🌟 기대 효과
+## ⚙️ Key Features
 
-1. **개인화된 독서 경험**  
-   취향 기반 추천으로 새로운 책을 자연스럽게 발견하고 **독서 습관**을 형성합니다.
+### 1) User Management
+- Email-based account creation and authentication.
+- Customizable profiles including nicknames, bios, and profile pictures.
 
-2. **독서 커뮤니티 활성화**  
-   비슷한 취향의 독자들과 감상평/추천을 주고받으며 **독서 경험을 확장**합니다.
+### 2) Personalized Recommendation Engine
+- **Scenario-based Preference Test**: Analyzes user preferences across various genres (Fantasy, SF, Thriller, etc.), moods, and reading goals.
+- **Dynamic Recommendations**: Provides a curated list of books based on test results, ratings, and real-time trends (e.g., weather-integrated rules).
+- **Scraping/Saving**: Users can save recommended books directly to their personal library.
 
-3. **문해력·어휘력 개선 기여**  
-   정기적 독서 활동을 통해 현대 사회의 **문해력 저하** 문제에 긍정적으로 기여합니다.
+### 3) Social & Community
+- Review system: Create, edit, and delete reviews with **star ratings**.
+- Social interaction: Engagement features like likes, comments, and a follow-based feed.
 
-4. **도서 산업 협업 가치**  
-   사용자 성향 데이터 기반으로 서점/출판사와 **맞춤형 마케팅/추천** 협업이 가능합니다.
+### 4) Library Integration & Search
+- Real-time **Bestseller lists** integrated via Aladin/Interpark APIs.
+- Comprehensive book **search** functionality with detailed information pages.
 
----
-
-## 🧰 기술 스택
-
-- **Frontend**: React (Vite/CRA 중 택1), React Router, 상태관리(Zustand/Redux), CSS-in-JS 또는 Tailwind  
-- **Backend**: Node.js + Express, MySQL  
-- **Open API**: 알라딘, 인터파크(베스트셀러/검색)  
-- **Design/Proto**: Figma  
-
-> 주의: 외부 Open API 키는 **FE에서 직접 호출하지 말고 BE 프록시**로 숨기는 구성을 권장합니다.
+### 5) Habit Formation Tools
+- **10-minute Daily Reading** push notifications to build consistency.
+- **Attendance System**: "Streaks" and achievement badges to motivate long-term reading habits.
 
 ---
 
-## 🚀 로컬 실행 (FE 예시: Vite)
+## 🧰 Tech Stack
+
+- **Frontend**: React (Vite), React Router, Zustand/Redux (State Management), Tailwind CSS.
+- **Backend**: Node.js, Express, MySQL.
+- **APIs**: Aladin API, Interpark API (Search/Bestsellers).
+- **Design**: Figma.
+
+---
+
+## 🚀 Getting Started (Local Development)
 
 ```bash
-# 0) 레포 클론
+# 0) Clone the repository
 git clone <your-repo-url>
 cd MyBookPlanet
 
-# 1) 의존성 설치
+# 1) Install dependencies
 npm i
 
-# 2) 환경변수 설정
+# 2) Environment Variables
 cp .env.example .env
-# .env 파일에 API 엔드포인트/키 입력
+# Enter your API endpoints and keys in the .env file
 
-# 3) 개발 서버
+# 3) Run development server
 npm run dev
